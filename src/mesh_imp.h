@@ -4,7 +4,7 @@
 #include<iostream>
 
 #ifdef R_VERSION_
-template <UInt ORDER>
+template <UInt ORDER,2,2>
 MeshHandler<ORDER>::MeshHandler(SEXP mesh)
 {
 	mesh_ 		= mesh;

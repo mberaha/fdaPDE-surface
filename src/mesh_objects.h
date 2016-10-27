@@ -81,27 +81,42 @@ class Edge: public Identifier{
     //std::array<std::reference_wrapper<Point>, NNODES> M_points;
   };
   
+//! This is an abstract template class called Triangle
+/*!
+ * mydim is the dimension of the object: e.g. a triangle has mydim=2, a tethraedron
+ *       has mydim = 3
+ *
+ * ndim is the dimension of the space in which the object is embedded
+ *
+*/
+
+template <UInt NNODES,UInt mydim, UInt ndim>
+class Triangle : public Identifier {
+} ; 
+  
+  
+  
+  
 //!  This class implements a Triangle as an objects composed by three or six nodes.
 /*!
  *  The first three nodes represent the vertices, the others the internal nodes,
  *  following this enumeration: !IMPORTANT! different from Sangalli code!
  * 
- * 				3
- * 				*
- * 			 /	   \
- * 		  5 *		* 4 
- * 		  /			  \
+ * 			3
+ * 			*
+ * 		     /	    \
+ * 		  5 *	     * 4 
+ * 		  /	      \
  * 		 *______*______*		
- * 		1		6		2
+ * 		1	6	2
 */
-
-template <UInt NNODES,UInt mydim, Uint ndim>
-class Triangle : public Identifier {
+template <UInt NNODES>
+class Triangle<NNODES,2,2> : public Identifier {
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const UInt numVertices=mydim+1;
-    static const UInt numSides=mydim*(mydim+1)/2;
-	static const UInt myDim=mydim;
+    static const UInt numVertices=3;
+    static const UInt numSides=3;
+	static const UInt myDim=2;
     
     //! This constructor creates an "empty" Triangle, with an Id Not Valid
 	Triangle():Identifier(NVAL){points_.resize(NNODES);}
@@ -169,7 +184,7 @@ private:
 };
 
 template <UInt NNODES>
-const int Triangle<NNODES>::myDim;
+const int Triangle<NNODES,2,2>::myDim;
 
 //! A function for the evaluation of point value in a triangle.
 /*!
@@ -181,42 +196,17 @@ const int Triangle<NNODES>::myDim;
   the triangle
     */
 
-//template <UInt ORDER>
-//Eigen::Matrix<Real,2,1> evaluate_der_point(const Triangle<3*ORDER>& t, const Point& point, const Eigen::Matrix<Real,3*ORDER,1>& coefficients)
-//{
-//	//std::cerr<< "TRYING TO EVALUATE ORDER NOT IMPLEMENTED" << std::endl;
-//	Eigen::Matrix<Real,2,1> null;
-//	return(null);
-//}
-
-//template <UInt ORDER>
-//Real evaluate_point(const Triangle<3*ORDER>& t, const Point& point, const Eigen::Matrix<Real,3*ORDER,1>& coefficients);
-
-//template <>
-//Real evaluate_point<1>(const Triangle<3>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients);
-//
-//template <>
-//Real evaluate_point<2>(const Triangle<6>& t, const Point& point, const Eigen::Matrix<Real,6,1>& coefficients);
-
-//template <UInt ORDER>
-//Eigen::Matrix<Real,2,1> evaluate_der_point(const Triangle<3*ORDER>& t, const Point& point, const Eigen::Matrix<Real,3*ORDER,1>& coefficients);
-//
-//template <>
-//Eigen::Matrix<Real,2,1> evaluate_der_point<1>(const Triangle<3>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients);
-
-//template <>
-//Eigen::Matrix<Real,2,1> evaluate_der_point<2>(const Triangle<6>& t, const Point& point, const Eigen::Matrix<Real,6,1>& coefficients);
 
 
-template <UInt ORDER>
-inline Real evaluate_point(const Triangle<3*ORDER>& t, const Point& point, const Eigen::Matrix<Real,3*ORDER,1>& coefficients)
+template <UInt ORDER,UInt mydim, UInt ndim>
+inline Real evaluate_point(const Triangle<3*ORDER,mydim,ndim>& t, const Point& point, const Eigen::Matrix<Real,3*ORDER,1>& coefficients)
 {
 	//std::cerr<< "TRYING TO EVALUATE ORDER NOT IMPLEMENTED" << std::endl;
 	return 0;
 }
 
 template <>
-inline Real evaluate_point<1>(const Triangle<3>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients)
+inline Real evaluate_point<1,2,2>(const Triangle<3,2,2>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients)
 {
 	Eigen::Matrix<Real,3,1> bary_coeff = t.getBaryCoordinates(point);
 	//std::cout<< "B-coord: "<<bary_coeff<<std::endl;
@@ -225,7 +215,7 @@ inline Real evaluate_point<1>(const Triangle<3>& t, const Point& point, const Ei
 }
 
 template <>
-inline Real evaluate_point<2>(const Triangle<6>& t, const Point& point, const Eigen::Matrix<Real,6,1>& coefficients)
+inline Real evaluate_point<2,2,2>(const Triangle<6,2,2>& t, const Point& point, const Eigen::Matrix<Real,6,1>& coefficients)
 {
 	Eigen::Matrix<Real,3,1> bary_coeff = t.getBaryCoordinates(point);
 	return( coefficients[0]*(2*bary_coeff[0]*bary_coeff[0]- bary_coeff[0]) +
@@ -237,16 +227,16 @@ inline Real evaluate_point<2>(const Triangle<6>& t, const Point& point, const Ei
 
 }
 
-template <UInt ORDER>
-inline Eigen::Matrix<Real,2,1> evaluate_der_point(const Triangle<3*ORDER>& t, const Point& point, const Eigen::Matrix<Real,3*ORDER,1>& coefficients)
+template <UInt ORDER,UInt mydim, UInt ndim>
+inline Eigen::Matrix<Real,ndim,1> evaluate_der_point(const Triangle<3*ORDER,mydim,ndim>& t, const Point& point, const Eigen::Matrix<Real,3*ORDER,1>& coefficients)
 {
 	//std::cerr<< "TRYING TO EVALUATE ORDER NOT IMPLEMENTED" << std::endl;
-	Eigen::Matrix<Real,2,1> null;
+	Eigen::Matrix<Real,ndim,1> null;
 	return(null);
 }
 
 template <>
-inline Eigen::Matrix<Real,2,1> evaluate_der_point<1>(const Triangle<3>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients)
+inline Eigen::Matrix<Real,2,1> evaluate_der_point<1,2,2>(const Triangle<3,2,2>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients)
 {
 	Eigen::Matrix<Real,2,3> B1;
 	B1 << t[1][1] - t[2][1], t[2][1] - t[0][1], t[0][1] - t[1][1],
@@ -258,7 +248,7 @@ inline Eigen::Matrix<Real,2,1> evaluate_der_point<1>(const Triangle<3>& t, const
 }
 
 template <>
-inline Eigen::Matrix<Real,2,1> evaluate_der_point<2>(const Triangle<6>& t, const Point& point, const Eigen::Matrix<Real,6,1>& coefficients)
+inline Eigen::Matrix<Real,2,1> evaluate_der_point<2,2,2>(const Triangle<6,2,2>& t, const Point& point, const Eigen::Matrix<Real,6,1>& coefficients)
 {
 	Eigen::Matrix<Real,3,1> L = t.getBaryCoordinates(point);
 	Eigen::Matrix<Real,2,3> B1;

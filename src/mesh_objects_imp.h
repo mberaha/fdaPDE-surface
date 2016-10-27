@@ -4,11 +4,11 @@
 
 
 template <UInt NNODES>
-void Triangle<NNODES>::init(const std::vector<Point> &points)
+void Triangle<NNODES,2,2>::init(const std::vector<Point> &points)
 {
 	points_ = points;
 
-	Triangle<NNODES> &t = *this;
+	Triangle<NNODES,2,2> &t = *this;
 	Point d1(t[1][0]-t[0][0], t[1][1]-t[0][1]);
 	Point d2(t[2][0]-t[0][0], t[2][1]-t[0][1]);   //Point d2 = t[2] - t[0]; non funziona, reimplementare sottrazione
 
@@ -31,9 +31,9 @@ void Triangle<NNODES>::init(const std::vector<Point> &points)
 }
 
 template <UInt NNODES>
-Eigen::Matrix<Real,3,1> Triangle<NNODES>::getBaryCoordinates(const Point& point) const{
+Eigen::Matrix<Real,3,1> Triangle<NNODES,2,2>::getBaryCoordinates(const Point& point) const{
 	
-	Triangle<NNODES> t=*this;
+	Triangle<NNODES,2,2> t=*this;
 	Eigen::Matrix<Real,3,1> lambda;
 	Eigen::Matrix<Real,4,1> bary_coef;
 	//Real eps = 2.2204e-016,
@@ -67,7 +67,7 @@ Eigen::Matrix<Real,3,1> Triangle<NNODES>::getBaryCoordinates(const Point& point)
 
 
 template <UInt NNODES>
-bool Triangle<NNODES>::isPointInside(const Point& point) const
+bool Triangle<NNODES,2,2>::isPointInside(const Point& point) const
 {
 	Real eps = 2.2204e-016,
 		 tolerance = 10 * eps;
@@ -83,7 +83,7 @@ bool Triangle<NNODES>::isPointInside(const Point& point) const
 
 // TO BE FIXED: if one dir -1, try with others
 template <UInt NNODES>
-int Triangle<NNODES>::getPointDirection(const Point& point) const
+int Triangle<NNODES,2,2>::getPointDirection(const Point& point) const
 {
 	Real eps = 2.2204e-016,
 		 tolerance = 10 * eps;
@@ -102,7 +102,7 @@ int Triangle<NNODES>::getPointDirection(const Point& point) const
 
 
 template <UInt NNODES>
-void Triangle<NNODES>::print(std::ostream & out) const
+void Triangle<NNODES,2,2>::print(std::ostream & out) const
 {
 	out<<"Triangle -"<< id_ <<"- ";
 	for (UInt i=0; i<NNODES; ++i)
@@ -110,19 +110,6 @@ void Triangle<NNODES>::print(std::ostream & out) const
 	out<<std::endl;	
 }
  
-//template <UInt ORDER>
-//Real evaluate_point(const Triangle<3*ORDER>& t, const Point& point, const Eigen::Matrix<Real,3*ORDER,1>& coefficients)
-//{
-//	//std::cerr<< "TRYING TO EVALUATE ORDER NOT IMPLEMENTED" << std::endl;
-//	return 0;
-//}
-//
-//template <UInt ORDER>
-//Eigen::Matrix<Real,2,1> evaluate_der_point(const Triangle<3*ORDER>& t, const Point& point, const Eigen::Matrix<Real,3*ORDER,1>& coefficients)
-//{
-//	//std::cerr<< "TRYING TO EVALUATE ORDER NOT IMPLEMENTED" << std::endl;
-//	Eigen::Matrix<Real,2,1> null;
-//	return(null);
-//}
+
 
 #endif

@@ -7,13 +7,18 @@
 
 using std::vector;
 
+template <UInt ORDER,UInt mydim, UInt ndim>
+class MeshHandler{
+};
+
+//!  2D MESH:
 //!  This class gives an object-oriented reading interface to the output of the library Triangle (Jonathan Richard Shewchuk).
 /*!
  * The template parameters specify the order of its elemnts.
  * The aim of this class is to do not introduce any initialization overhead,
  * beacuse it will be called many time during the execution of a R script
 */
-template <UInt ORDER>
+template <UInt ORDER,2,2>
 class MeshHandler {
 public:
 	typedef int UInt;
@@ -69,7 +74,7 @@ public:
      * \param id an Id argument 
       \return The triangle with order coerent to that of the mesh with the specified id
     */ 
-    Triangle<ORDER * 3>  getTriangle(Id id) const;
+    Triangle<ORDER * 3,2,2>  getTriangle(Id id) const;
     
     //The "number" neighbor of triangle i is opposite the "number" corner of triangle i
     //! A normal member returning the Neighbors of a triangle
@@ -79,7 +84,7 @@ public:
       \return The triangle that has as an edge the one opposite to the specified
       vertex
     */ 
-    Triangle<ORDER * 3> getNeighbors(Id id_triangle, UInt number) const;
+    Triangle<ORDER * 3,2,2> getNeighbors(Id id_triangle, UInt number) const;
      
     void printPoints(std::ostream & out);
     void printEdges(std::ostream & out);
@@ -92,7 +97,7 @@ public:
      * \param point the point we want to locate
       \return The triangle that contains the point
     */ 
-    Triangle<ORDER * 3> findLocationNaive(Point point) const;
+    Triangle<ORDER * 3,2,2> findLocationNaive(Point point) const;
     
      //! A normal member returning the triangle on which a point is located
     /*!
@@ -102,7 +107,7 @@ public:
      * points for the walking algorithm
       \return The triangle that contains the point
     */ 
-    Triangle<ORDER * 3> findLocationWalking(const Point& point, const Triangle<ORDER * 3>& starting_triangle) const;
+    Triangle<ORDER * 3,2,2> findLocationWalking(const Point& point, const Triangle<ORDER * 3>& starting_triangle) const;
     
     //int readMesh(std::string const & file);
 	//double measure()const;
