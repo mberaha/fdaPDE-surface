@@ -12,6 +12,7 @@ void Triangle<NNODES>::init(const std::vector<Point> &points)
 	Point d1(t[1][0]-t[0][0], t[1][1]-t[0][1]);
 	Point d2(t[2][0]-t[0][0], t[2][1]-t[0][1]);   //Point d2 = t[2] - t[0]; non funziona, reimplementare sottrazione
 
+
 	M_J_(0,0) = d1[0];			// (x2-x1)
 	M_J_(1,0) = d1[1];			// (y2-y1)
 	M_J_(0,1) = d2[0];			// (x3-x1)

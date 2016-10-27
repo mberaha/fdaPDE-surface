@@ -35,17 +35,17 @@ public:
 };
 
 
-//!  This class implements a 2D point
+//!  This class implements a 3D point, the default is z=0 => 2D point
 class Point: public Identifier{
 public:
 	
-	static const UInt ndim = 2;
+	static const UInt ndim = 3;
 
 	Point(): Identifier(NVAL, NVAL){coord_.resize(2);};
-	Point(Real x, Real y):Identifier(NVAL, NVAL)
-		{coord_.resize(2);coord_[0]=x; coord_[1]=y;}
-	Point(Id id, BcId bcId, Real x, Real y):Identifier(id, bcId)
-		{coord_.resize(2);coord_[0]=x; coord_[1]=y;}
+	Point(Real x, Real y, Real z=0):Identifier(NVAL, NVAL)
+		{coord_.resize(3);coord_[0]=x; coord_[1]=y; coord_[2]=x;}
+	Point(Id id, BcId bcId, Real x, Real y, Real z=0):Identifier(id, bcId)
+		{coord_.resize(3);coord_[0]=x; coord_[1]=y; coord_[2]=z;}
 	void print(std::ostream & out) const;
 	Real operator[](UInt i) const {return coord_[i];}
 private:
@@ -95,13 +95,13 @@ class Edge: public Identifier{
  * 		1		6		2
 */
 
-template <UInt NNODES>
+template <UInt NNODES,UInt mydim, Uint ndim>
 class Triangle : public Identifier {
 public:
 	EIGEN_MAKE_ALIGNED_OPERATOR_NEW
-    static const UInt numVertices=3;
-    static const UInt numSides=3;
-	static const UInt myDim=2;
+    static const UInt numVertices=mydim+1;
+    static const UInt numSides=mydim*(mydim+1)/2;
+	static const UInt myDim=mydim;
     
     //! This constructor creates an "empty" Triangle, with an Id Not Valid
 	Triangle():Identifier(NVAL){points_.resize(NNODES);}
