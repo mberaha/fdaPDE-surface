@@ -41,7 +41,7 @@ public:
 	
 	static const UInt ndim = 3;
 
-	Point(): Identifier(NVAL, NVAL){coord_.resize(2);};
+	Point(): Identifier(NVAL, NVAL){coord_.resize(3);};
 	Point(Real x, Real y, Real z=0):Identifier(NVAL, NVAL)
 		{coord_.resize(3);coord_[0]=x; coord_[1]=y; coord_[2]=x;}
 	Point(Id id, BcId bcId, Real x, Real y, Real z=0):Identifier(id, bcId)

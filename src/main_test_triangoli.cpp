@@ -10,13 +10,16 @@ int main()
 	
 	a.print(std::cout);
 	b.print(std::cout);
-	c.print(std::cout);	
+	c.print(std::cout);
 	
-	std::vector<Point> points(3);
+	std::cout<<b.getId()<<std::endl;
+	b.print(std::cout);	
+	
+	std::vector<Point> points;
 	points.push_back(c);
 	points.push_back(b);
 	points.push_back(a);
-	
+
 	Triangle<3,2,2> t(1,points);
 	
 	std::cout<<"I punti sono"<<std::endl;
