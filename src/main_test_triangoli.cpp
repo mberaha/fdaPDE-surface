@@ -1,12 +1,15 @@
 #include"mesh_objects.h"
+#include"finite_element.h"
+#include"finite_element_imp.h"
+#include"integration.h"
 #include <iostream>
 #include <vector>
 
 int main()
 {
 	Point a(1,1,0,0);
-	Point b(2,2,0,1);
-	Point c(3,3,1,0);
+	Point b(2,2,0,10);
+	Point c(3,3,1,10);
 	
 	a.print(std::cout);
 	b.print(std::cout);
@@ -27,7 +30,13 @@ int main()
 		points[i].print(std::cout);
 	std::cout<<std::endl;
 	
-	t.print(std::cout);;
+	t.print(std::cout);
+	
+	FiniteElement<IntegratorTriangleP2,1,2,2> fe;
+	
+	fe.updateElement(t);
+	
+	std::cout<<"Det J è  "<< fe.getDet() <<std::endl;
 	
 return 0;
 }
