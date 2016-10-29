@@ -5,6 +5,10 @@
 #include "integration.h"
 #include "mesh_objects.h"
 
+template <class Integrator ,UInt ORDER, UInt mydim, UInt ndim>
+class FiniteElement{
+};
+
 //!  This class implements all properties of a Triangular Finite Element
 /*!
  * This class is the most important one of the entire code
@@ -14,10 +18,10 @@
  * for determining the mass, stiff and grad matrices
 */
 template <class Integrator ,UInt ORDER>
-class FiniteElement{
+class FiniteElement<Integrator, ORDER, 2,2>{
 private:
-	Triangle<ORDER*3> reference_;
-	Triangle<ORDER*3> t_;
+	Triangle<ORDER*3,2,2> reference_;
+	Triangle<ORDER*3,2,2> t_;
 	Eigen::Matrix<Real,3*ORDER, Integrator::NNODES> phiMapMaster_;
 	//Numero basi locali x Num coordinate x numero nodi integrazione
 	Eigen::Matrix<Real,3*ORDER, Integrator::NNODES*2> phiDerMapMaster_;
@@ -40,7 +44,7 @@ public:
     /*!
       \param t a triangle from which to update the finite element properties
     */
-	void updateElement(Triangle<ORDER*3> t);
+	void updateElement(Triangle<ORDER*3,2,2> t);
 	
 	Real getAreaReference()
 	{
