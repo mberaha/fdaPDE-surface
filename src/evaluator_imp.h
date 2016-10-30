@@ -2,15 +2,15 @@
 #define __EVALUATOR_IMP_HPP__
 
 template <UInt ORDER>
-void Evaluator<ORDER>::eval(Real* X, Real *Y, UInt length, const Real *coef, UInt order, bool redundancy, Real* result, std::vector<bool>& isinside)
+void Evaluator<ORDER,2,2>::eval(Real* X, Real *Y, UInt length, const Real *coef, UInt order, bool redundancy, Real* result, std::vector<bool>& isinside)
 {
 	
 	
-	Triangle<3*ORDER> current_triangle;
+	Triangle<3*ORDER,2,2> current_triangle;
 	// std::vector<Triangle<3*ORDER> > starting_triangles; Problem with alignment not solved
 	// by http://eigen.tuxfamily.org/dox-devel/group__TopicUnalignedArrayAssert.html
 	// starting_triangles.resize(1);
-	Triangle<3*ORDER> starting_triangle;
+	Triangle<3*ORDER,2,2> starting_triangle;
 
 
 	Point current_point;

@@ -53,15 +53,15 @@ SEXP eval_FEM_fd(SEXP Rmesh, SEXP RX, SEXP RY, SEXP Rcoef, SEXP Rorder, SEXP Rfa
 	//std::cout<<"Length "<<n_X<<"--X0 "<<X[0]<<"--Y0 "<<Y[0];
     if(order == 1)
     {
-    	MeshHandler<1> mesh(Rmesh);
-		Evaluator<1> evaluator(mesh);
+    	MeshHandler<1,2,2> mesh(Rmesh);
+		Evaluator<1,2,2> evaluator(mesh);
 		//std::cout<<"Starting evaluation from FEMeval \n";
 		evaluator.eval(X, Y, n_X, coef, order, fast, REAL(result), isinside);
 	}
 	else if(order == 2)
 	{
-    	MeshHandler<2> mesh(Rmesh);
-    	Evaluator<2> evaluator(mesh);
+    	MeshHandler<2,2,2> mesh(Rmesh);
+    	Evaluator<2,2,2> evaluator(mesh);
 		evaluator.eval(X, Y, n_X, coef, order, fast, REAL(result), isinside);
 	}
 

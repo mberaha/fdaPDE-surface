@@ -18,8 +18,8 @@ class MeshHandler{
  * The aim of this class is to do not introduce any initialization overhead,
  * beacuse it will be called many time during the execution of a R script
 */
-template <UInt ORDER,2,2>
-class MeshHandler {
+template <UInt ORDER>
+class MeshHandler<ORDER,2,2> {
 public:
 	typedef int UInt;
 	//! A constructor.
@@ -107,7 +107,7 @@ public:
      * points for the walking algorithm
       \return The triangle that contains the point
     */ 
-    Triangle<ORDER * 3,2,2> findLocationWalking(const Point& point, const Triangle<ORDER * 3>& starting_triangle) const;
+    Triangle<ORDER * 3,2,2> findLocationWalking(const Point& point, const Triangle<ORDER * 3,2,2>& starting_triangle) const;
     
     //int readMesh(std::string const & file);
 	//double measure()const;

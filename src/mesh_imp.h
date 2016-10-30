@@ -4,8 +4,8 @@
 #include<iostream>
 
 #ifdef R_VERSION_
-template <UInt ORDER,2,2>
-MeshHandler<ORDER>::MeshHandler(SEXP mesh)
+template <UInt ORDER>
+MeshHandler<ORDER,2,2>::MeshHandler(SEXP mesh)
 {
 	mesh_ 		= mesh;
 	points_ 	= REAL(VECTOR_ELT(mesh_, 0));
@@ -21,14 +21,14 @@ MeshHandler<ORDER>::MeshHandler(SEXP mesh)
 #endif
 
 template <UInt ORDER>
-Point MeshHandler<ORDER>::getPoint(Id id)
+Point MeshHandler<ORDER,2,2>::getPoint(Id id)
 {
 	Point point(id, Identifier::NVAL, points_[id], points_[num_nodes_+id]);
 	return point;
 }
 
 template <UInt ORDER>
-Edge MeshHandler<ORDER>::getEdge(Id id)
+Edge MeshHandler<ORDER,2,2>::getEdge(Id id)
 {
 	Id id_start_point = edges_[id];
 	Id id_end_point = edges_[num_edges_+id];
@@ -38,7 +38,7 @@ Edge MeshHandler<ORDER>::getEdge(Id id)
 }
 
 template <UInt ORDER>
-Triangle<ORDER * 3> MeshHandler<ORDER>::getTriangle(Id id) const
+Triangle<ORDER * 3,2,2> MeshHandler<ORDER,2,2>::getTriangle(Id id) const
 {
 	std::vector<Point> triangle_points;
 	triangle_points.resize(ORDER * 3);
@@ -48,23 +48,23 @@ Triangle<ORDER * 3> MeshHandler<ORDER>::getTriangle(Id id) const
 		id_current_point = triangles_[i*num_triangles_ + id];
 		triangle_points[i]= Point(id_current_point, Identifier::NVAL, points_[id_current_point],points_[num_nodes_+id_current_point]);
 	}
-	return Triangle<ORDER * 3>(id, triangle_points);
+	return Triangle<ORDER * 3,2,2>(id, triangle_points);
 }
 
 template <UInt ORDER>
-Triangle<ORDER * 3> MeshHandler<ORDER>::getNeighbors(Id id_triangle, UInt number) const
+Triangle<ORDER * 3,2,2>MeshHandler<ORDER,2,2>::getNeighbors(Id id_triangle, UInt number) const
 {
 	Id id_neighbour = neighbors_[number * num_triangles_ + id_triangle];
 	//std::cout<<"Neighbour id "<< id_neighbour;
-	if (id_neighbour == -1) return Triangle<ORDER * 3>(); //Triangle with NVAL ID
+	if (id_neighbour == -1) return Triangle<ORDER * 3,2,2>(); //Triangle with NVAL ID
 	
 	return getTriangle(id_neighbour);
 }
 
 template <UInt ORDER>
-Triangle<ORDER * 3> MeshHandler<ORDER>::findLocationNaive(Point point) const
+Triangle<ORDER * 3,2,2> MeshHandler<ORDER,2,2>::findLocationNaive(Point point) const
 {
-	Triangle<ORDER * 3> current_triangle; 
+	Triangle<ORDER * 3,2,2> current_triangle; 
 	//std::cout<<"Start searching point naively \n";
 	for(Id id=0; id < num_triangles_; ++id)
 	{
@@ -73,36 +73,17 @@ Triangle<ORDER * 3> MeshHandler<ORDER>::findLocationNaive(Point point) const
 			return current_triangle;
 	}
 	//std::cout<<"Point not found \n";
-	return Triangle<ORDER * 3>(); //default triangle with NVAL ID
+	return Triangle<ORDER * 3,2,2>(); //default triangle with NVAL ID
 }
 
 // Visibility walk algorithm which uses barycentric coordinate [Sundareswara et al]
 //Starting triangles usually n^(1/3) points
 template <UInt ORDER>
-Triangle<ORDER * 3> MeshHandler<ORDER>::findLocationWalking(const Point& point, const Triangle<ORDER * 3>& starting_triangle) const
+Triangle<ORDER * 3,2,2> MeshHandler<ORDER,2,2>::findLocationWalking(const Point& point, const Triangle<ORDER * 3,2,2>& starting_triangle) const
 {
-	
-	//Real eps = 2.2204e-016,
-	//	 tolerance = 10000 * eps;
-
-//	// Finding the nearest trianglefrom the proposed list
-//	UInt min_index = 0;
-//	Real distance;
-//	Real distance_old = (starting_triangles[0][0][0] - point[0])*(starting_triangles[0][0][0] - point[0]) +
-//						(starting_triangles[0][0][1] - point[1])*(starting_triangles[0][0][1] - point[1]);
-//	for(UInt i=1; i < starting_triangles.size(); ++i)
-//	{
-//		distance = (starting_triangles[i][0][0] - point[0])*(starting_triangles[i][0][0] - point[0]) +
-//				   (starting_triangles[i][0][1] - point[1])*(starting_triangles[i][0][1] - point[1]);
-//		if(distance < distance_old)
-//		{
-//			min_index = i;
-//			distance_old = distance;
-//		}
-//	}
 
 	//Walking algorithm to the point
-	Triangle<ORDER * 3> current_triangle = starting_triangle;
+	Triangle<ORDER * 3,2,2> current_triangle = starting_triangle;
 
 	int direction=0;
 
@@ -146,7 +127,7 @@ Triangle<ORDER * 3> MeshHandler<ORDER>::findLocationWalking(const Point& point, 
 }*/
 
 template <UInt ORDER>
-void MeshHandler<ORDER>::printPoints(std::ostream & out)
+void MeshHandler<ORDER,2,2>::printPoints(std::ostream & out)
 {
 	for(UInt i = 0; i < num_nodes_; ++i)
 	{
@@ -155,7 +136,7 @@ void MeshHandler<ORDER>::printPoints(std::ostream & out)
 }
 
 template <UInt ORDER>
-void MeshHandler<ORDER>::printEdges(std::ostream & out)
+void MeshHandler<ORDER,2,2>::printEdges(std::ostream & out)
 {
 	
 	out << "Numero lati: "<< num_edges_ <<std::endl;
@@ -167,7 +148,7 @@ void MeshHandler<ORDER>::printEdges(std::ostream & out)
 }
 
 template <UInt ORDER>
-void MeshHandler<ORDER>::printTriangles(std::ostream & out)
+void MeshHandler<ORDER,2,2>::printTriangles(std::ostream & out)
 {
 	
 	out << "# Triangles: "<< num_triangles_ <<std::endl;
@@ -182,7 +163,7 @@ void MeshHandler<ORDER>::printTriangles(std::ostream & out)
 }
 
 template <UInt ORDER>
-void MeshHandler<ORDER>::printNeighbors(std::ostream & out)
+void MeshHandler<ORDER,2,2>::printNeighbors(std::ostream & out)
 {
 	
 	out << "# Neighbors list: "<< num_triangles_ <<std::endl;

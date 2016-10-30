@@ -2,75 +2,7 @@
 #define __MIXEDFEREGRESSION_IMP_HPP__
 
 #include <iostream>
-////build system matrix in sparse format SWest non serve??
-//void MixedFE::build(SpMat & L, SpMat& opMat, SpMat& opMat2, SpMat& mass, const VectorXr& righthand, const VectorXr& forcing_term )
-//{
-//	if(opMat2.rows()!=mass.rows() || L.rows()!=opMat.rows() )
-//	 std::cerr<<"incompatible blocks, dimension mismatch"<<std::endl;
-//
-//	if(righthand.size()+forcing_term.size()!=2*opMat.rows() )
-//	 std::cerr<<"incompatible right hand side forcing term, dimension mismatch"<<std::endl;
-//
-//
-//	UInt nnodes=opMat.rows();
-//
-//
-//	/*SpMat tempStiff(_femhandl.getStiff()),
-//			tempMass(_femhandl.getMass());*/
-//
-//	//I reserve the exact memory for the nonzero entries of each row of the coeffmatrix for boosting performance
-//	_coeffmatrix.resize(2*nnodes,2*nnodes);
-//	std::vector<int> entries(2*nnodes);
-//	UInt number=0,number2=0;
-//
-//	for(auto k=0; k<nnodes; k++)
-//	{
-//
-//	 number=L.col(k).nonZeros()+opMat.col(k).nonZeros();
-//
-//	 entries[k]=number;
-//
-//	 number2=opMat2.col(k).nonZeros()+mass.col(k).nonZeros();
-//
-//	 entries[nnodes+k]=number2;
-//	}
-//
-//	_coeffmatrix.reserve(entries);
-//	////building system matrix
-//	for(auto i=0; i<nnodes; i++)
-//	{
-//		// north-west block from matrix L, cycling over non-zero elements
-//		for(SpMat::InnerIterator it(L,i); it; ++it)
-//		{
-//			_coeffmatrix.insert(it.index(),i)=it.value();
-//		}
-//		// north-east cycling over non-zero elements
-//		for(SpMat::InnerIterator it(opMat,i); it; ++it)
-//		{
-//			_coeffmatrix.insert(it.index(),i+nnodes)=it.value(); //north-east block
-//			//_coeffmatrix.insert(it.index()+nnodes,i)=it.value(); //south-west block
-//		}
-//		// south-west block cycling over non-zero elements
-//		for(SpMat::InnerIterator it(opMat2,i); it; ++it)
-//		{
-//		    _coeffmatrix.insert(it.index()+nnodes,i)=it.value(); //south-west block
-//	    }
-//
-//		//south-east block from Mass matrix, cycling over non-zero elements
-//		for(SpMat::InnerIterator it(mass,i); it; ++it)
-//		{
-//			_coeffmatrix.insert(it.index()+nnodes,i+nnodes)=it.value();
-//		}
-//	}
-//	_coeffmatrix.makeCompressed();
-//
-//	_b.resize(nnodes*2);
-//
-//	_b.topRows(righthand.rows())=righthand;
-//
-//	_b.bottomRows(forcing_term.rows())=forcing_term;
-//
-//}
+
 
 template<typename InputHandler, typename Integrator, UInt ORDER>
 void MixedFERegression<InputHandler,Integrator,ORDER>::buildCoeffMatrix(const SpMat& DMat,  const SpMat& AMat,  const SpMat& MMat)
@@ -212,7 +144,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::setPsi(){
 		psi_.resize(nlocations, nnodes);
 		//psi_.reserve(Eigen::VectorXi::Constant(nlocations,ORDER*3));
 
-		Triangle<ORDER*3> tri_activated;
+		Triangle<ORDER*3,2,2> tri_activated;
 		Eigen::Matrix<Real,ORDER * 3,1> coefficients;
 
 		Real evaluator;
@@ -414,7 +346,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::smoothLaplace()
 	//UInt ndata=regressionData_.getObservations().size();
 	UInt nnodes=mesh_.num_nodes();
 
-	FiniteElement<Integrator, ORDER> fe;
+	FiniteElement<Integrator, ORDER,2,2> fe;
 
 	typedef EOExpr<Mass> ETMass;
 	typedef EOExpr<Stiff> ETStiff;
@@ -448,8 +380,8 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::smoothLaplace()
     //std::cout<<"Block Data"<<DMat_<<std::endl;
 
 
-    Assembler::operKernel(stiff, mesh_, fe, AMat_);
-    Assembler::operKernel(mass, mesh_, fe, MMat_);
+    Assembler<2,2>::operKernel(stiff, mesh_, fe, AMat_);
+    Assembler<2,2>::operKernel(mass, mesh_, fe, MMat_);
 
     VectorXr rightHandData;
     getRightHandData(rightHandData);
@@ -496,7 +428,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::smoothEllipticPDE()
 	//UInt ndata=regressionData_.getObservations().size();
 	UInt nnodes=mesh_.num_nodes();
 
-	FiniteElement<Integrator, ORDER> fe;
+	FiniteElement<Integrator, ORDER,2,2> fe;
 
 	typedef EOExpr<Mass> ETMass;
 	typedef EOExpr<Stiff> ETStiff;
@@ -537,8 +469,8 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::smoothEllipticPDE()
     const Real& c = regressionData_.getC();
     const Eigen::Matrix<Real,2,2>& K = regressionData_.getK();
     const Eigen::Matrix<Real,2,1>& beta = regressionData_.getBeta();
-    Assembler::operKernel(c*mass+stiff[K]+dot(beta,grad), mesh_, fe, AMat_);
-    Assembler::operKernel(mass, mesh_, fe, MMat_);
+    Assembler<2,2>::operKernel(c*mass+stiff[K]+dot(beta,grad), mesh_, fe, AMat_);
+    Assembler<2,2>::operKernel(mass, mesh_, fe, MMat_);
 
     VectorXr rightHandData;
     getRightHandData(rightHandData);
@@ -585,7 +517,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::smoothEllipticPDESpaceVar
 		//UInt ndata=regressionData_.getObservations().size();
 		UInt nnodes=mesh_.num_nodes();
 
-		FiniteElement<Integrator, ORDER> fe;
+		FiniteElement<Integrator, ORDER,2,2> fe;
 
 		typedef EOExpr<Mass> ETMass;
 		typedef EOExpr<Stiff> ETStiff;
@@ -624,13 +556,13 @@ void MixedFERegression<InputHandler,Integrator,ORDER>::smoothEllipticPDESpaceVar
     const Reaction& c = regressionData_.getC();
     const Diffusivity& K = regressionData_.getK();
     const Advection& beta = regressionData_.getBeta();
-    Assembler::operKernel(c*mass+stiff[K]+dot(beta,grad), mesh_, fe, AMat_);
-    Assembler::operKernel(mass, mesh_, fe, MMat_);
+    Assembler<2,2>::operKernel(c*mass+stiff[K]+dot(beta,grad), mesh_, fe, AMat_);
+    Assembler<2,2>::operKernel(mass, mesh_, fe, MMat_);
 
     const ForcingTerm& u = regressionData_.getU();
     //for(auto i=0;i<18;i++) std::cout<<u(i)<<std::endl;
     VectorXr forcingTerm;
-    Assembler::forcingTerm(mesh_,fe, u, forcingTerm);
+    Assembler<2,2>::forcingTerm(mesh_,fe, u, forcingTerm);
 
     VectorXr rightHandData;
     getRightHandData(rightHandData);

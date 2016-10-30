@@ -14,12 +14,18 @@
  * and secondly evaluating it respect to the coefficients of the bases
  * It dependes on a template parameter that speciefies the Order of the initializing mesh
 */
+
+template <UInt ORDER,UInt mydim, UInt ndim>
+class Evaluator{
+};
+
+
 template <UInt ORDER>
-class Evaluator
+class Evaluator<ORDER,2,2>
 {
 	public:
 		//! A constructor. It initializes the constructor given a mesh object.
-		Evaluator(const MeshHandler<ORDER>& mesh): 
+		Evaluator(const MeshHandler<ORDER,2,2>& mesh): 
 								mesh_(mesh){};
 		
 		//! A member that computes the evaluation of a Point in a mesh, given the bases' coefficients.
@@ -38,7 +44,7 @@ class Evaluator
 		void eval(Real* X, Real *Y, UInt length, const Real *coef, UInt order, bool redundancy, Real* result, std::vector<bool>& isinside);
 		
 	private:
-		const MeshHandler<ORDER> &mesh_;
+		const MeshHandler<ORDER,2,2> &mesh_;
 
 };
 

@@ -14,7 +14,7 @@
 template<typename InputHandler, typename Integrator, UInt ORDER>
 class MixedFERegression{
 	private:
-		const MeshHandler<ORDER> &mesh_;
+		const MeshHandler<ORDER,2,2> &mesh_;
 		const InputHandler& regressionData_;
 		std::vector<coeff> tripletsData_;
 
@@ -40,7 +40,7 @@ class MixedFERegression{
 
 	public:
 		//!A Constructor.
-		MixedFERegression(const MeshHandler<ORDER>& mesh, const InputHandler& regressionData):mesh_(mesh), regressionData_(regressionData){};
+		MixedFERegression(const MeshHandler<ORDER,2,2>& mesh, const InputHandler& regressionData):mesh_(mesh), regressionData_(regressionData){};
 		
 		//!A Destructor
 		//~Model(){};

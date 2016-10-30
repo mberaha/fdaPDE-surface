@@ -37,7 +37,7 @@ SEXP regression_Laplace(SEXP Rlocations, SEXP Robservations, SEXP Rmesh, SEXP Ro
 
     if(regressionData.getOrder()==1)
     {
-		MeshHandler<1> mesh(Rmesh);
+		MeshHandler<1,2,2> mesh(Rmesh);
 		//std::cout<< "Mesh loaded"<<std::endl;
 		MixedFERegression<RegressionData, IntegratorTriangleP2,1> regression(mesh,regressionData);
 
@@ -67,7 +67,7 @@ SEXP regression_Laplace(SEXP Rlocations, SEXP Robservations, SEXP Rmesh, SEXP Ro
     }
 	else if(regressionData.getOrder()==2)
 	{
-		MeshHandler<2> mesh(Rmesh);
+		MeshHandler<2,2,2> mesh(Rmesh);
 		//std::cout<< "Mesh loaded"<<std::endl;
 		MixedFERegression<RegressionData, IntegratorTriangleP4,2> regression(mesh,regressionData);
 
@@ -109,7 +109,7 @@ SEXP regression_PDE(SEXP Rlocations, SEXP Robservations, SEXP Rmesh, SEXP Rorder
 
     if(regressionData.getOrder()==1)
     {
-		MeshHandler<1> mesh(Rmesh);
+		MeshHandler<1,2,2> mesh(Rmesh);
 		//std::cout<< "Mesh loaded"<<std::endl;
 		MixedFERegression<RegressionDataElliptic, IntegratorTriangleP2,1> regression(mesh,regressionData);
 
@@ -140,7 +140,7 @@ SEXP regression_PDE(SEXP Rlocations, SEXP Robservations, SEXP Rmesh, SEXP Rorder
     }
 	else if(regressionData.getOrder()==2)
 	{
-		MeshHandler<2> mesh(Rmesh);
+		MeshHandler<2,2,2> mesh(Rmesh);
 		//std::cout<< "Mesh loaded"<<std::endl;
 		MixedFERegression<RegressionDataElliptic, IntegratorTriangleP4,2> regression(mesh,regressionData);
 
@@ -186,7 +186,7 @@ SEXP regression_PDE_space_varying(SEXP Rlocations, SEXP Robservations, SEXP Rmes
 
     if(regressionData.getOrder()==1)
     {
-		MeshHandler<1> mesh(Rmesh);
+		MeshHandler<1,2,2> mesh(Rmesh);
 		//std::cout<< "Mesh loaded"<<std::endl;
 		MixedFERegression<RegressionDataEllipticSpaceVarying, IntegratorTriangleP2,1> regression(mesh,regressionData);
 
@@ -216,7 +216,7 @@ SEXP regression_PDE_space_varying(SEXP Rlocations, SEXP Robservations, SEXP Rmes
     }
 	else if(regressionData.getOrder()==2)
 	{
-		MeshHandler<2> mesh(Rmesh);
+		MeshHandler<2,2,2> mesh(Rmesh);
 		//std::cout<< "Mesh loaded"<<std::endl;
 		MixedFERegression<RegressionDataEllipticSpaceVarying, IntegratorTriangleP4,2> regression(mesh,regressionData);
 
@@ -262,10 +262,10 @@ SEXP get_integration_points(SEXP Rmesh, SEXP Rorder)
 
     if(order == 1)
     {
-    	MeshHandler<1> mesh(Rmesh);
+    	MeshHandler<1,2,2> mesh(Rmesh);
     	PROTECT(result=Rf_allocVector(REALSXP, 2*IntegratorTriangleP2::NNODES*mesh.num_triangles()));
 
-    	FiniteElement<IntegratorTriangleP2,1> fe;
+    	FiniteElement<IntegratorTriangleP2,1,2,2> fe;
     	for(UInt i=0; i<mesh.num_triangles(); i++)
     	{
     		fe.updateElement(mesh.getTriangle(i));
@@ -280,10 +280,10 @@ SEXP get_integration_points(SEXP Rmesh, SEXP Rorder)
     }
     else if(order == 2)
     {
-    	MeshHandler<2> mesh(Rmesh);
+    	MeshHandler<2,2,2> mesh(Rmesh);
     	PROTECT(result=Rf_allocVector(REALSXP, 2*IntegratorTriangleP4::NNODES*mesh.num_triangles()));
 
-    	FiniteElement<IntegratorTriangleP4,2> fe;
+    	FiniteElement<IntegratorTriangleP4,2,2,2> fe;
     	for(UInt i=0; i<mesh.num_triangles(); i++)
     	{
     		fe.updateElement(mesh.getTriangle(i));
