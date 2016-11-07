@@ -193,7 +193,7 @@ bool Triangle<NNODES,2,2>::isPointInside(const Point& point) const
 {
 	
 	//da implementare
-	std::cerr<<"ancora da implementare";
+	//std::cerr<<"ancora da implementare";
 	
 }  
 
@@ -204,7 +204,7 @@ int Triangle<NNODES,2,2>::getPointDirection(const Point& point) const
 {
 	
 	//da implementare
-	std::cerr<<"ancora da implementare";
+	//std::cerr<<"ancora da implementare";
 }
 */
 
