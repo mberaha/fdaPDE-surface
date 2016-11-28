@@ -362,7 +362,8 @@ inline Eigen::Matrix<Real,2,1> evaluate_der_point<2,2,2>(const Triangle<6,2,2>& 
 	return(B1*B2*coefficients);
 }
 
-
+//ANCORA DA IMPLEMENTARE
+/*
 template <>
 inline Eigen::Matrix<Real,3,1> evaluate_der_point<1,2,3>(const Triangle<3,2,3>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients)
 {
@@ -377,7 +378,7 @@ inline Eigen::Matrix<Real,3,1> evaluate_der_point<2,2,3>(const Triangle<6,2,3>& 
 	//da implementare
 	std::cerr<<"ancora da implementare";
 }
-
+*/
 
 #include "mesh_objects_imp.h"
 #endif

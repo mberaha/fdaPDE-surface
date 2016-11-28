@@ -36,5 +36,8 @@ int main()
 
 	for (int i=0; i<3; ++i)
 		std::cout<<BaryHope[i]<<std::endl;
+		
+	bool verita = t.isPointInside(P);
+	std::cout<< "il punto è dentro iff "<<verita<<std::endl;	
 return 0;
 }

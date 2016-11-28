@@ -10,6 +10,7 @@
 #endif
 
 #include <stdint.h>
+#include <iostream>
 
 #include <cstdlib>
 //#include <iomanip>

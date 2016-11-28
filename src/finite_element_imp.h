@@ -1,6 +1,8 @@
 #ifndef __FINITE_ELEMENT_IMP_HPP__
 #define __FINITE_ELEMENT_IMP_HPP__
 
+#include<iostream>
+
 
 template <class Integrator, UInt ORDER>
 FiniteElement<Integrator, ORDER,2,2>::FiniteElement()
