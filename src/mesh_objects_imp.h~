@@ -232,7 +232,7 @@ bool Triangle<NNODES,2,3>::isPointInside(const Point& point) const
 		b(1) = point[1]-t[0][1];
 		b(2) = point[2]-t[0][2];
 		
-		std::cout<"b = "<<b(0)<<" "<<b(1)<<" "<<b(2)<<std::endl;
+		std::cout<<"b = "<<b(0)<<" "<<b(1)<<" "<<b(2)<<std::endl;
 	
 		sol = A.fullPivHouseholderQr().solve(b);
 	
