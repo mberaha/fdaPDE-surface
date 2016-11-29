@@ -196,46 +196,36 @@ Eigen::Matrix<Real,3,1> Triangle<NNODES,2,3>::getBaryCoordinates(const Point& po
 template <UInt NNODES>
 bool Triangle<NNODES,2,3>::isPointInside(const Point& point) const
 {
-
+	Real eps = 2.2204e-016,
+		 tolerance = 10 * eps;
 // First: check consistency trough Rouchè-Capelli theorem
 
 	Triangle<NNODES,2,3> t=*this;
-	Eigen::Matrix<Real,3,3> Ab; //Augmented matrix
+
 	Eigen::Matrix<Real,3,2> A;
+	Eigen::Matrix<Real,3,1> b;
+	Eigen::Matrix<Real,2,1> sol;
+	Eigen::Matrix<Real,3,1> err;
 	
-	Ab(0,0) = t[1][0]-t[0][0];
-	Ab(0,1) = t[2][0]-t[0][0];
-	Ab(1,0) = t[1][1]-t[0][1];
-	Ab(1,1) = t[2][1]-t[0][1];
-	Ab(2,0) = t[1][2]-t[0][2];
-	Ab(2,1) = t[2][2]-t[0][2];
+	A(0,0) = t[1][0]-t[0][0];
+	A(0,1) = t[2][0]-t[0][0];
+	A(1,0) = t[1][1]-t[0][1];
+	A(1,1) = t[2][1]-t[0][1];
+	A(2,0) = t[1][2]-t[0][2];
+	A(2,1) = t[2][2]-t[0][2];
 	
-	Ab(0,2) = point[0]-t[0][0];
-	Ab(1,2) = point[1]-t[0][1];
-	Ab(2,2) = point[2]-t[0][2];
-	
-	A(0,0) = Ab(0,0);
-	A(0,1) = Ab(0,1);
-	A(1,0) = Ab(1,0);
-	A(1,1) = Ab(1,1);
-	A(2,0) = Ab(2,0);
-	A(2,1) = Ab(2,1);
-	
-	if(Ab.fullPivHouseholderQr().rank()==A.fullPivHouseholderQr().rank()){
-	//if the system is consistent, then we check the conditions by solving 
-	//only the first 2 equations
-		std::cout<< "sistema risolvibile "<<std::endl;
-		Eigen::Matrix<Real,3,1> b;
-		Eigen::Matrix<Real,2,1> sol;
-	
-		b(0) = point[0]-t[0][0];
-		b(1) = point[1]-t[0][1];
-		b(2) = point[2]-t[0][2];
+	b(0) = point[0]-t[0][0];
+	b(1) = point[1]-t[0][1];
+	b(2) = point[2]-t[0][2];
 		
-		std::cout<<"b = "<<b(0)<<" "<<b(1)<<" "<<b(2)<<std::endl;
+	std::cout<<"b = "<<b(0)<<" "<<b(1)<<" "<<b(2)<<std::endl;
 	
-		sol = A.fullPivHouseholderQr().solve(b);
+	sol = A.fullPivHouseholderQr().solve(b);
+	err = A*sol-b;
+		
 	
+	if((err(0)*err(0) + err(1)*err(1) + err(2)*err(2)) < tolerance ){
+		std::cout<<"soluzione esatta! "<<std::endl;
 		return((sol(0)+sol(1)<=1) && (sol(0)>=0) && (sol(1)>=0));
 	}else{return 0;}
 }  
