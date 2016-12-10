@@ -25,10 +25,24 @@ class Stiff{
 	}
 	
 	//! AGGIUNGERE PER MESH SUPERFICIALI
-	/*
+	
 	template<class Integrator, UInt ORDER>
 	inline Real operator() (FiniteElement<Integrator, ORDER,2,3>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
-	*/
+	{
+		Real s = 0;
+		
+		Eigen::Matrix<Real,2,1> grad_phi_i;
+		Eigen::Matrix<Real,2,1> grad_phi_j;
+		
+		grad_phi_i(0) = currentfe_.PhiDerMaster(i, 0, iq);
+		grad_phi_i(1) = currentfe_.PhiDerMaster(i, 1, iq);
+		grad_phi_j(0) = currentfe_.PhiDerMaster(j, 0, iq);
+		grad_phi_j(1) = currentfe_.PhiDerMaster(j, 1, iq);
+		
+		s = grad_phi_i.transpose().dot(metri.dot(grad_phi_j));
+		
+	   	return s;
+	}
 	
 	
 };
@@ -490,6 +504,32 @@ class Assembler<2,2>{
 
 	  template<UInt ORDER, typename Integrator>
 	  static void forcingTerm(const MeshHandler<ORDER,2,2>& mesh, FiniteElement<Integrator, ORDER,2,2>& fe, const ForcingTerm& u, VectorXr& forcingTerm);
+
+	};
+	
+
+template<>
+class Assembler<2,3>{
+	private:
+
+	public:
+	  //! A constructor
+	  //Assembler (){};
+	  //! A template member taking three arguments: discretize differential operator
+	  /*!
+	   * \param oper is a template expression : the differential operator to be discretized.
+	   * \param mesh is const reference to a MeshHandler<ORDER>: the mesh where we want to discretize the operator.
+	   * \param fe is a const reference to a FiniteElement
+	   * stores the discretization in SPoper_mat_
+	   */
+
+	  //Return triplets vector
+	  template<UInt ORDER, typename Integrator, typename A>
+	  static void operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mesh,
+	  	                     FiniteElement<Integrator, ORDER,2,3>& fe, SpMat& OpMat);
+
+	  template<UInt ORDER, typename Integrator>
+	  static void forcingTerm(const MeshHandler<ORDER,2,3>& mesh, FiniteElement<Integrator, ORDER,2,3>& fe, const ForcingTerm& u, VectorXr& forcingTerm);
 
 	};
 
