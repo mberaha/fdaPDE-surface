@@ -44,7 +44,7 @@ void Evaluator<ORDER,2,2>::eval(Real* X, Real *Y, UInt length, const Real *coef,
 			{
 				coefficients[j] = coef[current_triangle[j].getId()];
 			}
-			result[i] = evaluate_point<ORDER,2,2>(current_triangle, current_point, coefficients);
+			result[i] = evaluate_point<ORDER>(current_triangle, current_point, coefficients);
 			starting_triangle = current_triangle;
 		}
 	}
@@ -82,7 +82,7 @@ void Evaluator<ORDER,2,3>::eval(Real* X, Real *Y,  Real *Z, UInt length, const R
 			{
 				coefficients[j] = coef[current_triangle[j].getId()];
 			}
-			result[i] = evaluate_point<ORDER,2,3>(current_triangle, current_point, coefficients);
+			result[i] = evaluate_point<ORDER>(current_triangle, current_point, coefficients);
 			starting_triangle = current_triangle;
 		}
 	}

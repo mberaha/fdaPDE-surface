@@ -56,7 +56,7 @@ class Evaluator<ORDER,2,3>
 		Evaluator(const MeshHandler<ORDER,2,3>& mesh): 
 								mesh_(mesh){};
 	
-		void eval(Real* X, Real *Y, Real *Z, UInt length, const Real *coef, UInt order, bool redundancy, Real* result, std::vector<bool>& isinside);
+		void eval(Real* X, Real *Y, UInt length, const Real *coef, UInt order, bool redundancy, Real* result, std::vector<bool>& isinside);
 		
 	private:
 		const MeshHandler<ORDER,2,3> &mesh_;
