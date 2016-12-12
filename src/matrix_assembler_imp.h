@@ -114,7 +114,7 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
 
 				for(int l = 0;l < Integrator::NNODES; l++)
 				{
-					s += oper(fe,i,j,l) * std::sqrt(fe.getDet()) * fe.getAreaReference()* Integrator::WEIGHTS[l]; // E' GIUSTO?????
+					s += oper(fe,i,j,l) * std::sqrt(fe.getDet()) * fe.getAreaReference()* Integrator::WEIGHTS[l]; 
 				}
 			  triplets.push_back(coeff(identifiers[i],identifiers[j],s));
 			}
@@ -127,6 +127,44 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
 	OpMat.setFromTriplets(triplets.begin(),triplets.end());
 	OpMat.prune(tolerance);
 }
+
+
+template<UInt ORDER, typename Integrator>
+void Assembler<2,3>::forcingTerm(const MeshHandler<ORDER,2,2>& mesh,
+	                     FiniteElement<Integrator, ORDER,2,2>& fe, const ForcingTerm& u, VectorXr& forcingTerm)
+{
+
+	forcingTerm = VectorXr::Zero(mesh.num_nodes());
+
+  	for(auto t=0; t<mesh.num_triangles(); t++)
+  	{
+		fe.updateElement(mesh.getTriangle(t));
+
+		// Vector of vertices indices (link local to global indexing system)
+		std::vector<UInt> identifiers;
+				identifiers.resize(ORDER*3);
+
+		for( auto q=0; q<ORDER*3; q++)
+			identifiers[q]=mesh.getTriangle(t)[q].id();
+
+
+		//localM=localMassMatrix(currentelem);
+		for(int i = 0; i < 3*ORDER; i++)
+		{
+			Real s=0;
+
+			for(int iq = 0;iq < Integrator::NNODES; iq++)
+			{
+				UInt globalIndex = fe.getGlobalIndex(iq);
+				s +=  fe.phiMaster(i,iq)* u(globalIndex) * std::sqrt(fe.getDet()) * fe.getAreaReference()* Integrator::WEIGHTS[iq];//(*)
+			}
+			forcingTerm[identifiers[i]] += s;
+		}
+
+	}
+	//cout<<"done!"<<endl;;
+}
+
 
     
     
