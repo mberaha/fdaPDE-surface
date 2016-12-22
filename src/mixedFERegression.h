@@ -11,10 +11,10 @@
 
 //! A LinearSystem class: A class for the linear system construction and resolution.
 
-template<typename InputHandler, typename Integrator, UInt ORDER>
+template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
 class MixedFERegression{
 	private:
-		const MeshHandler<ORDER,2,2> &mesh_;
+		const MeshHandler<ORDER,mydim,ndim> &mesh_;
 		const InputHandler& regressionData_;
 		std::vector<coeff> tripletsData_;
 
@@ -40,7 +40,7 @@ class MixedFERegression{
 
 	public:
 		//!A Constructor.
-		MixedFERegression(const MeshHandler<ORDER,2,2>& mesh, const InputHandler& regressionData):mesh_(mesh), regressionData_(regressionData){};
+		MixedFERegression(const MeshHandler<ORDER,mydim,ndim>& mesh, const InputHandler& regressionData):mesh_(mesh), regressionData_(regressionData){};
 		
 		//!A Destructor
 		//~Model(){};
