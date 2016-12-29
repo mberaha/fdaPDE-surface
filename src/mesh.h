@@ -126,6 +126,110 @@ private:
 	
 };
 
+
+template <UInt ORDER>
+class MeshHandler<ORDER,2,3> {
+public:
+	typedef int UInt;
+	//! A constructor.
+    /*!
+      * The constructor permits the initialization of the mesh from an R object
+      * constructed with the TriLibrary (our R wrapper for the Triangle library)
+    */
+    
+    MeshHandler(Real* points, UInt* edges, UInt* triangles, UInt* neighbors, UInt num_nodes, UInt num_edges, UInt num_triangles):
+			points_(points), edges_(edges), triangles_(triangles), neighbors_(neighbors), num_nodes_(num_nodes), num_edges_(num_edges), num_triangles_(num_triangles) {};
+			
+    MeshHandler(std::string &filename){
+    
+       if(filename.find('.csv') != std::string::npos){
+       		importfromCSV(filename);
+       }
+    	
+    }
+			
+    
+    void importfromCSV(std::string &filename);
+    
+    #ifdef R_VERSION_
+	MeshHandler(SEXP Rmesh);
+	#endif
+	
+	~MeshHandler(){};
+	
+	//! A normal member returning an unsigned integer value.
+    /*!
+      \return The number of nodes in the mesh
+    */    
+    UInt num_nodes() const {return num_nodes_;}
+
+	//! A normal member returning an unsigned integer value.
+    /*!
+      \return The number of nodes in the mesh
+    */    
+    UInt num_triangles() const {return num_triangles_;}
+    
+    //! A normal member returning an unsigned integer value.
+    /*!
+      \return The number of edges in the mesh
+    */ 
+    UInt num_edges() const {return num_edges_;}
+    
+    //! A normal member returning a Point
+    /*!
+     * \param id an Id argument 
+      \return The point with the specified id
+    */ 
+    Point getPoint(Id id);
+    
+    //! A normal member returning an Edge
+    /*!
+     * \param id an Id argument 
+      \return The edge with the specified id
+    */ 
+    Edge getEdge(Id id);
+    
+    //! A normal member returning a Triangle
+    /*!
+     * \param id an Id argument 
+      \return The triangle with order coerent to that of the mesh with the specified id
+    */ 
+    Triangle<ORDER * 3,2,3>  getTriangle(Id id) const;
+    
+    //The "number" neighbor of triangle i is opposite the "number" corner of triangle i
+    //! A normal member returning the Neighbors of a triangle
+    /*!
+     * \param id the id of the triangle
+     * \param number the number of the vertex
+      \return The triangle that has as an edge the one opposite to the specified
+      vertex
+    */ 
+    Triangle<ORDER * 3,2,3> getNeighbors(Id id_triangle, UInt number) const;
+     
+    void printPoints(std::ostream & out);
+    void printEdges(std::ostream & out);
+    void printTriangles(std::ostream & out);
+    void printNeighbors(std::ostream & out);
+    
+     //! A normal member returning the triangle on which a point is located
+    /*!
+     * This method implements a simply research between all triangle of the mesh
+     * \param point the point we want to locate
+      \return The triangle that contains the point
+    */ 
+    Triangle<ORDER * 3,2,3> findLocationNaive(Point point) const;
+    
+
+private:
+
+	std::vector<Real> points_;
+	std::vector<UInt> triangles_;
+
+	
+	UInt num_nodes_, num_edges_, num_triangles_;
+	
+};
+
 #include "mesh_imp.h"
 
 #endif

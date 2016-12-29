@@ -4,7 +4,7 @@
 
 int main()
 {
-	Point a(1,1,0,0,0);
+	/*Point a(1,1,0,0,0);
 	Point b(2,2,0,1,0);
 	Point c(3,3,0,0,1);
 	
@@ -38,6 +38,8 @@ int main()
 		std::cout<<BaryHope[i]<<std::endl;
 		
 	bool verita = t.isPointInside(P);
-	std::cout<< "il punto è dentro iff "<<verita<<std::endl;	
+	std::cout<< "il punto è dentro iff "<<verita<<std::endl;	*/
+	
+	
 return 0;
 }

@@ -177,4 +177,63 @@ void MeshHandler<ORDER,2,2>::printNeighbors(std::ostream & out)
 	
 }
 
+
+template <UInt ORDER>
+void MeshHandler<ORDER,2,3>::importfromCSV(std::string &filename){
+	
+	UInt nnodes;
+	UInt ntriangles;
+	std::istringstream ss;
+	std::string line;
+	char dummy;
+	
+	std::ifstream file;
+	file.open(filename);
+	
+	
+	
+	getline(file,line);
+	
+	// selezionare da line il numero di nodi e metterlo in nnodes
+	
+	this -> num_nodes = nnodes;
+	points_.resize(3*nnodes);
+	
+	getline(file,line);
+	
+	//
+	
+	this -> num_triangles = ntriangles;
+	triangles_.resize(3*ntriangles)
+	 
+	
+	getline(file,line); //skip a white line
+	
+	// READ THE VERTICES MATRIX
+	for(int i=0; i<nnodes;++i){
+		std::getline(file,line);
+		ss(line);
+		ss>>points_[i];
+		ss>>dummy;
+		ss>>points_[i+1];
+		ss>>dummy;
+		ss>>points_[i+2];
+	};
+	
+			
+	getline(file,line); //skip a white line
+	
+	for(int i=0; i<ntriangle;++i){
+		std::getline(file,line);
+		ss(line);
+		ss>>triangle_[i];
+		ss>>dummy;
+		ss>>triangle_[i+1];
+		ss>>dummy;
+		ss>>triangle_[i+2];
+	};	
+		
+
+}
+
 #endif
