@@ -39,12 +39,18 @@ public:
 class Point: public Identifier{
 public:
 	
-	static const UInt ndim = 3;
+	static UInt ndim = 3;
 
 	Point(): Identifier(NVAL, NVAL){coord_.resize(3);};
-	Point(Real x, Real y, Real z=0):Identifier(NVAL, NVAL)
+   	Point(Real x, Real y):Identifier(NVAL, NVAL)
+		{coord_.resize(3);coord_[0]=x; coord_[1]=y; coord_[2]=0;
+			ndim=2;}
+	Point(Real x, Real y, Real z):Identifier(NVAL, NVAL)
 		{coord_.resize(3);coord_[0]=x; coord_[1]=y; coord_[2]=z;}
-	Point(Id id, BcId bcId, Real x, Real y, Real z=0):Identifier(id, bcId)
+	Point(Id id, BcId bcId, Real x, Real y):Identifier(id, bcId)
+		{coord_.resize(3);coord_[0]=x; coord_[1]=y; coord_[2]=0;
+			ndim=2;}
+	Point(Id id, BcId bcId, Real x, Real y, Real z):Identifier(id, bcId)
 		{coord_.resize(3);coord_[0]=x; coord_[1]=y; coord_[2]=z;}
 	void print(std::ostream & out) const;
 	Real operator[](UInt i) const {return coord_[i];}
