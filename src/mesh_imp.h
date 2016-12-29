@@ -2,6 +2,8 @@
 #define MESH_IMP_H_
 
 #include<iostream>
+#include<fstream>
+#include<sstream>
 
 #ifdef R_VERSION_
 template <UInt ORDER>
@@ -177,63 +179,141 @@ void MeshHandler<ORDER,2,2>::printNeighbors(std::ostream & out)
 	
 }
 
+//////////////////////////////////////////////////////////
+// Implementation of class MeshHandler for surface mesh //
+//////////////////////////////////////////////////////////
+
 
 template <UInt ORDER>
 void MeshHandler<ORDER,2,3>::importfromCSV(std::string &filename){
 	
 	UInt nnodes;
 	UInt ntriangles;
-	std::istringstream ss;
 	std::string line;
-	char dummy;
+	std::string dummy;
+	char comma;
 	
 	std::ifstream file;
 	file.open(filename);
 	
 	
-	
+	// Read the number of points
 	getline(file,line);
+	std::istringstream ss(line);
 	
-	// selezionare da line il numero di nodi e metterlo in nnodes
-	
-	this -> num_nodes = nnodes;
+	ss >> dummy; // throw away "num_points"
+	ss >> nnodes;
+
+	num_nodes_ = nnodes;
 	points_.resize(3*nnodes);
 	
+	// Read the number of points
 	getline(file,line);
+	std::istringstream ss2(line);
 	
-	//
+	ss2 >> dummy; // throw away "num_triangles"
+	ss2 >> ntriangles;
 	
-	this -> num_triangles = ntriangles;
-	triangles_.resize(3*ntriangles)
+	num_triangles_ = ntriangles;
+	triangles_.resize(3*ORDER*ntriangles);
 	 
 	
 	getline(file,line); //skip a white line
 	
 	// READ THE VERTICES MATRIX
-	for(int i=0; i<nnodes;++i){
+	std::cout<<"reading the nodes"<<"\n";
+	for(UInt i=0; i<nnodes; ++i){
 		std::getline(file,line);
-		ss(line);
-		ss>>points_[i];
-		ss>>dummy;
-		ss>>points_[i+1];
-		ss>>dummy;
-		ss>>points_[i+2];
+		std::istringstream ss(line);
+		ss>>points_[3*i];
+		ss>>comma;
+		ss>>points_[3*i+1];
+		ss>>comma;
+		ss>>points_[3*i+2];
 	};
 	
+	std::cout<<"finished reading the nodes"<<"\n";
 			
 	getline(file,line); //skip a white line
 	
-	for(int i=0; i<ntriangle;++i){
+	// READ THE CONNECTIVIY MATRIX
+	
+
+	for(UInt i=0; i<ntriangles; i = ++i){
 		std::getline(file,line);
-		ss(line);
-		ss>>triangle_[i];
-		ss>>dummy;
-		ss>>triangle_[i+1];
-		ss>>dummy;
-		ss>>triangle_[i+2];
+		std::istringstream ss(line);
+		for(UInt k=0; k< 3*ORDER; ++k){
+			ss>>triangles_[i*ORDER + k];
+			ss>>comma;
+		
+		};
+		
 	};	
 		
 
+};
+
+
+template <UInt ORDER>
+Point MeshHandler<ORDER,2,3>::getPoint(Id id)
+{
+	Point point(id, Identifier::NVAL, points_[id], points_[id+1],points_[id+2]);
+	return point;
 }
+
+template <UInt ORDER>
+Triangle<ORDER * 3,2,3> MeshHandler<ORDER,2,3>::getTriangle(Id id) const
+{
+	std::vector<Point> triangle_points;
+	triangle_points.resize(ORDER * 3);
+	Id id_current_point;
+	for (int i=0; i<ORDER * 3; ++i)
+	{
+		id_current_point = triangles_[ORDER * id + i];
+		triangle_points[i]= Point(id_current_point, Identifier::NVAL, points_[id_current_point],points_[id_current_point+1],points_[id_current_point+2]);
+	}
+	return Triangle<ORDER * 3,2,3>(id, triangle_points);
+}
+
+template <UInt ORDER>
+Triangle<ORDER * 3,2,3> MeshHandler<ORDER,2,3>::findLocationNaive(Point point) const
+{
+	Triangle<ORDER * 3,2,3> current_triangle; 
+	//std::cout<<"Start searching point naively \n";
+	for(Id id=0; id < num_triangles_; ++id)
+	{
+		current_triangle = getTriangle(id);
+		if(current_triangle.isPointInside(point)) 
+			return current_triangle;
+	}
+	//std::cout<<"Point not found \n";
+	return Triangle<ORDER * 3,2,3>(); //default triangle with NVAL ID
+}
+
+template <UInt ORDER>
+void MeshHandler<ORDER,2,3>::printPoints(std::ostream & out)
+{
+std::cout<<"printing points"<<"\n";
+	for(UInt i = 0; i < num_nodes_; ++i)
+	{
+		out<<"-"<< i <<"-"<<"("<<points_[3*i]<<","<<points_[3*i+1]<<","<<points_[3*i+2]<<")"<<std::endl<<"------"<<std::endl;
+	}	
+}
+
+template <UInt ORDER>
+void MeshHandler<ORDER,2,3>::printTriangles(std::ostream & out)
+{
+	
+	out << "# Triangles: "<< num_triangles_ <<std::endl;
+	for (UInt i = 0; i < num_triangles_; ++i ) 
+	{
+		out<<"-"<< i <<"- ";
+		for( UInt k = 0; k < ORDER * 3; ++k)
+			out<<triangles_[i*ORDER + k]<<"   ";
+		out<<std::endl;	
+	}
+	
+}
+
 
 #endif

@@ -231,15 +231,15 @@ bool Triangle<NNODES,2,3>::isPointInside(const Point& point) const
 }  
 
 
-// TO BE FIXED: if one dir -1, try with others
+/*
 template <UInt NNODES>
-int Triangle<NNODES,2,2>::getPointDirection(const Point& point) const
+int Triangle<NNODES,2,3>::getPointDirection(const Point& point) const
 {
 	
 	//da implementare
 	std::cerr<<"ancora da implementare";
 }
-
+*/
 
 template <UInt NNODES>
 void Triangle<NNODES,2,3>::print(std::ostream & out) const

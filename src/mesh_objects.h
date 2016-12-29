@@ -343,7 +343,7 @@ inline Real evaluate_point<1,2,3>(const Triangle<3,2,3>& t, const Point& point, 
 
 	coordinates = A.fullPivHouseholderQr().solve(b);
 	
-	return(coeff[0]+coordinates[0]*(coefficients[1]-coefficients[0])+
+	return(coefficients[0]+coordinates[0]*(coefficients[1]-coefficients[0])+
 		coordinates[1]*(coefficients[2]-coefficients[0]));
 }
 

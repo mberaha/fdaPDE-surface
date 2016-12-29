@@ -5,6 +5,7 @@
 #include "mesh_objects.h"
 
 
+
 using std::vector;
 
 template <UInt ORDER,UInt mydim, UInt ndim>
@@ -137,12 +138,13 @@ public:
       * constructed with the TriLibrary (our R wrapper for the Triangle library)
     */
     
-    MeshHandler(Real* points, UInt* edges, UInt* triangles, UInt* neighbors, UInt num_nodes, UInt num_edges, UInt num_triangles):
-			points_(points), edges_(edges), triangles_(triangles), neighbors_(neighbors), num_nodes_(num_nodes), num_edges_(num_edges), num_triangles_(num_triangles) {};
+    MeshHandler(Real* points, UInt* edges, UInt* triangles, UInt num_nodes, UInt num_triangles):
+			points_(points), triangles_(triangles), num_nodes_(num_nodes), num_triangles_(num_triangles) {};
 			
     MeshHandler(std::string &filename){
     
-       if(filename.find('.csv') != std::string::npos){
+       if(filename.find(".csv") != std::string::npos){
+       std::cout<<"importing from CSV"<<"\n";
        		importfromCSV(filename);
        }
     	
@@ -151,9 +153,9 @@ public:
     
     void importfromCSV(std::string &filename);
     
-    #ifdef R_VERSION_
+    /* #ifdef R_VERSION_
 	MeshHandler(SEXP Rmesh);
-	#endif
+	#endif */
 	
 	~MeshHandler(){};
 	
@@ -173,7 +175,7 @@ public:
     /*!
       \return The number of edges in the mesh
     */ 
-    UInt num_edges() const {return num_edges_;}
+    // UInt num_edges() const {return num_edges_;}
     
     //! A normal member returning a Point
     /*!
@@ -187,7 +189,7 @@ public:
      * \param id an Id argument 
       \return The edge with the specified id
     */ 
-    Edge getEdge(Id id);
+   // Edge getEdge(Id id);
     
     //! A normal member returning a Triangle
     /*!
@@ -204,12 +206,12 @@ public:
       \return The triangle that has as an edge the one opposite to the specified
       vertex
     */ 
-    Triangle<ORDER * 3,2,3> getNeighbors(Id id_triangle, UInt number) const;
+   // Triangle<ORDER * 3,2,3> getNeighbors(Id id_triangle, UInt number) const;
      
     void printPoints(std::ostream & out);
-    void printEdges(std::ostream & out);
+   // void printEdges(std::ostream & out);
     void printTriangles(std::ostream & out);
-    void printNeighbors(std::ostream & out);
+   // void printNeighbors(std::ostream & out);
     
      //! A normal member returning the triangle on which a point is located
     /*!

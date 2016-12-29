@@ -1,4 +1,5 @@
 #include"mesh_objects.h"
+#include"mesh.h"
 #include <iostream>
 #include <vector>
 
@@ -40,6 +41,17 @@ int main()
 	bool verita = t.isPointInside(P);
 	std::cout<< "il punto è dentro iff "<<verita<<std::endl;	*/
 	
+	/////
+	//! Test sulla mesh
+	
+	std::string filename("Caramella.csv");
+	std::cout<<"filename = "<<filename<<"\n";
+	std::cout<<"calling the mesh"<<"\n";
+	MeshHandler<1,2,3> mesh(filename);
+	std::cout<<"finished importing the mesh"<<"\n";
+	
+	mesh.printPoints(std::cout);
+	mesh.printTriangles(std::cout);
 	
 return 0;
 }
