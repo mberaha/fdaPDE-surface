@@ -94,8 +94,8 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::getDataMatrix(
 		}
 }
 
-template<typename InputHandler, typename Integrator, UInt ORDER>
-void MixedFERegression<InputHandler,Integrator,ORDER>::getDataMatrixByIndices(SpMat& DMat)
+template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
+void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::getDataMatrixByIndices(SpMat& DMat)
 {
 		UInt nnodes = mesh_.num_nodes();
 		UInt nlocations = regressionData_.getNumberofObservations();
