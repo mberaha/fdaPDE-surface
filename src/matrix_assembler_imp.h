@@ -130,8 +130,8 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
 
 
 template<UInt ORDER, typename Integrator>
-void Assembler<2,3>::forcingTerm(const MeshHandler<ORDER,2,2>& mesh,
-	                     FiniteElement<Integrator, ORDER,2,2>& fe, const ForcingTerm& u, VectorXr& forcingTerm)
+void Assembler<2,3>::forcingTerm(const MeshHandler<ORDER,2,3>& mesh,
+	                     FiniteElement<Integrator, ORDER,2,3>& fe, const ForcingTerm& u, VectorXr& forcingTerm)
 {
 
 	forcingTerm = VectorXr::Zero(mesh.num_nodes());

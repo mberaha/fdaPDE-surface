@@ -153,9 +153,9 @@ public:
     
     void importfromCSV(std::string &filename);
     
-    /* #ifdef R_VERSION_
+     #ifdef R_VERSION_
 	MeshHandler(SEXP Rmesh);
-	#endif */
+	#endif 
 	
 	~MeshHandler(){};
 	

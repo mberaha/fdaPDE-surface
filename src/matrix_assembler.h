@@ -39,7 +39,7 @@ class Stiff{
 		grad_phi_j(0) = currentfe_.PhiDerMaster(j, 0, iq);
 		grad_phi_j(1) = currentfe_.PhiDerMaster(j, 1, iq);
 		
-		s = grad_phi_i.transpose().dot(metri.dot(grad_phi_j));
+		s = grad_phi_i.transpose().dot(currentfe_.metric_.dot(grad_phi_j));
 		
 	   	return s;
 	}
@@ -169,7 +169,14 @@ class Mass{
     inline Real operator() (FiniteElement<Integrator, ORDER,2,2>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
     {
     	return currentfe_.phiMaster(i,iq)*  currentfe_.phiMaster(j,iq);
-    }
+    };
+
+	template <class Integrator ,UInt ORDER>
+    inline Real operator() (FiniteElement<Integrator, ORDER,2,3>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
+    {
+    	return currentfe_.phiMaster(i,iq)*  currentfe_.phiMaster(j,iq);
+    };
+
 };
 
 //! A vGrad class: a class for the the vectorial Gradient operator.
@@ -255,8 +262,8 @@ class EOExpr{
 		  //return EOExpr<P,A>(A(K));
 	  }
 
-	  template<typename Integrator, UInt ORDER>
-      Real operator() (FiniteElement<Integrator, ORDER,2,2>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
+	  template<typename Integrator, UInt ORDER, UInt ndim>
+      Real operator() (FiniteElement<Integrator, ORDER,2,ndim>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
       {
           return a_(currentfe_, i,j,iq,ic);
       }
@@ -305,8 +312,8 @@ class EOBinOp{
      * applies the generic operation defined by the type Op to the two generic objects a_, b_;
      * returns a type P variable
 	 */
-		template<typename Integrator, UInt ORDER>
-	  Real operator () (FiniteElement<Integrator, ORDER,2,2>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
+		template<typename Integrator, UInt ORDER, UInt ndim>
+	  Real operator () (FiniteElement<Integrator, ORDER,2,ndim>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
 	  {
 		  return Op::apply(a_(currentfe_,i,j, iq, ic),b_(currentfe_, i,j, iq, ic));
 	  }
@@ -320,8 +327,8 @@ class EOBinOp<Real, B, Op>
 public:
 	EOBinOp(Real a, const B& b):M_a(a),M_b(b) {};
 
-	template<typename Integrator, UInt ORDER>
-	inline Real operator()(FiniteElement<Integrator, ORDER,2,2>& currentfe_, int i, int j, int iq, int ic = 0)
+	template<typename Integrator, UInt ORDER, UInt ndim>
+	inline Real operator()(FiniteElement<Integrator, ORDER,2,ndim>& currentfe_, int i, int j, int iq, int ic = 0)
 	{
 		return Op::apply(M_a,M_b(currentfe_, i, j, iq, ic));
 	}
@@ -335,8 +342,8 @@ class EOBinOp<Function, B, Op>
 public:
 	EOBinOp(const Function& a, const B& b):M_a(a),M_b(b) {};
 
-	template<typename Integrator, UInt ORDER>
-	inline Real operator()(FiniteElement<Integrator, ORDER,2,2>& currentfe_, int i, int j, int iq, int ic = 0)
+	template<typename Integrator, UInt ORDER, UInt ndim>
+	inline Real operator()(FiniteElement<Integrator, ORDER,2,ndim>& currentfe_, int i, int j, int iq, int ic = 0)
 	{
 		UInt globalIndex = currentfe_.getGlobalIndex(iq);
 		return Op::apply(M_a(globalIndex),M_b(currentfe_, i, j, iq, ic));
@@ -395,8 +402,8 @@ class EODotProd
 	B b_;
 	public:
 	EODotProd(const A& a, const B& b):a_(a), b_(b) {};
-	template<typename Integrator, UInt ORDER>
-	inline Real operator()(FiniteElement<Integrator, ORDER,2,2>& currentfe_, int i, int j, int iq, int ic = 0)
+	template<typename Integrator, UInt ORDER, UInt ndim>
+	inline Real operator()(FiniteElement<Integrator, ORDER,2,ndim>& currentfe_, int i, int j, int iq, int ic = 0)
 	{
 		Real s = 0.;
 		for(ic = 0; ic < 2; ++ic)
@@ -413,8 +420,8 @@ class EODotProd<Function, B>
 	B M_b;
 	public:
 	EODotProd(const Function& a, const B& b):M_a(a), M_b(b) {};
-	template<typename Integrator, UInt ORDER>
-	inline Real operator()(FiniteElement<Integrator, ORDER,2,2>& currentfe_, int i, int j, int iq, int ic = 0)
+	template<typename Integrator, UInt ORDER, UInt ndim>
+	inline Real operator()(FiniteElement<Integrator, ORDER,2,ndim>& currentfe_, int i, int j, int iq, int ic = 0)
 	{
 		Real s = 0.;
 		UInt globalIndex = currentfe_.getGlobalIndex(iq);

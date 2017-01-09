@@ -118,16 +118,17 @@ public:
 		return t_.getDetJ();
 	}
 
-	/*Point coorQuadPt(UInt iq)
+	Point coorQuadPt(UInt iq)
 	{
 		return Point(t_.getM_J()(0,0)*Integrator::NODES[iq][0] + t_.getM_J()(0,1)*Integrator::NODES[iq][1] + t_[0][0],
-				t_.getM_J()(1,0)*Integrator::NODES[iq][0] + t_.getM_J()(1,1)*Integrator::NODES[iq][1] + t_[0][1]);
+				t_.getM_J()(1,0)*Integrator::NODES[iq][0] + t_.getM_J()(1,1)*Integrator::NODES[iq][1] + t_[0][1],
+				t_.getM_J()(2,0)*Integrator::NODES[iq][0] + t_.getM_J()(2,1)*Integrator::NODES[iq][1] + t_[0][2]);
 	}
 	
-	UInt getGlobalIndex(UInt iq)
+	UInt getGlobalIndex(UInt iq) 
 	{
 		return Integrator::NNODES * t_.getId() + iq;
-	} */
+	} 
 
 	//Returns \hat{phi}
 	Real phiMaster(UInt i, UInt iq) const;

@@ -132,7 +132,7 @@ FiniteElement<Integrator, ORDER,2,3>::FiniteElement()
 
 
 template <class Integrator, UInt ORDER>
-void FiniteElement<Integrator, ORDER,2,2>::updateElement(Triangle<ORDER*3,2,2> t)
+void FiniteElement<Integrator, ORDER,2,3>::updateElement(Triangle<ORDER*3,2,3> t)
 {
 	t_ = t;
 
@@ -142,7 +142,7 @@ void FiniteElement<Integrator, ORDER,2,2>::updateElement(Triangle<ORDER*3,2,2> t
 }
 
 template <class Integrator, UInt ORDER>
-void FiniteElement<Integrator, ORDER,2,2>::setPhiMaster()
+void FiniteElement<Integrator, ORDER,2,3>::setPhiMaster()
 {
 	Eigen::Matrix<Real,3*ORDER,1> coefficients;
 	for (auto i=0; i < 3*ORDER; i++)
@@ -158,7 +158,7 @@ void FiniteElement<Integrator, ORDER,2,2>::setPhiMaster()
 }
 
 template <class Integrator, UInt ORDER>
-void FiniteElement<Integrator, ORDER,2,2>::setPhiDerMaster()
+void FiniteElement<Integrator, ORDER,2,3>::setPhiDerMaster()
 {
 	Eigen::Matrix<Real,3*ORDER,1> coefficients;
 	Eigen::Matrix<Real,2,1> der;
@@ -180,13 +180,13 @@ void FiniteElement<Integrator, ORDER,2,2>::setPhiDerMaster()
 }
 
 template <class Integrator, UInt ORDER>
-Real FiniteElement<Integrator, ORDER,2,2>::phiMaster(UInt i, UInt iq) const
+Real FiniteElement<Integrator, ORDER,2,3>::phiMaster(UInt i, UInt iq) const
 {
 	return phiMapMaster_(i, iq);
 }
 
 template <class Integrator, UInt ORDER>
-Real FiniteElement<Integrator, ORDER,2,2>::phiDerMaster(UInt i, UInt ic, UInt iq) const
+Real FiniteElement<Integrator, ORDER,2,3>::phiDerMaster(UInt i, UInt ic, UInt iq) const
 {
 	return phiDerMapMaster_(i, iq*2 + ic);
 }

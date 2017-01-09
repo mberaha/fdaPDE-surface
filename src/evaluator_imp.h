@@ -48,7 +48,7 @@ void Evaluator<ORDER,2,2>::eval(Real* X, Real *Y, UInt length, const Real *coef,
 		}
 	}
 }
-
+;
 
 
 template <UInt ORDER>

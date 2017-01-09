@@ -187,7 +187,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::setQ()
 	}
 }
 
-template<typename InputHandler, typename Integrator, UInt ORDER UInt mydim, UInt ndim>
+template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
 void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::setH()
 {
 	//std::cout<<"Computing Projection Matrix"<<std::endl;

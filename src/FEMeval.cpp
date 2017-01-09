@@ -107,17 +107,29 @@ SEXP eval_FEM_fd(SEXP Rmesh, SEXP RX, SEXP RY, SEXP RZ, SEXP Rcoef, SEXP Rorder,
 	std::vector<bool> isinside(n_X);
     //Set the mesh
 	//std::cout<<"Length "<<n_X<<"--X0 "<<X[0]<<"--Y0 "<<Y[0];
-    if(order == 1)
+    if(order == 1 && ndim == 2)
     {
-    	MeshHandler<1,mydim,ndim> mesh(Rmesh);
-		Evaluator<1,mydim,ndim> evaluator(mesh);
+    	MeshHandler<1,2,2> mesh(Rmesh);
+		Evaluator<1,2,2> evaluator(mesh);
 		//std::cout<<"Starting evaluation from FEMeval \n";
+		evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
+	}
+	else if(order == 2 && ndim == 2)
+	{
+    	MeshHandler<2,2,2> mesh(Rmesh);
+    	Evaluator<2,2,2> evaluator(mesh);
+		evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
+	}
+	else if(order == 2 && ndim == 3)
+	{
+    	MeshHandler<2,2,3> mesh(Rmesh);
+    	Evaluator<2,2,3> evaluator(mesh);
 		evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
 	}
 	else if(order == 2)
 	{
-    	MeshHandler<2,mydim,ndim> mesh(Rmesh);
-    	Evaluator<2,mydim,ndim> evaluator(mesh);
+    	MeshHandler<2,2,3> mesh(Rmesh);
+    	Evaluator<2,2,3> evaluator(mesh);
 		evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
 	}
 
