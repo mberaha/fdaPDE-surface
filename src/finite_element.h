@@ -138,6 +138,8 @@ public:
 
 	//Returns J^{-1} \nabla \hat{phi}
 	//Real invTrJPhiDerMaster(UInt i, UInt ic, UInt iq) const;
+	
+	Eigen::Matrix<Real,2,2> metric()const {return metric_;};
 
 };
 

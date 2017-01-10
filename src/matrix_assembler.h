@@ -34,12 +34,12 @@ class Stiff{
 		Eigen::Matrix<Real,2,1> grad_phi_i;
 		Eigen::Matrix<Real,2,1> grad_phi_j;
 		
-		grad_phi_i(0) = currentfe_.PhiDerMaster(i, 0, iq);
-		grad_phi_i(1) = currentfe_.PhiDerMaster(i, 1, iq);
-		grad_phi_j(0) = currentfe_.PhiDerMaster(j, 0, iq);
-		grad_phi_j(1) = currentfe_.PhiDerMaster(j, 1, iq);
+		grad_phi_i(0) = currentfe_.phiDerMaster(i, 0, iq);
+		grad_phi_i(1) = currentfe_.phiDerMaster(i, 1, iq);
+		grad_phi_j(0) = currentfe_.phiDerMaster(j, 0, iq);
+		grad_phi_j(1) = currentfe_.phiDerMaster(j, 1, iq);
 		
-		s = grad_phi_i.transpose().dot(currentfe_.metric_.dot(grad_phi_j));
+		s = grad_phi_i.dot(currentfe_.metric().dot(grad_phi_j));
 		
 	   	return s;
 	}
