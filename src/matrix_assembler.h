@@ -39,7 +39,7 @@ class Stiff{
 		grad_phi_j(0) = currentfe_.phiDerMaster(j, 0, iq);
 		grad_phi_j(1) = currentfe_.phiDerMaster(j, 1, iq);
 		
-		s = grad_phi_i.dot(currentfe_.metric().dot(grad_phi_j));
+		s = grad_phi_i.dot(currentfe_.metric()*grad_phi_j);
 		
 	   	return s;
 	}

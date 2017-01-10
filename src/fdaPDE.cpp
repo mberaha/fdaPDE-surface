@@ -101,7 +101,7 @@ SEXP regression_Laplace(SEXP Rlocations, SEXP Robservations, SEXP Rmesh, SEXP Ro
 */
 
 //generic mydim (given by R)
-//overload di regression_Laplace to handle ndim=2 and ndim=3 (code in C is a subset of a C++ code --> overload should be permitted)
+//overload di regression_Laplace to handle ndim=2 and ndim=3 (code in C is a subset of a C++ code --> overload should be permitted) invece no perchè non si può
 SEXP regression_Laplace(SEXP Rlocations, SEXP Robservations, SEXP Rmesh, SEXP Rorder, SEXP Rmydim, SEXP Rndim, SEXP Rlambda, SEXP Rcovariates, SEXP RBCIndices, SEXP RBCValues, SEXP DOF)
 {
     //Set data
