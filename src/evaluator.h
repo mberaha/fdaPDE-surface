@@ -61,7 +61,7 @@ class Evaluator<ORDER,2,3>
 	private:
 		const MeshHandler<ORDER,2,3> &mesh_;
 
-}
+};
 #include "evaluator_imp.h"
 
 

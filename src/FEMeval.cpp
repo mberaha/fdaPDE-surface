@@ -28,6 +28,7 @@ extern "C" {
 	\param Rfast an R integer 0 for Naive location algorithm, 1 for Walking Algorithm (can miss location for non convex meshes)
 */
 
+/*
 SEXP eval_FEM_fd(SEXP Rmesh, SEXP RX, SEXP RY, SEXP Rcoef, SEXP Rorder, SEXP Rfast, SEXP Rmydim, SEXP Rndim)
 {
 	//Declare pointer to access data from C++
@@ -79,7 +80,7 @@ SEXP eval_FEM_fd(SEXP Rmesh, SEXP RX, SEXP RY, SEXP Rcoef, SEXP Rorder, SEXP Rfa
 	UNPROTECT(1);
     // result list
     return(result);
-}
+}*/
 
 SEXP eval_FEM_fd(SEXP Rmesh, SEXP RX, SEXP RY, SEXP RZ, SEXP Rcoef, SEXP Rorder, SEXP Rfast, SEXP Rmydim, SEXP Rndim)
 {
@@ -112,13 +113,13 @@ SEXP eval_FEM_fd(SEXP Rmesh, SEXP RX, SEXP RY, SEXP RZ, SEXP Rcoef, SEXP Rorder,
     	MeshHandler<1,2,2> mesh(Rmesh);
 		Evaluator<1,2,2> evaluator(mesh);
 		//std::cout<<"Starting evaluation from FEMeval \n";
-		evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
+		evaluator.eval(X, Y, n_X, coef, order, fast, REAL(result), isinside);
 	}
 	else if(order == 2 && ndim == 2)
 	{
     	MeshHandler<2,2,2> mesh(Rmesh);
     	Evaluator<2,2,2> evaluator(mesh);
-		evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
+		evaluator.eval(X, Y, n_X, coef, order, fast, REAL(result), isinside);
 	}
 	else if(order == 2 && ndim == 3)
 	{
@@ -126,7 +127,7 @@ SEXP eval_FEM_fd(SEXP Rmesh, SEXP RX, SEXP RY, SEXP RZ, SEXP Rcoef, SEXP Rorder,
     	Evaluator<2,2,3> evaluator(mesh);
 		evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
 	}
-	else if(order == 2)
+	else if(order == 1 && ndim == 3)
 	{
     	MeshHandler<2,2,3> mesh(Rmesh);
     	Evaluator<2,2,3> evaluator(mesh);

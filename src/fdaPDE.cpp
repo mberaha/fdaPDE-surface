@@ -111,7 +111,8 @@ SEXP regression_Laplace(SEXP Rlocations, SEXP Robservations, SEXP Rmesh, SEXP Ro
 	SEXP result = NILSXP;
 
 	int mydim=INTEGER(Rmydim)[0];
-	int ndim=INTEGER(Rndim)[0]; //the following code do not distinguish tha value of mydim (=2)
+	int ndim=INTEGER(Rndim)[0]; 
+//the following code do not distinguish tha value of mydim (=2)
 
     if(regressionData.getOrder()==1 && ndim==3)
     {
