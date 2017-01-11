@@ -24,7 +24,27 @@ int main{
 	std::vector<UInt> bc_indices;
 	std::vector<Real> bc_values;
 	
-	// Mario legge tanti file :)
+	///// Reading bc_indices & values
+		std::string line;
+		char comma;
+		UInt index;
+		Real value;
+	
+		filename = std::string("bc_caramella.csv");
+		std::ifstream file;
+		file.open(filename);
+		
+		getline(file,line); // throw away header of the file
+		
+		while(file){
+			getline(file,line);
+			std::istringstream ss(line);
+			ss >> index;
+			bc_indices.push_back(index);
+			ss >> comma;
+			ss >> value;
+			bc_values.push_back(value);
+		}
 
 	RegressionData data(locations, observations, order, lambda, covariates, bc_indices, bc_values, 0);
 
@@ -33,6 +53,12 @@ int main{
 	regression.smoothLaplace();
 	
 	const std::vector<VectorXr>& solution = regression.getSolution();
+	
+	// Print to screen the result
+	
+	for (it = solution.begin(); it != solution.end(); ++it){
+		std::cout<< *it << std::endl;
+	}
 
 	
 
