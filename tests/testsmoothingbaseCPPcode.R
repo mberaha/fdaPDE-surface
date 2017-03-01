@@ -2,8 +2,19 @@
 ## - isotropic smoothing 
 ## - 1st order FEs 
 ## - C++ code
+setwd("/home/pacs_student/progetto_pacs/tests")
+source('/home/pacs_student/progetto_pacs/R/datasets.R',chdir=T)
+source('../R/fdaPDE.objects.R')
+source("../R/fdaPDE.smoothing.R")
+source("../R/fdaPDE.checkParameters.R")
+source("../R/fdaPDE.smoothing_CPP.R")
+source("../R/fdaPDE.smoothing_R.R")
+source("../R/fdaPDE.locator.R")
+source("../R/mesh.2D.R")
+source("../R/zzz.R")
+dyn.load("../src/fdaPDE2.so") 
 
-library(fdaPDE)
+
 
 order = 1
 mesh<-create.MESH.2D(nodes=rbind(c(0, 0), c(0, 1), c(0.5, 0.5), c(1, 1), c(1, 0)),
