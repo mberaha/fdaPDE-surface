@@ -1,2 +1,2 @@
-PKG_CPPFLAGS = -lstdc++ -I../inst/include -I/u/geo2/sw/Packages/libs/eigen/3/include/eigen3
+PKG_CPPFLAGS = -lstdc++ -I../inst/include -I/u/geo2/sw/Packages/libs/eigen/3/include/eigen3 -I/usr/include/R/
 CXX_STD = CXX11
