@@ -1,4 +1,4 @@
-#dyn.load("../Release/fdaPDE.so")
+
 
 CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covariates = NULL, BC = NULL, GCV)
 {
