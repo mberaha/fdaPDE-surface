@@ -12,7 +12,7 @@ source("../R/fdaPDE.smoothing_R.R")
 source("../R/fdaPDE.locator.R")
 source("../R/mesh.2D.R")
 source("../R/zzz.R")
-dyn.load("../src/fdaPDE2.so") 
+dyn.load("../src/fdaPDE.so") 
 
 
 
@@ -29,11 +29,13 @@ observations = c(1,2,1,2,1)
 data = c(1,2,1,2,1)
 covariates = cbind(c(1, 2, 3, 4, 5))
 BC = NULL
+ndim=2
+mydim=2
 
 output_CPP = smooth.FEM.basis(locations  = as.matrix(locations), 
                               observations = data, 
                               FEMbasis = FEMbasis, lambda = lambda, 
-                              covariates = covariates, 
+                              covariates = covariates,ndim=ndim,mydim=mydim, 
                               GCV = TRUE,
                               CPP_CODE = TRUE)
 
