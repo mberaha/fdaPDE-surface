@@ -11,7 +11,7 @@
 #' @references 
 #'  Devillers, O. et al. 2001. Walking in a Triangulation, Proceedings of the Seventeenth Annual Symposium on Computational Geometry
 
-eval.FEM <- function(FEM, locations, CPP_CODE = TRUE)
+eval.FEM <- function(FEM, locations, CPP_CODE = TRUE,ndim,mydim)
 {
   if (is.null(FEM)) 
     stop("FEM required;  is NULL.")
@@ -35,7 +35,7 @@ eval.FEM <- function(FEM, locations, CPP_CODE = TRUE)
     res = R_eval.FEM(FEM, locations)
   }else
   {
-    res = CPP_eval.FEM(FEM, locations, TRUE)
+    res = CPP_eval.FEM(FEM, locations, TRUE,ndim,mydim)
   }
   
   return(as.matrix(res))

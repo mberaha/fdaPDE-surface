@@ -1,6 +1,6 @@
 
 
-CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covariates = NULL, BC = NULL, GCV)
+CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covariates = NULL,ndim,mydim, BC = NULL, GCV)
 {
   # Indexes in C++ starts from 0, in R from 1, opportune transformation
   ##TO BE CHANGED SOON: LOW PERFORMANCES, IMPLIES COPY OF PARAMETERS
@@ -16,6 +16,7 @@ CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covari
   if(is.null(locations))
   {
     locations<-matrix(nrow = 0, ncol = 2)
+    #FARE CHECK SU NDIM E locations 
   }
   
   if(is.null(BC$BC_indices))
@@ -45,6 +46,8 @@ CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covari
   covariates = as.matrix(covariates)
   storage.mode(covariates) <- "double"
   storage.mode(lambda)<- "double"
+  storage.mode(ndim)<- "integer"
+  storage.mode(mydim)<- "integer"
   storage.mode(BC$BC_indices)<- "integer"
   storage.mode(BC$BC_values)<-"double"
   
@@ -53,7 +56,7 @@ CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covari
   
   ## Call C++ function
   bigsol <- .Call("regression_Laplace", locations, observations, FEMbasis$mesh, 
-                  FEMbasis$order, lambda, covariates,
+                  FEMbasis$order,mydim,ndim, lambda, covariates,
                   BC$BC_indices, BC$BC_values, GCV,
                   package = "fdaPDE")
   
@@ -209,7 +212,7 @@ CPP_smooth.FEM.PDE.sv.basis<-function(locations, observations, FEMbasis, lambda,
   return(bigsol)
 }
 
-CPP_eval.FEM = function(FEM, locations, redundancy)
+CPP_eval.FEM = function(FEM, locations, redundancy,ndim,mydim)
 {
   FEMbasis = FEM$FEMbasis
   # Indexes in C++ starts from 0, in R from 1, opportune transformation
@@ -229,17 +232,30 @@ CPP_eval.FEM = function(FEM, locations, redundancy)
   storage.mode(FEMbasis$order) <- "integer"
   coeff = as.matrix(FEM$coeff)
   storage.mode(coeff) <- "double"
+  storage.mode(ndim)<- "integer"
+  storage.mode(mydim)<- "integer"
   storage.mode(locations) <- "double"
   storage.mode(redundancy) <- "integer"
   
   #Calling the C++ function "eval_FEM_fd" in RPDE_interface.cpp
   evalmat = matrix(0,nrow(locations),ncol(coeff))
+
+	if(ndim==2){
+	z=matrix(0,nrow(locations),1)
   for (i in 1:ncol(coeff))
   {
-    evalmat[,i] <- .Call("eval_FEM_fd", FEMbasis$mesh, locations[,1], locations[,2], coeff[,i], 
-                   FEMbasis$order, redundancy,
+    evalmat[,i] <- .Call("eval_FEM_fd", FEMbasis$mesh, locations[,1], locations[,2],z, coeff[,i], 
+                   FEMbasis$order, redundancy,mydim,ndim,
                    package = "fdaPDE")
-  }
+  }}else{
+
+    evalmat[,i] <- .Call("eval_FEM_fd", FEMbasis$mesh, locations[,1], locations[,2], locations[,3], coeff[,i], 
+                   FEMbasis$order, redundancy,mydim,ndim,
+                   package = "fdaPDE")
+
+}
+
+
   #Returning the evaluation matrix
   evalmat
 }
