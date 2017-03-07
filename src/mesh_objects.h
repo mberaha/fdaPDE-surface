@@ -39,7 +39,7 @@ public:
 class Point: public Identifier{
 public:
 	
-	static UInt ndim;
+	UInt ndim;
 
 	Point(): Identifier(NVAL, NVAL){coord_.resize(3);};
    	Point(Real x, Real y):Identifier(NVAL, NVAL)
