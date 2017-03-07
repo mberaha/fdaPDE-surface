@@ -11,7 +11,7 @@ CSOURCES = FEMtriangulation.c triangle.c
 
 CXXSOURCES = integration.cpp mesh_objects.cpp FEMeval.cpp fdaPDE.cpp
 	
-TARGET_LIB = fdaPDE2.so
+TARGET_LIB = fdaPDE.so
 
 COBJS = $(CSOURCES:.c=.o)
 CXXOBJS = $(CXXSOURCES:.cpp=.o)
