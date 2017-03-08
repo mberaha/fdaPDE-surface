@@ -40,7 +40,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::buildCoeffMa
 	_coeffmatrix.resize(2*nnodes,2*nnodes);
 	_coeffmatrix.setFromTriplets(tripletAll.begin(),tripletAll.end());
 	_coeffmatrix.makeCompressed();
-	//std::cout<<"Coefficients' Matrix Set Correctly"<<std::endl;
+	std::cout<<"Coefficients' Matrix Set Correctly"<<std::endl;
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
@@ -74,6 +74,8 @@ void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::addDirichlet
 	 }
 
 	_coeffmatrix.makeCompressed();
+	std::cout<<"BC added Correctly"<<std::endl;
+
 }
 
 //construct NW block of the system matrix in Ramsay with covariates format
@@ -92,6 +94,8 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::getDataMatrix(
 		{
 			DMat = (SpMat(psi_.transpose())*Q_*psi_).sparseView();
 		}
+		std::cout<<"Got Data Matrix Correctly"<<std::endl;
+
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
@@ -124,6 +128,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::getDataMatrixB
 				}
 			}
 		}
+		std::cout<<"Got Data Matrix by Indeces Correctly"<<std::endl;
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
@@ -173,6 +178,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::setPsi(){
 
 		psi_.prune(tolerance);
 		psi_.makeCompressed();
+		std::cout<<"Psi set Correctly"<<std::endl;
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
@@ -185,6 +191,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::setQ()
 	{
 		Q_(i,i) += 1;
 	}
+	std::cout<<"Q set Correctly"<<std::endl;
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
@@ -217,6 +224,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::setH()
 	MatrixXr WTW(W.transpose()*W);
 
 	H_=W*WTW.ldlt().solve(W.transpose()); // using cholesky LDLT decomposition for computing hat matrix
+	std::cout<<"H set Correctly"<<std::endl;
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
@@ -258,6 +266,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::getRightHandDa
 			rightHandData=psi_.transpose()*Q_*regressionData_.getObservations();
 		}
 	}
+	std::cout<<"Got Right Hand Data Correctly"<<std::endl;
 }
 
 
@@ -330,7 +339,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::computeDegrees
 	}
 
 
-	//std::cout<<"TRACE "<<degrees<<std::endl;
+	std::cout<<"TRACE "<<degrees<<std::endl;
 
 	_dof[output_index] = degrees;
 }
@@ -359,27 +368,30 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
 
 	if(!regressionData_.isLocationsByNodes())
 	{
-		//std::cout<<"HERE";
+		std::cout<<"About to set Psi"<<std::endl;
 		setPsi();
 	}
 
 	if(!regressionData_.getCovariates().rows() == 0)
 	{
+		std::cout<<"About to set H and Q"<<std::endl;
 		setH();
 		setQ();
 	}
 
     if(!regressionData_.isLocationsByNodes())
     {
+    	std::cout<<"About to get Data Matrix"<<std::endl;
     	getDataMatrix(DMat_);
     }
     else
     {
+    	std::cout<<"About to get Data Matrix by indices"<<std::endl;
     	getDataMatrixByIndices(DMat_);
     }
     //std::cout<<"Block Data"<<DMat_<<std::endl;
 
-
+    std::cout<<"calling assembler stiff and mass"<<std::endl;
     Assembler<mydim,ndim>::operKernel(stiff, mesh_, fe, AMat_);
     Assembler<mydim,ndim>::operKernel(mass, mesh_, fe, MMat_);
 
@@ -399,15 +411,19 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
     	Real lambda = regressionData_.getLambda()[i];
     	SpMat AMat_lambda = (-lambda)*AMat_;
     	SpMat MMat_lambda = (-lambda)*MMat_;
+    	std::cout<<"about to build CoeffMatrix"<<std::endl;
     	this->buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda);
 
-    	//std::cout<<"AMat"<<std::endl<<_coeffmatrix;
+    	//std::cout<<"AMat"<<std::endl<<_coeffmatrix<<std::endl;
 
 
     	//Appling border conditions if necessary
-    	if(regressionData_.getDirichletIndices().size() != 0)
+    	std::cout<<"Appling border conditions if necessary"<<std::endl;
+    	if(regressionData_.getDirichletIndices().size() != 0){
     		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues());
-
+    		std::cout<<"exit the if statement"<<std::endl;}
+	
+	std::cout<<"About to solve with SpLU"<<std::endl;
     	//prova.solveSystem<SpConjGrad>();
     	this-> template solve<SpLU>(i);
     	if(regressionData_.computeDOF())
@@ -416,6 +432,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
     		_dof[i] = -1;
 
 	}
+	std::cout<<"Solved!";
 
 }
 

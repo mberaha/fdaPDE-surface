@@ -201,6 +201,7 @@ void MeshHandler<ORDER,2,3>::importfromCSV(std::string &filename){
 	
 	UInt nnodes;
 	UInt ntriangles;
+	UInt point_index;
 	std::string line;
 	std::string dummy;
 	char comma;
@@ -254,12 +255,20 @@ void MeshHandler<ORDER,2,3>::importfromCSV(std::string &filename){
 	for(UInt i=0; i<ntriangles; ++i){
 		std::getline(file,line);
 		std::istringstream ss(line);
-		for(UInt k=0; k< 3*ORDER; ++k){
-			ss>>triangles_[i*ORDER + k];
-			--triangles_[i*ORDER + k];
+		ss>>point_index;
+		triangles_[i*3] = --point_index;
+		ss>>comma;
+		ss>>point_index;
+		triangles_[i*3+1] = --point_index;
+		ss>>comma;
+		ss>>point_index;
+		triangles_[i*3+2] = --point_index;
+		/*for(UInt k=0; k< 3*ORDER; ++k){
+			ss>>point_index;
+			triangles_[i*3*ORDER + k] = --point_index;
 			ss>>comma;
 		
-		};
+		};*/
 		
 	};	
 		
@@ -322,7 +331,7 @@ void MeshHandler<ORDER,2,3>::printTriangles(std::ostream & out)
 	{
 		out<<"-"<< i <<"- ";
 		for( UInt k = 0; k < ORDER * 3; ++k)
-			out<<triangles_[i*ORDER + k]<<"   ";
+			out<<triangles_[i*3*ORDER + k]<<"   ";
 		out<<std::endl;	
 	}
 	

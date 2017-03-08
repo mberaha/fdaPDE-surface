@@ -2,8 +2,8 @@
 ## - isotropic smoothing 
 ## - 1st order FEs 
 ## - C++ code
-setwd("/home/pacs_student/progetto_pacs/tests")
-source('/home/pacs_student/progetto_pacs/R/datasets.R',chdir=T)
+#setwd("/home/pacs_student/progetto_pacs/tests")
+source('../R/datasets.R',chdir=T)
 source('../R/fdaPDE.objects.R')
 source("../R/fdaPDE.smoothing.R")
 source("../R/fdaPDE.checkParameters.R")
@@ -32,7 +32,8 @@ head(BC)
 ndim=3
 mydim=2
 GCV=1
-mesh="/home/pacs_student/progetto_pacs/tests/Caramella.csv"
+mesh="./Caramella.csv"
+print(mesh)
 
 #output_CPP = smooth.FEM.basis(locations  = as.matrix(locations), 
 #                              observations = data, 

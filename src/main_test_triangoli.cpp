@@ -49,6 +49,8 @@ int main()
 	std::cout<<"calling the mesh"<<"\n";
 	MeshHandler<1,2,3> mesh(filename);
 	std::cout<<"finished importing the mesh"<<"\n";
+	std::cout<<"num_nodes="<<mesh.num_nodes()<<"\n";
+	std::cout<<"num_triangles="<<mesh.num_triangles()<<"\n";
 
 	mesh.printPoints(std::cout);
 	mesh.printTriangles(std::cout);

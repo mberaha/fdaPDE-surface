@@ -117,23 +117,25 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
 					s += oper(fe,i,j,l) * std::sqrt(fe.getDet()) * fe.getAreaReference()* Integrator::WEIGHTS[l]; 
 				}
 			  triplets.push_back(coeff(identifiers[i],identifiers[j],s));
-				
-	std::cout<<identifiers[i]<<","<<identifiers[j]<<":"<<s<<std::endl;
-
+			  if(isnan(s)){
+			  	std::cout<<"found nan, in position"<<identifiers[i]<<","<<identifiers[j]<<std::endl;
+			  	std::cout<<"fe.getDet="<<fe.getDet()<<","<<"fe.getAreaReference="<<fe.getAreaReference()<<std::endl;
+			  	std::cout<<"oper(fe,i,j,l)=";
+			  	for(int l = 0;l < Integrator::NNODES; l++)
+				{
+					std::cout<<oper(fe,i,j,l)<<",";
+					}
+				std::cout<<" "<<std::endl;
+			  }
 			}
 		}
 
 	}
-	std::cout<<"i'm here 1"<<std::endl;
-
+	
   	UInt nnodes = mesh.num_nodes();
-	std::cout<<"i'm here 2 :"<<nnodes<<std::endl;
   	OpMat.resize(nnodes, nnodes);
-	std::cout<<"i'm here 3"<<std::endl;
 	OpMat.setFromTriplets(triplets.begin(),triplets.end());
-	std::cout<<"i'm here 4"<<std::endl;
 	OpMat.prune(tolerance);
-	std::cout<<"i'm here 5"<<std::endl;
 }
 
 	
