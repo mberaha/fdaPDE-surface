@@ -240,20 +240,18 @@ CPP_eval.FEM = function(FEM, locations, redundancy,ndim,mydim)
   #Calling the C++ function "eval_FEM_fd" in RPDE_interface.cpp
   evalmat = matrix(0,nrow(locations),ncol(coeff))
 
-	if(ndim==2){
+  if(ndim==2){
 	z=matrix(0,nrow(locations),1)
-  for (i in 1:ncol(coeff))
-  {
-    evalmat[,i] <- .Call("eval_FEM_fd", FEMbasis$mesh, locations[,1], locations[,2],z, coeff[,i], 
-                   FEMbasis$order, redundancy,mydim,ndim,
-                   package = "fdaPDE")
-  }}else{
+ 	for (i in 1:ncol(coeff)){
+    		evalmat[,i] <- .Call("eval_FEM_fd", FEMbasis$mesh, locations[,1], 
+    				locations[,2],z, coeff[,i], FEMbasis$order, redundancy, 				mydim, ndim, package = "fdaPDE")
+  	}
+  }else{
 
-    evalmat[,i] <- .Call("eval_FEM_fd", FEMbasis$mesh, locations[,1], locations[,2], locations[,3], coeff[,i], 
-                   FEMbasis$order, redundancy,mydim,ndim,
-                   package = "fdaPDE")
+  	evalmat[,i] <- .Call("eval_FEM_fd", FEMbasis$mesh, locations[,1], locations[,2], 				locations[,3], coeff[,i], FEMbasis$order, redundancy, mydim, ndim,
+                   	package = "fdaPDE")
 
-}
+  }
 
 
   #Returning the evaluation matrix
