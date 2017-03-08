@@ -251,11 +251,12 @@ void MeshHandler<ORDER,2,3>::importfromCSV(std::string &filename){
 	// READ THE CONNECTIVIY MATRIX
 	
 
-	for(UInt i=0; i<ntriangles; i = ++i){
+	for(UInt i=0; i<ntriangles; ++i){
 		std::getline(file,line);
 		std::istringstream ss(line);
 		for(UInt k=0; k< 3*ORDER; ++k){
 			ss>>triangles_[i*ORDER + k];
+			--triangles_[i*ORDER + k];
 			ss>>comma;
 		
 		};

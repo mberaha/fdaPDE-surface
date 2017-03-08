@@ -15,8 +15,7 @@ CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covari
   
   if(is.null(locations))
   {
-    locations<-matrix(nrow = 0, ncol = 2)
-    #FARE CHECK SU NDIM E locations 
+    locations<-matrix(nrow = 0, ncol = ndim)
   }
   
   if(is.null(BC$BC_indices))
