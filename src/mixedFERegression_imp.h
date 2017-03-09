@@ -391,8 +391,9 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
     }
     //std::cout<<"Block Data"<<DMat_<<std::endl;
 
-    std::cout<<"calling assembler stiff and mass"<<std::endl;
+    std::cout<<"calling assembler stiff"<<std::endl;
     Assembler<mydim,ndim>::operKernel(stiff, mesh_, fe, AMat_);
+    std::cout<<"calling assembler mass"<<std::endl;
     Assembler<mydim,ndim>::operKernel(mass, mesh_, fe, MMat_);
 
     VectorXr rightHandData;
