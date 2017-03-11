@@ -97,6 +97,9 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
   	for(auto t=0; t<mesh.num_triangles(); t++)
   	{
 		fe.updateElement(mesh.getTriangle(t));
+		std::cout<<"tiangle = ";
+		mesh.getTriangle(t).print(std::cout);
+		std::cout<<" "<<std::endl;
 
 		// Vector of vertices indices (link local to global indexing system)
 		std::vector<UInt> identifiers;
@@ -117,16 +120,7 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
 					s += oper(fe,i,j,l) * std::sqrt(fe.getDet()) * fe.getAreaReference()* Integrator::WEIGHTS[l]; 
 				}
 			  triplets.push_back(coeff(identifiers[i],identifiers[j],s));
-			  if(isnan(s)){
-			  	std::cout<<"found nan, in position"<<identifiers[i]<<","<<identifiers[j]<<std::endl;
-			  	std::cout<<"fe.getDet="<<fe.getDet()<<","<<"fe.getAreaReference="<<fe.getAreaReference()<<std::endl;
-			  	std::cout<<"oper(fe,i,j,l)=";
-			  	for(int l = 0;l < Integrator::NNODES; l++)
-				{
-					std::cout<<oper(fe,i,j,l)<<",";
-					}
-				std::cout<<" "<<std::endl;
-			  }
+			  
 			}
 		}
 

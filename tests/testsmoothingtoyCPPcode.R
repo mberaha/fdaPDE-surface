@@ -20,7 +20,7 @@ order = 1
 
 #FEMbasis = create.FEM.basis(mesh)
 
-lambda = c(1,2,3)
+lambda = c(0.01,0.1,0.5)
 
 locations = NULL
 data =read.csv("observation_caramella_by_index.csv", header=T)[,2]
@@ -93,5 +93,6 @@ print(mesh)
                   BC$BC_indices, BC$BC_values, GCV,
                   package = "fdaPDE")
   
+write.table(bigsol[[1]],file="res_caramella.txt")
 
-print(bigsol[[1]])
+

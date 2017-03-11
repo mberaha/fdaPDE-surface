@@ -41,6 +41,12 @@ class Stiff{
 		
 		s = grad_phi_i.dot(currentfe_.metric()*grad_phi_j);
 		
+		if(isnan(s)){
+			std::cout<<"grad_phi_i = "<<grad_phi_i<<std::endl;
+			std::cout<<"grad_phi_j = "<<grad_phi_j<<std::endl;
+			std::cout<<"metric = "<<currentfe_.metric()<<std::endl;
+		}
+		
 	   	return s;
 	}
 	
