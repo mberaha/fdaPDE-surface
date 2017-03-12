@@ -2,7 +2,6 @@
 #define MATRIX_ASSEMBLER_IMP_H_
 
 
-
 template<UInt ORDER, typename Integrator, typename A>
 void Assembler<2,2>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,2>& mesh,
 	                     FiniteElement<Integrator, ORDER,2,2>& fe, SpMat& OpMat)
@@ -21,7 +20,6 @@ void Assembler<2,2>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,2>& mes
 		identifiers.resize(ORDER*3);
 		for( auto q=0; q<ORDER*3; q++)
 			identifiers[q]=mesh.getTriangle(t)[q].id();
-
 
 		//localM=localMassMatrix(currentelem);
 		for(int i = 0; i < 3*ORDER; i++)
@@ -97,8 +95,8 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
   	for(auto t=0; t<mesh.num_triangles(); t++)
   	{
 		fe.updateElement(mesh.getTriangle(t));
-		std::cout<<"tiangle = ";
-		mesh.getTriangle(t).print(std::cout);
+		//std::cout<<"tiangle = ";
+		//mesh.getTriangle(t).print(std::cout);
 		std::cout<<" "<<std::endl;
 
 		// Vector of vertices indices (link local to global indexing system)
@@ -106,7 +104,10 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
 		identifiers.resize(ORDER*3);
 		for( auto q=0; q<ORDER*3; q++)
 			identifiers[q]=mesh.getTriangle(t)[q].id();
-
+		auto it = max_element(identifiers.begin(),identifiers.end());
+		std::cout<<"max identifier = "<<*it<<std::endl;
+		auto it2 = min_element(identifiers.begin(),identifiers.end());
+		std::cout<<"min identifier = "<<*it2<<std::endl;
 
 		//localM=localMassMatrix(currentelem);
 		for(int i = 0; i < 3*ORDER; i++)
@@ -120,15 +121,18 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
 					s += oper(fe,i,j,l) * std::sqrt(fe.getDet()) * fe.getAreaReference()* Integrator::WEIGHTS[l]; 
 				}
 			  triplets.push_back(coeff(identifiers[i],identifiers[j],s));
-			  
+			  //std::cout<<"i= "<<identifiers[i]<<" j= "<<identifiers[j]<<" s= "<<s<<std::endl;
 			}
 		}
 
 	}
 	
   	UInt nnodes = mesh.num_nodes();
+  	std::cout<<"nnodes = "<<nnodes<<std::endl;
   	OpMat.resize(nnodes, nnodes);
+  	std::cout<<"setting from triplets = "<<nnodes<<std::endl;
 	OpMat.setFromTriplets(triplets.begin(),triplets.end());
+	std::cout<<"done setting from triplets"<<nnodes<<std::endl;
 	OpMat.prune(tolerance);
 }
 
@@ -167,7 +171,7 @@ void Assembler<2,3>::forcingTerm(const MeshHandler<ORDER,2,3>& mesh,
 		}
 
 	}
-	//cout<<"done!"<<endl;;
+	std::cout<<"done!"<<std::endl;;
 }
 
 
