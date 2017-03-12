@@ -11,6 +11,9 @@
 
 #include "mixedFERegression.h"
 
+//! A support function to add -1 to all indices in an efficient way
+// In R indices start from 1 while in c++ they start from 0, so a conversion is necessary
+
 extern "C" {
 //! This function manages the various options for Spatial Regression, Sangalli et al version
 /*!
