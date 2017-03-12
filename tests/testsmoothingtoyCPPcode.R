@@ -22,6 +22,22 @@ order = 1
 
 lambda = c(0.01,0.1,0.5)
 
+filename = 'Caramella.csv'
+
+read.mesh<-function(filename){
+  nnodes = read.table(filename, nrows = 2, header = FALSE, sep =' ', stringsAsFactors = FALSE)[1,2]
+  ntriangles = read.table(filename, nrows = 2, header = FALSE, sep =' ', stringsAsFactors = FALSE)[2,2]
+  geometry = read.csv(filename, skip=2, header= FALSE)
+  nodes = geometry[1:nnodes,]
+  triangles = geometry[(nnodes+1):(nnodes+ntriangles),]
+  
+  retlist = list(nnodes=nnodes,ntriangles=ntriangles,nodes=c(t(nodes)),triangles=c(t(triangles)))
+  return(retlist)
+}
+
+mesh=read.mesh(filename)
+
+
 locations = NULL
 data =read.csv("observation_caramella_by_index.csv", header=T)[,2]
 head(data) 
@@ -32,8 +48,7 @@ head(BC)
 ndim=3
 mydim=2
 GCV=1
-mesh="./Caramella.csv"
-print(mesh)
+
 
 #output_CPP = smooth.FEM.basis(locations  = as.matrix(locations), 
 #                              observations = data, 
@@ -75,7 +90,10 @@ print(mesh)
   data <- as.vector(data)
   storage.mode(data) <- "double"
   storage.mode(order) <- "integer"
-  storage.mode(mesh) <- "character"
+  storage.mode(mesh$nnodes) <- "integer"
+  storage.mode(mesh$ntriangles) <- "integer"
+  storage.mode(mesh$nodes) <- "double"
+  storage.mode(mesh$triangles) <- "integer"
   covariates = as.matrix(covariates)
   storage.mode(covariates) <- "double"
   storage.mode(lambda) <- "double"
@@ -93,6 +111,6 @@ print(mesh)
                   BC$BC_indices, BC$BC_values, GCV,
                   package = "fdaPDE")
   
-write.table(bigsol[[1]],file="res_caramella.txt")
+write.table(bigsol[[1]],file="res_caramella_new.txt")
 
 

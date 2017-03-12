@@ -2,8 +2,8 @@
 ## - isotropic smoothing 
 ## - 1st order FEs 
 ## - C++ code
-setwd("/home/pacs_student/progetto_pacs/tests")
-source('/home/pacs_student/progetto_pacs/R/datasets.R',chdir=T)
+#setwd("/home/pacs_student/progetto_pacs/tests")
+#source('/home/pacs_student/progetto_pacs/R/datasets.R',chdir=T)
 source('../R/fdaPDE.objects.R')
 source("../R/fdaPDE.smoothing.R")
 source("../R/fdaPDE.checkParameters.R")
@@ -21,6 +21,8 @@ mesh<-create.MESH.2D(nodes=rbind(c(0, 0), c(0, 1), c(0.5, 0.5), c(1, 1), c(1, 0)
                      segments=rbind(c(1, 2), c(2, 3), c(3, 4), c(4, 5), c(5, 1)), order = order)
 
 FEMbasis = create.FEM.basis(mesh)
+
+print(FEMbasis$mesh)
 
 lambda = c(1,2,3)
 
