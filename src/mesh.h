@@ -223,6 +223,9 @@ public:
     
 
 private:
+	#ifdef R_VERSION_
+	SEXP mesh_;
+	#endif
 
 	std::vector<Real> points_;
 	std::vector<UInt> triangles_;

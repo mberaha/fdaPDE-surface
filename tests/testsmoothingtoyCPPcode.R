@@ -20,9 +20,9 @@ order = 1
 
 #FEMbasis = create.FEM.basis(mesh)
 
-lambda = c(0.01,0.1,0.5)
+lambda = c(0.1)
 
-filename = 'Caramella.csv'
+filename = '../paziente12348/geom_211.csv'
 
 read.mesh<-function(filename){
   nnodes = read.table(filename, nrows = 2, header = FALSE, sep =' ', stringsAsFactors = FALSE)[1,2]
@@ -31,7 +31,7 @@ read.mesh<-function(filename){
   nodes = geometry[1:nnodes,]
   triangles = geometry[(nnodes+1):(nnodes+ntriangles),]
   
-  retlist = list(nnodes=nnodes,ntriangles=ntriangles,nodes=c(t(nodes)),triangles=c(t(triangles)))
+  retlist = list(nnodes = nnodes,ntriangles = ntriangles,nodes = c(t(nodes)),triangles = c(t(triangles)))
   return(retlist)
 }
 
@@ -39,10 +39,10 @@ mesh=read.mesh(filename)
 
 
 locations = NULL
-data =read.csv("observation_caramella_by_index.csv", header=T)[,2]
+data =read.csv(" = '../paziente12348/geom_211.csv", header=T)[,2]
 head(data) 
 covariates = NULL
-BC = read.csv("bc_caramella.csv",header=T)
+BC = read.csv("",header=T)
 colnames(BC)=c("BC_indices","BC_values")
 head(BC)
 ndim=3
