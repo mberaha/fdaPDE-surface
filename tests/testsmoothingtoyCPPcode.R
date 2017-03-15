@@ -22,7 +22,7 @@ order = 1
 
 lambda = c(0.1)
 
-filename = '../paziente12348/geom_211.csv'
+filename = 'Caramella.csv'
 
 read.mesh<-function(filename){
   nnodes = read.table(filename, nrows = 2, header = FALSE, sep =' ', stringsAsFactors = FALSE)[1,2]
@@ -39,10 +39,10 @@ mesh=read.mesh(filename)
 
 
 locations = NULL
-data =read.csv(" = '../paziente12348/geom_211.csv", header=T)[,2]
+data = read.csv('observation_caramella_by_index.csv',header=T)[,2]
 head(data) 
 covariates = NULL
-BC = read.csv("",header=T)
+BC = read.csv("bc_caramella.csv",header=T)
 colnames(BC)=c("BC_indices","BC_values")
 head(BC)
 ndim=3

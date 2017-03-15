@@ -104,10 +104,6 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
 		identifiers.resize(ORDER*3);
 		for( auto q=0; q<ORDER*3; q++)
 			identifiers[q]=mesh.getTriangle(t)[q].id();
-		auto it = max_element(identifiers.begin(),identifiers.end());
-		std::cout<<"max identifier = "<<*it<<std::endl;
-		auto it2 = min_element(identifiers.begin(),identifiers.end());
-		std::cout<<"min identifier = "<<*it2<<std::endl;
 
 		//localM=localMassMatrix(currentelem);
 		for(int i = 0; i < 3*ORDER; i++)

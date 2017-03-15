@@ -47,7 +47,10 @@ template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UIn
 void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::addDirichletBC(const vector<int>& bcindex, const vector<Real>& bcvalues)
 {
 
-
+	std::cout<<"bcindex = "<<std::endl;
+	for(auto it= bcindex.begin();it< bcindex.end();++it){
+		std::cout<<*it<<" ";
+		}
 	UInt id1,id3;
 
 	UInt nnodes = mesh_.num_nodes();
@@ -419,8 +422,8 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
 
 
     	//Appling border conditions if necessary
-    	std::cout<<"Appling border conditions if necessary"<<std::endl;
     	if(regressionData_.getDirichletIndices().size() != 0){
+    	std::cout<<"Appling border conditions if necessary"<<std::endl;
     		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues());
     		std::cout<<"exit the if statement"<<std::endl;}
 	
