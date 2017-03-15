@@ -3,7 +3,7 @@
 
 
 template<UInt ORDER, typename Integrator, typename A>
-void Assembler<2,2>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,2>& mesh,
+void Assembler::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,2>& mesh,
 	                     FiniteElement<Integrator, ORDER,2,2>& fe, SpMat& OpMat)
 {
 	Real eps = 2.2204e-016,
@@ -45,7 +45,7 @@ void Assembler<2,2>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,2>& mes
 }
 
 template<UInt ORDER, typename Integrator>
-void Assembler<2,2>::forcingTerm(const MeshHandler<ORDER,2,2>& mesh,
+void Assembler::forcingTerm(const MeshHandler<ORDER,2,2>& mesh,
 	                     FiniteElement<Integrator, ORDER,2,2>& fe, const ForcingTerm& u, VectorXr& forcingTerm)
 {
 
@@ -84,7 +84,7 @@ void Assembler<2,2>::forcingTerm(const MeshHandler<ORDER,2,2>& mesh,
 //! Surface mesh implementation
 
 template<UInt ORDER, typename Integrator, typename A>
-void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mesh,
+void Assembler::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mesh,
 	                     FiniteElement<Integrator, ORDER,2,3>& fe, SpMat& OpMat)
 {
 	Real eps = 2.2204e-016,
@@ -135,7 +135,7 @@ void Assembler<2,3>::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mes
 	
 
 template<UInt ORDER, typename Integrator>
-void Assembler<2,3>::forcingTerm(const MeshHandler<ORDER,2,3>& mesh,
+void Assembler::forcingTerm(const MeshHandler<ORDER,2,3>& mesh,
 	                     FiniteElement<Integrator, ORDER,2,3>& fe, const ForcingTerm& u, VectorXr& forcingTerm)
 {
 

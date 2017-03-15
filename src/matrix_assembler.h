@@ -491,12 +491,8 @@ dot(const Function& a, const EOExpr<B>&  b){
 
 
 //!A Assmbler class: discretize a generic differential operator in a sparse matrix
-template<UInt mydim, UInt ndim>
+//template<UInt mydim, UInt ndim>
 class Assembler{
-};
-
-template<>
-class Assembler<2,2>{
 	private:
 
 	public:
@@ -517,6 +513,39 @@ class Assembler<2,2>{
 
 	  template<UInt ORDER, typename Integrator>
 	  static void forcingTerm(const MeshHandler<ORDER,2,2>& mesh, FiniteElement<Integrator, ORDER,2,2>& fe, const ForcingTerm& u, VectorXr& forcingTerm);
+	  
+	  template<UInt ORDER, typename Integrator, typename A>
+	  static void operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mesh,
+	  	                     FiniteElement<Integrator, ORDER,2,3>& fe, SpMat& OpMat);
+
+	  template<UInt ORDER, typename Integrator>
+	  static void forcingTerm(const MeshHandler<ORDER,2,3>& mesh, FiniteElement<Integrator, ORDER,2,3>& fe, const ForcingTerm& u, VectorXr& forcingTerm);
+
+
+};
+/*
+template<>
+class Assembler<2,2>{
+	private:
+
+	public:
+	  //! A constructor
+	  //Assembler (){};
+	  //! A template member taking three arguments: discretize differential operator
+	  //!
+	  // \param oper is a template expression : the differential operator to be discretized.
+	  // \param mesh is const reference to a MeshHandler<ORDER>: the mesh where we want to discretize the operator.
+	  // \param fe is a const reference to a FiniteElement
+	  // stores the discretization in SPoper_mat_
+	  
+
+	  //Return triplets vector
+	  template<UInt ORDER, typename Integrator, typename A>
+	  static void operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,2>& mesh,
+	  	                     FiniteElement<Integrator, ORDER,2,2>& fe, SpMat& OpMat);
+
+	  template<UInt ORDER, typename Integrator>
+	  static void forcingTerm(const MeshHandler<ORDER,2,2>& mesh, FiniteElement<Integrator, ORDER,2,2>& fe, const ForcingTerm& u, VectorXr& forcingTerm);
 
 	};
 	
@@ -529,12 +558,12 @@ class Assembler<2,3>{
 	  //! A constructor
 	  //Assembler (){};
 	  //! A template member taking three arguments: discretize differential operator
-	  /*!
-	   * \param oper is a template expression : the differential operator to be discretized.
-	   * \param mesh is const reference to a MeshHandler<ORDER>: the mesh where we want to discretize the operator.
-	   * \param fe is a const reference to a FiniteElement
-	   * stores the discretization in SPoper_mat_
-	   */
+	  //!
+	  // \param oper is a template expression : the differential operator to be discretized.
+	  // \param mesh is const reference to a MeshHandler<ORDER>: the mesh where we want to discretize the operator.
+	  // \param fe is a const reference to a FiniteElement
+	  // stores the discretization in SPoper_mat_
+	  //
 
 	  //Return triplets vector
 	  template<UInt ORDER, typename Integrator, typename A>
@@ -544,7 +573,7 @@ class Assembler<2,3>{
 	  template<UInt ORDER, typename Integrator>
 	  static void forcingTerm(const MeshHandler<ORDER,2,3>& mesh, FiniteElement<Integrator, ORDER,2,3>& fe, const ForcingTerm& u, VectorXr& forcingTerm);
 
-	};
+	};*/
 
 
 

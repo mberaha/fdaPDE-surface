@@ -395,9 +395,9 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
     //std::cout<<"Block Data"<<DMat_<<std::endl;
 
     std::cout<<"calling assembler stiff"<<std::endl;
-    Assembler<mydim,ndim>::operKernel(stiff, mesh_, fe, AMat_);
+    Assembler::operKernel(stiff, mesh_, fe, AMat_);
     std::cout<<"calling assembler mass"<<std::endl;
-    Assembler<mydim,ndim>::operKernel(mass, mesh_, fe, MMat_);
+    Assembler::operKernel(mass, mesh_, fe, MMat_);
 
     VectorXr rightHandData;
     getRightHandData(rightHandData);
@@ -502,8 +502,8 @@ if(mydim!=2 || ndim !=2){
     const Real& c = regressionData_.getC();
     const Eigen::Matrix<Real,2,2>& K = regressionData_.getK();
     const Eigen::Matrix<Real,2,1>& beta = regressionData_.getBeta();
-    Assembler<2,2>::operKernel(c*mass+stiff[K]+dot(beta,grad), mesh_, fe, AMat_);
-    Assembler<2,2>::operKernel(mass, mesh_, fe, MMat_);
+    Assembler::operKernel(c*mass+stiff[K]+dot(beta,grad), mesh_, fe, AMat_);
+    Assembler::operKernel(mass, mesh_, fe, MMat_);
 
     VectorXr rightHandData;
     getRightHandData(rightHandData);
@@ -603,13 +603,13 @@ if(mydim!=2 || ndim !=2){
     const Reaction& c = regressionData_.getC();
     const Diffusivity& K = regressionData_.getK();
     const Advection& beta = regressionData_.getBeta();
-    Assembler<2,2>::operKernel(c*mass+stiff[K]+dot(beta,grad), mesh_, fe, AMat_);
-    Assembler<2,2>::operKernel(mass, mesh_, fe, MMat_);
+    Assembler::operKernel(c*mass+stiff[K]+dot(beta,grad), mesh_, fe, AMat_);
+    Assembler::operKernel(mass, mesh_, fe, MMat_);
 
     const ForcingTerm& u = regressionData_.getU();
     //for(auto i=0;i<18;i++) std::cout<<u(i)<<std::endl;
     VectorXr forcingTerm;
-    Assembler<2,2>::forcingTerm(mesh_,fe, u, forcingTerm);
+    Assembler::forcingTerm(mesh_,fe, u, forcingTerm);
 
     VectorXr rightHandData;
     getRightHandData(rightHandData);
