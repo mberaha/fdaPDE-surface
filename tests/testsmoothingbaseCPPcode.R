@@ -12,6 +12,7 @@ source("../R/fdaPDE.smoothing_R.R")
 source("../R/fdaPDE.locator.R")
 source("../R/mesh.2D.R")
 source("../R/zzz.R")
+source("../R/fdaPDE.smoothing.manifold_CPP.R")
 dyn.load("../src/fdaPDE.so") 
 
 
@@ -37,7 +38,7 @@ mydim=2
 output_CPP = smooth.FEM.basis(locations  = as.matrix(locations), 
                               observations = data, 
                               FEMbasis = FEMbasis, lambda = lambda, 
-                              covariates = covariates,ndim=ndim,mydim=mydim, 
+                              covariates = covariates, 
                               GCV = TRUE,
                               CPP_CODE = TRUE)
 

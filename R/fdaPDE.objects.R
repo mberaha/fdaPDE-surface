@@ -26,25 +26,30 @@
 
 create.FEM.basis = function(mesh)
 {
-  if (class(mesh)!="MESH2D")
-    stop("'mesh' is not of class 'MESH2D'")
+  if (class(mesh)=="MESH2D"){
+	  
+	  #  The number of basis functions corresponds to the number of vertices
+	  #  for order = 1, and to vertices plus edge midpoints for order = 2
+	  
+	  nbasis = dim(mesh$nodes)[[1]]
+	  eleProp = R_elementProperties(mesh)
+	  
+	  #eleProp = NULL
+	  #if(CPP_CODE == FALSE)
+	  #{
+	  #  eleProp = R_elementProperties(mesh)
+	  #}
+	  
+	  FEMbasis = list(mesh = mesh, order = as.integer(mesh$order), nbasis = nbasis, detJ=eleProp$detJ, transf = eleProp$transf, metric = eleProp$metric)
+	  class(FEMbasis) = "FEMbasis"
+	  
+	  FEMbasis
+  } else if (class(mesh) == "SURFACE_MESH"){
   
-  #  The number of basis functions corresponds to the number of vertices
-  #  for order = 1, and to vertices plus edge midpoints for order = 2
-  
-  nbasis = dim(mesh$nodes)[[1]]
-  eleProp = R_elementProperties(mesh)
-  
-  #eleProp = NULL
-  #if(CPP_CODE == FALSE)
-  #{
-  #  eleProp = R_elementProperties(mesh)
-  #}
-  
-  FEMbasis = list(mesh = mesh, order = as.integer(mesh$order), nbasis = nbasis, detJ=eleProp$detJ, transf = eleProp$transf, metric = eleProp$metric)
-  class(FEMbasis) = "FEMbasis"
-  
-  FEMbasis
+  	  FEMbasis = list(mesh = mesh, oreder = as.integer(mesh$order),nbasis = mesh$nnodes)
+  	  class(FEMbasis) = "FEMbasis"
+  	  FEMbasis
+  	}
 }
 
 
@@ -145,4 +150,28 @@ image.FEM = function(x, num_refinements = NULL, ...)
   }else{
     R_image.ORDN.FEM(x, num_refinements, ...)
   }
+}
+
+
+# this function takes as input
+# nodes: a nnodes x 3 matrix specifying the locations of each node
+# triangles: a ntriangles x 3*order matrix specifying the indices of the nodes
+#            composing each triangle
+# order: specifies the order of finite elements used, might be order=1 or order=2
+#	 default is order = 1
+
+create.surface.mesh<- function(nodes, triangles, order = 1)
+{ 
+  nnodes = dim(nodes)[1]
+  	
+  ntriangles = dim(triangles)[1]
+ 
+  if(dim(triangles)[2]!= 3*order){
+  	stop("triangle matrix has wrong number of columns, they should be 3*order \n")
+  	}
+  out = list(nnodes=nnodes, ntriangles=ntriangles, nodes=c(t(nodes)), triangles = c(t(triangles)), order=order)
+  
+  class(out)<-"SURFACE_MESH"
+  
+  return(out)
 }

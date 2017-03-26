@@ -60,12 +60,23 @@
 #' print(ZincMeuseCovar$beta)
 
 
-smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, covariates = NULL,ndim,mydim, BC = NULL, GCV = FALSE, CPP_CODE = TRUE)
+smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, covariates = NULL, BC = NULL, GCV = FALSE, CPP_CODE = TRUE)
 {
  
-  ##################### Checking parameters, sizes and conversion ################################
-  checkSmoothingParameters(locations, observations, FEMbasis, lambda, covariates, BC, GCV, CPP_CODE, PDE_parameters_constant = NULL, PDE_parameters_func = NULL)
-  
+ if(class(FEMbasis$mesh) == "MESH2D"){
+ 	ndim = 2
+ 	mydim = 2
+ }else if(class(FEMbasis$mesh) == 'SURFACE_MESH'){
+ 	ndim = 3
+ 	mydim = 2
+ }else{
+ 	stop('Unknown mesh class')
+ }
+ 
+ 	  
+##################### Checking parameters, sizes and conversion ################################
+#MODIFICARE PER SURFACE_MESH
+  checkSmoothingParameters(locations, observations, FEMbasis, lambda, covariates, BC, GCV, CPP_CODE, PDE_parameters_constant = NULL, PDE_parameters_func = NULL) 
   ## Coverting to format for internal usage
   if(!is.null(locations))
     locations = as.matrix(locations)
@@ -78,28 +89,39 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
     BC$BC_indices = as.matrix(BC$BC_indices)
     BC$BC_values = as.matrix(BC$BC_values)
   }
-  
-  checkSmoothingParametersSize(locations, observations, FEMbasis, lambda, covariates, BC, GCV, CPP_CODE, PDE_parameters_constant = NULL, PDE_parameters_func = NULL)
-  ################## End checking parameters, sizes and conversion #############################
-  
-  
-  bigsol = NULL
-  if(CPP_CODE == FALSE)
-  {
-    print('R Code Execution')
-    if(!is.null(BC))
-    {
-      stop('If you want to use Dirichlet boundary conditions, please set CPP_CODE = TRUE')
-    }
-    
-    bigsol = R_smooth.FEM.basis(locations, observations, FEMbasis, lambda, covariates, GCV)   
-  }else
-  {
-    print('C++ Code Execution')
-    bigsol = CPP_smooth.FEM.basis(locations, observations, FEMbasis, lambda, covariates,ndim,mydim, BC, GCV)
+#MODIFICARE PER SURFACE_MESH	  
+  checkSmoothingParametersSize(locations, observations, FEMbasis, lambda, covariates, BC, GCV, CPP_CODE, PDE_parameters_constant = NULL, PDE_parameters_func = NULL, ndim, mydim)
+	  ################## End checking parameters, sizes and conversion #############################
+	  
+  if(class(FEMbasis$mesh) == 'MESH2D'){	  
+  	bigsol = NULL
+  	if(CPP_CODE == FALSE)
+	  {
+	    print('R Code Execution')
+	    if(!is.null(BC))
+	    {
+	      stop('If you want to use Dirichlet boundary conditions, please set CPP_CODE = TRUE')
+	    }
+	    
+	    bigsol = R_smooth.FEM.basis(locations, observations, FEMbasis, lambda, covariates, GCV)   
+	  }else
+	  { 
+	    print('C++ Code Execution')
+	    bigsol = CPP_smooth.FEM.basis(locations, observations, FEMbasis, lambda, covariates, ndim, mydim, BC, GCV)
+	  }
+	  
+	  numnodes = nrow(FEMbasis$mesh$nodes)
+	  
+  } else if(class(FEMbasis$mesh) == 'SURFACE_MESH'){
+
+	  bigsol = NULL  
+	  
+	  print('C++ Code Execution')
+	  bigsol = CPP_smooth.manifold.FEM.basis(locations, observations, mesh, lambda, covariates, ndim, mydim, BC, GCV)
+	  
+	  numnodes = FEMbasis$mesh$nnodes
   }
   
-  numnodes = nrow(FEMbasis$mesh$nodes)
   
   f = bigsol[[1]][1:numnodes,]
   g = bigsol[[1]][(numnodes+1):(2*numnodes),]
@@ -109,10 +131,10 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
   PDEmisfit.FEM = FEM(g, FEMbasis)  
   
   reslist = NULL
-  beta = getBetaCoefficients(locations, observations, fit.FEM, covariates, CPP_CODE,ndim,mydim)
+  beta = getBetaCoefficients(locations, observations, fit.FEM, covariates, CPP_CODE, ndim, mydim)
   if(GCV == TRUE)
   {
-    seq=getGCV(locations = locations, observations = observations, fit.FEM = fit.FEM, covariates = covariates, edf = bigsol[[2]],ndim,mydim)
+    seq=getGCV(locations = locations, observations = observations, fit.FEM = fit.FEM, covariates = covariates, edf = bigsol[[2]], ndim, mydim)
     reslist=list(fit.FEM=fit.FEM,PDEmisfit.FEM=PDEmisfit.FEM, beta = beta, edf = bigsol[[2]], stderr = seq$stderr, GCV = seq$GCV)
   }else{
     reslist=list(fit.FEM=fit.FEM,PDEmisfit.FEM=PDEmisfit.FEM, beta = beta)
@@ -399,7 +421,7 @@ getBetaCoefficients<-function(locations, observations, fit.FEM, covariates, CPP_
       fnhat = as.matrix(fit.FEM$coeff[loc_nodes,])
     }else{
       loc_nodes = 1:length(observations)
-      fnhat = eval.FEM(FEM = fit.FEM, locations = locations, CPP_CODE,ndim,mydim)
+      fnhat = eval.FEM(FEM = fit.FEM, locations = locations, CPP_CODE)
     }
     ## #row number of covariates, #col number of functions
     betahat = matrix(0, nrow = ncol(covariates), ncol = ncol(fnhat))
@@ -424,7 +446,7 @@ getGCV<-function(locations, observations, fit.FEM, covariates = NULL, edf,ndim,m
     fnhat = as.matrix(fit.FEM$coeff[loc_nodes,])
   }else{
     loc_nodes = 1:length(observations)
-    fnhat = eval.FEM(FEM = fit.FEM, locations = locations, CPP_CODE = FALSE,ndim,mydim)
+    fnhat = eval.FEM(FEM = fit.FEM, locations = locations, CPP_CODE = FALSE)
   }
   
   zhat = NULL

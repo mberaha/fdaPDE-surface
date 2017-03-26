@@ -11,7 +11,7 @@
 #' @references 
 #'  Devillers, O. et al. 2001. Walking in a Triangulation, Proceedings of the Seventeenth Annual Symposium on Computational Geometry
 
-eval.FEM <- function(FEM, locations, CPP_CODE = TRUE,ndim,mydim)
+eval.FEM <- function(FEM, locations, CPP_CODE = TRUE)
 {
   if (is.null(FEM)) 
     stop("FEM required;  is NULL.")
@@ -26,17 +26,27 @@ eval.FEM <- function(FEM, locations, CPP_CODE = TRUE,ndim,mydim)
   
   locations = as.matrix(locations)
   
-  if(ncol(locations) != 2)
-    stop("'locations' must be a 2-columns matrix")
+  if(ncol(locations) != ndim)
+    stop("'locations' and the space dimensions do not coincide")
   
   res = NULL
-  if(CPP_CODE == FALSE)
-  {
-    res = R_eval.FEM(FEM, locations)
-  }else
-  {
-    res = CPP_eval.FEM(FEM, locations, TRUE,ndim,mydim)
-  }
   
+  if(class(FEM$FEMbasis$mesh)=="MESH2D"){
+  
+	  if(CPP_CODE == FALSE)
+	  {
+	    res = R_eval.FEM(FEM, locations)
+	  }else
+	  { 
+	    ndim = 2
+	    mydim = 2
+	    res = CPP_eval.FEM(FEM, locations, TRUE, ndim, mydim)
+	  }
+  }else if(class(FEM$FEMbasis$mesh)=="SURFACE_MESH"){
+  	    ndim = 3
+  	    mydim = 2
+  	    #da scrivere!
+  	    res = CPP_eval.manifold.FEM(FEM, locations, TRUE, ndim, mydim)
+  	  }
   return(as.matrix(res))
 }

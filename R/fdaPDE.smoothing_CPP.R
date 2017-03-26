@@ -1,6 +1,6 @@
 
 
-CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covariates = NULL,ndim,mydim, BC = NULL, GCV)
+CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covariates = NULL, ndim, mydim, BC = NULL, GCV)
 {
   # Indexes in C++ starts from 0, in R from 1, opportune transformation
   ##TO BE CHANGED SOON: LOW PERFORMANCES, IMPLIES COPY OF PARAMETERS
@@ -19,11 +19,11 @@ CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covari
   }
   
   if(is.null(BC$BC_indices))
-  {
+  { 
     BC$BC_indices<-vector(length=0)
   }else
-  {
-    BC$BC_indices<-as.vector(BC$BC_indices)-1
+  { #the conversion of these indices is done in c++ now
+    BC$BC_indices<-as.vector(BC$BC_indices)
   }
   
   if(is.null(BC$BC_values))
@@ -90,7 +90,8 @@ CPP_smooth.FEM.PDE.basis<-function(locations, observations, FEMbasis, lambda, PD
     BC$BC_indices<-vector(length=0)
   }else
   {
-    BC$BC_indices<-as.vector(BC$BC_indices)-1
+    #BC$BC_indices<-as.vector(BC$BC_indices)-1
+    BC$BC_indices<-as.vector(BC$BC_indices)
   }
   
   if(is.null(BC$BC_values))
@@ -158,7 +159,7 @@ CPP_smooth.FEM.PDE.sv.basis<-function(locations, observations, FEMbasis, lambda,
     BC$BC_indices<-vector(length=0)
   }else
   {
-    BC$BC_indices<-as.vector(BC$BC_indices)-1
+    BC$BC_indices<-as.vector(BC$BC_indices)
   }
   
   if(is.null(BC$BC_values))
