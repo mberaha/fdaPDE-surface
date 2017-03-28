@@ -21,7 +21,7 @@ order = 1
 
 #FEMbasis = create.FEM.basis(mesh)
 
-lambda = c(0.1)
+lambda = c(1, 0.5, 0.1)
 
 filename = 'Caramella.csv'
 
