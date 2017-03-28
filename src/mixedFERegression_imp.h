@@ -427,17 +427,12 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
     	//Appling border conditions if necessary
     	if(regressionData_.getDirichletIndices().size() != 0){
     	std::cout<<"Appling border conditions if necessary"<<std::endl;
-    		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues(), coeffmatrix_lambda);
-    		std::cout<<"exit the if statement"<<std::endl;}
-	std::cout<<"coeffmatrix="<<coeffmatrix_lambda<<std::endl;
-	std::cout<<"righthandside="<<this->_b<<std::endl;
-	std::cout<<"About to solve with SpLU"<<std::endl;
+    		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues(), coeffmatrix_lambda);}
+    		
     	//prova.solveSystem<SpConjGrad>();
     	this-> template solve<SpLU>(i, coeffmatrix_lambda);
 	if(regressionData_.computeDOF()){
-		std::cout<<"entered if condition"<<std::endl;
-    		computeDegreesOfFreedom(i, coeffmatrix_lambda);
-		std::cout<<"computed degrees of fredom"<<std::endl;
+		computeDegreesOfFreedom(i, coeffmatrix_lambda);
     	}else
     		_dof[i] = -1;
 
