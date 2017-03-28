@@ -2,8 +2,8 @@ CXX = g++
 CC = gcc
 RR = R CMD SHLIB
 CFLAGS = -std=c11 -fPIC -I. -I/usr/include/R/
-CXXFLAGS = -std=c++11 -fPIC -I. -I${mkEigenInc} -I/usr/include/R/ -fpermissive
-RFLAGS = -fPIC -lstdc++ -Wl,-z,defs
+CXXFLAGS = -std=c++11 -fopenmp -fPIC -I. -I${mkEigenInc} -I/usr/include/R/ -fpermissive
+RFLAGS = -fPIC -lstdc++ -fopenmp -Wl,-z,defs
 LDFLAGS = -lm
 
 

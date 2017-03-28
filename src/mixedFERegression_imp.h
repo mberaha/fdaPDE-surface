@@ -5,7 +5,7 @@
 
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
-void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::buildCoeffMatrix(const SpMat& DMat,  const SpMat& AMat,  const SpMat& MMat)
+void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::buildCoeffMatrix(const SpMat& DMat,  const SpMat& AMat,  const SpMat& MMat, SpMat& coeffmatrix)
 {
 	//I reserve the exact memory for the nonzero entries of each row of the coeffmatrix for boosting performance
 	//_coeffmatrix.setFromTriplets(tripletA.begin(),tripletA.end());
@@ -36,15 +36,15 @@ void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::buildCoeffMa
 		  tripletAll.push_back(coeff(it.row()+nnodes, it.col(), it.value()));
 	  }
 
-	_coeffmatrix.setZero();
-	_coeffmatrix.resize(2*nnodes,2*nnodes);
-	_coeffmatrix.setFromTriplets(tripletAll.begin(),tripletAll.end());
-	_coeffmatrix.makeCompressed();
+	coeffmatrix.setZero();
+	coeffmatrix.resize(2*nnodes,2*nnodes);
+	coeffmatrix.setFromTriplets(tripletAll.begin(),tripletAll.end());
+	coeffmatrix.makeCompressed();
 	std::cout<<"Coefficients' Matrix Set Correctly"<<std::endl;
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
-void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::addDirichletBC(const vector<int>& bcindex, const vector<Real>& bcvalues)
+void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::addDirichletBC(const vector<int>& bcindex, const vector<Real>& bcvalues, SpMat& coeffmatrix)
 {
 
 	std::cout<<"bcindex = "<<std::endl;
@@ -68,15 +68,15 @@ void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::addDirichlet
 
 			//_coeffmatrix.prune([id1,id3](int i, int j, Real) { return (i!=id1 && i!=id3); });
 
-			_coeffmatrix.coeffRef(id1,id1)=pen;
-			_coeffmatrix.coeffRef(id3,id3)=pen;
+			coeffmatrix.coeffRef(id1,id1)=pen;
+			coeffmatrix.coeffRef(id3,id3)=pen;
 
 
 			_b(id1)+=bc_values[i]*pen;
 			_b(id3)=0;
 	 }
 
-	_coeffmatrix.makeCompressed();
+	coeffmatrix.makeCompressed();
 	std::cout<<"BC added Correctly"<<std::endl;
 
 }
@@ -274,14 +274,14 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::getRightHandDa
 
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
-void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::computeDegreesOfFreedom(UInt output_index)
+void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::computeDegreesOfFreedom(UInt output_index, SpMat& coeffmatrix)
 {
 	UInt nnodes = mesh_.num_nodes();
 	UInt nlocations = regressionData_.getNumberofObservations();
 
 	Eigen::SparseLU<SpMat> solver;
-	solver.compute(_coeffmatrix);
-	SpMat I(_coeffmatrix.rows(),_coeffmatrix.cols());
+	solver.compute(coeffmatrix);
+	SpMat I(coeffmatrix.rows(),coeffmatrix.cols());
 	I.setIdentity();
 	SpMat coeff_inv = solver.solve(I);
 
@@ -408,31 +408,37 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
     _solution.resize(regressionData_.getLambda().size());
     _dof.resize(regressionData_.getLambda().size());
 
+#pragma omp parallel for 
     for(UInt i = 0; i<regressionData_.getLambda().size(); ++i)
 	{
+		std::cout<<" we are in thread: "<< omp_get_thread_num()<<" of threads "<<omp_get_num_threads()<<std::endl;
     	//build(tripletsData_,(-regressionData_.getLambda())*stiff, (-regressionData_.getLambda())*mass, righthand, forcing);
 
     	Real lambda = regressionData_.getLambda()[i];
     	SpMat AMat_lambda = (-lambda)*AMat_;
     	SpMat MMat_lambda = (-lambda)*MMat_;
     	std::cout<<"about to build CoeffMatrix"<<std::endl;
-    	this->buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda);
+    	//this->buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda);
 
-    	//std::cout<<"AMat"<<std::endl<<_coeffmatrix<<std::endl;
+	SpMat coeffmatrix_lambda;
+	buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda, coeffmatrix_lambda);
 
 
     	//Appling border conditions if necessary
     	if(regressionData_.getDirichletIndices().size() != 0){
     	std::cout<<"Appling border conditions if necessary"<<std::endl;
-    		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues());
+    		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues(), coeffmatrix_lambda);
     		std::cout<<"exit the if statement"<<std::endl;}
-	
+	std::cout<<"coeffmatrix="<<coeffmatrix_lambda<<std::endl;
+	std::cout<<"righthandside="<<this->_b<<std::endl;
 	std::cout<<"About to solve with SpLU"<<std::endl;
     	//prova.solveSystem<SpConjGrad>();
-    	this-> template solve<SpLU>(i);
-    	if(regressionData_.computeDOF())
-    		computeDegreesOfFreedom(i);
-    	else
+    	this-> template solve<SpLU>(i, coeffmatrix_lambda);
+	if(regressionData_.computeDOF()){
+		std::cout<<"entered if condition"<<std::endl;
+    		computeDegreesOfFreedom(i, coeffmatrix_lambda);
+		std::cout<<"computed degrees of fredom"<<std::endl;
+    	}else
     		_dof[i] = -1;
 
 	}
@@ -513,7 +519,7 @@ if(mydim!=2 || ndim !=2){
 
     _solution.resize(regressionData_.getLambda().size());
     _dof.resize(regressionData_.getLambda().size());
-
+#pragma omp parallel for
     for(UInt i = 0; i<regressionData_.getLambda().size(); ++i)
 	{
     	//build(tripletsData_,(-regressionData_.getLambda())*stiff, (-regressionData_.getLambda())*mass, righthand, forcing);
@@ -521,19 +527,21 @@ if(mydim!=2 || ndim !=2){
     	Real lambda = regressionData_.getLambda()[i];
     	SpMat AMat_lambda = (-lambda)*AMat_;
     	SpMat MMat_lambda = (-lambda)*MMat_;
-    	this->buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda);
+    	//this->buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda);
 
+	SpMat coeffmatrix_lambda;
+	buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda, coeffmatrix_lambda);
     	//std::cout<<"AMat"<<std::endl<<_coeffmatrix;
 
 
     	//Appling border conditions if necessary
     	if(regressionData_.getDirichletIndices().size() != 0)
-    		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues());
+    		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues(), coeffmatrix_lambda);
 
     	//prova.solveSystem<SpConjGrad>();
-    	this-> template solve<SpLU>(i);
+    	this->template solve<SpLU>(i, coeffmatrix_lambda);
     	if(regressionData_.computeDOF())
-    		computeDegreesOfFreedom(i);
+    		computeDegreesOfFreedom(i,coeffmatrix_lambda);
     	else
     		_dof[i] = -1;
 
@@ -619,7 +627,7 @@ if(mydim!=2 || ndim !=2){
 
     _solution.resize(regressionData_.getLambda().size());
     _dof.resize(regressionData_.getLambda().size());
-
+#pragma omp parallel for
     for(UInt i = 0; i<regressionData_.getLambda().size(); ++i)
 	{
     	//build(tripletsData_,(-regressionData_.getLambda())*stiff, (-regressionData_.getLambda())*mass, righthand, forcing);
@@ -627,7 +635,10 @@ if(mydim!=2 || ndim !=2){
     	Real lambda = regressionData_.getLambda()[i];
     	SpMat AMat_lambda = (-lambda)*AMat_;
     	SpMat MMat_lambda = (-lambda)*MMat_;
-    	this->buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda);
+    	//this->buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda);
+
+	SpMat coeffmatrix_lambda;
+	buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda, coeffmatrix_lambda);
 
         //std::cout<<"Forcing Term "<<std::cout<<forcingTerm<<"END";
         _b.bottomRows(nnodes)=lambda*forcingTerm;
@@ -637,14 +648,14 @@ if(mydim!=2 || ndim !=2){
 
     	//Appling border conditions if necessary
     	if(regressionData_.getDirichletIndices().size() != 0)
-    		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues());
+    		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues(), coeffmatrix_lambda);
 
     	//prova.solveSystem<SpConjGrad>();
 
     	//std::cout<< _coeffmatrix;
-    	this-> template solve<SpLU>(i);
+    	this-> template solve<SpLU>(i, coeffmatrix_lambda);
     	if(regressionData_.computeDOF())
-    		computeDegreesOfFreedom(i);
+    		computeDegreesOfFreedom(i,coeffmatrix_lambda);
     	else
     		_dof[i] = -1;
 
@@ -657,11 +668,11 @@ if(mydim!=2 || ndim !=2){
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
 template <typename P>
-void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::solve(UInt output_index)
+void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::solve(UInt output_index, SpMat& coeffmatrix)
 {
 	//std::cout<<this->_coeffmatrix;
-	this->_solution[output_index].resize(this->_coeffmatrix.rows());
-	P::solve(this->_coeffmatrix,this->_b,this->_solution[output_index]);
+	this->_solution[output_index].resize(coeffmatrix.rows());
+	P::solve(coeffmatrix,this->_b,this->_solution[output_index]);
 }
 
 #endif

@@ -36,7 +36,7 @@ class MixedFERegression{
 		void setQ();
 		void setH();
 
-		void buildCoeffMatrix(const SpMat& DMat,  const SpMat& AMat,  const SpMat& MMat);
+		void buildCoeffMatrix(const SpMat& DMat,  const SpMat& AMat,  const SpMat& MMat, SpMat& coeffmatrix);
 
 	public:
 		//!A Constructor.
@@ -73,7 +73,7 @@ class MixedFERegression{
 		*/
 
 		template<typename P>
-		void solve(UInt output_index);
+		void solve(UInt output_index, SpMat& coeffmatrix);
 		//! A inline member that returns a VectorXr, returns the whole _solution. 
 		inline std::vector<VectorXr> const & getSolution() const{return _solution;};
 		inline std::vector<Real> const & getDOF() const{return _dof;};
@@ -89,11 +89,11 @@ class MixedFERegression{
 		\param bcvalues is a const reference to vector<double> : the values of the boundary conditions relative to bcindex.
 		\the method modifies _coeffmatrix and _b
 		*/		
-		void addDirichletBC(const vector<int>& bcindex, const vector<Real>& bcvalues);
+		void addDirichletBC(const vector<int>& bcindex, const vector<Real>& bcvalues,  SpMat& coeffmatrix);
 		void getDataMatrix(SpMat& DMat);
 		void getDataMatrixByIndices(SpMat& DMat);
 		void getRightHandData(VectorXr& rightHandData);
-		void computeDegreesOfFreedom(UInt output_index);
+		void computeDegreesOfFreedom(UInt output_index, SpMat& coeffmatrix);
 };
 
 #include "mixedFERegression_imp.h"

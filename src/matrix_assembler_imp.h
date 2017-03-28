@@ -97,7 +97,6 @@ void Assembler::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mesh,
 		fe.updateElement(mesh.getTriangle(t));
 		//std::cout<<"tiangle = ";
 		//mesh.getTriangle(t).print(std::cout);
-		std::cout<<" "<<std::endl;
 
 		// Vector of vertices indices (link local to global indexing system)
 		std::vector<UInt> identifiers;
