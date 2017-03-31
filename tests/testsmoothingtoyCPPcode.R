@@ -13,6 +13,7 @@ source("../R/fdaPDE.locator.R")
 source("../R/mesh.2D.R")
 source("../R/zzz.R")
 source("../R/fdaPDE.smoothing.manifold_CPP.R")
+source("../R/fdaPDE.plot.mesh_R.R")
 dyn.load("../src/fdaPDE.so") 
 
 
@@ -21,8 +22,7 @@ order = 1
 
 #FEMbasis = create.FEM.basis(mesh)
 
-lambda = c(1, 0.5, 0.1, 0.01)
-
+lambda = c(1)
 filename = 'Caramella.csv'
 
 read.mesh<-function(filename){
@@ -39,7 +39,11 @@ read.mesh<-function(filename){
 mymesh=read.mesh(filename)
 
 
-locations = NULL
+locations=NULL
+locations=mymesh$nodes
+#locations = as.matrix(read.csv("locations.csv",sep=",",header = F))
+###### Create our observations ########
+
 data = read.csv('observation_caramella_by_index.csv',header=T)[,2]
 head(data) 
 covariates = NULL
@@ -51,12 +55,38 @@ mesh <- create.surface.mesh(mymesh$nodes, mymesh$triangles, order=1)
 
 FEMbasis <- create.FEM.basis(mesh)
 
-output_CPP = smooth.FEM.basis(observations = data, 
+locations=as.matrix(locations[1008:1009,])
+data=data[1008:1009]
+
+output_CPP = smooth.FEM.basis(locations = locations,
+                              observations = data, 
                               FEMbasis = FEMbasis, lambda = lambda, 
                               BC = BC,
                               GCV = TRUE,
                               CPP_CODE = TRUE)
 
+
+
+
 print(output_CPP$fit.FEM$coeff)
+plot.surface.mesh(mesh,output_CPP$fit.FEM$coeff)
 
+##############
 
+triangles = mymesh$triangles
+nodes = mymesh$nodes
+punti_strani = read.csv(file="../src/punti_strani.csv",header=F,sep=",")
+for (i in 1:dim(punti_strani[1])){
+  points3d(punti_strani[i,1],punti_strani[i,2],punti_strani[i,3],col="red",pch=100)
+}
+
+triangles[1008,]
+tail(punti_strani)
+punto_1 = nodes[triangles[1008,1],]
+punto_2 = nodes[triangles[1008,2],]
+punto_3 = nodes[triangles[1008,3],]
+
+A=matrix(rep(0,6),nrow=3)
+A[,1]=t(punto_2-punto_1)
+A[,2]=t(punto_3-punto_1)
+b=t(locations[1008,]-punto_1)

@@ -46,7 +46,7 @@ create.FEM.basis = function(mesh)
 	  FEMbasis
   } else if (class(mesh) == "SURFACE_MESH"){
   
-  	  FEMbasis = list(mesh = mesh, oreder = as.integer(mesh$order),nbasis = mesh$nnodes)
+  	  FEMbasis = list(mesh = mesh, order = as.integer(mesh$order),nbasis = mesh$nnodes)
   	  class(FEMbasis) = "FEMbasis"
   	  FEMbasis
   	}

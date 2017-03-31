@@ -212,7 +212,7 @@ CPP_smooth.FEM.PDE.sv.basis<-function(locations, observations, FEMbasis, lambda,
   return(bigsol)
 }
 
-CPP_eval.FEM = function(FEM, locations, redundancy,ndim,mydim)
+CPP_eval.FEM = function(FEM, locations, redundancy, ndim, mydim)
 {
   FEMbasis = FEM$FEMbasis
   # Indexes in C++ starts from 0, in R from 1, opportune transformation

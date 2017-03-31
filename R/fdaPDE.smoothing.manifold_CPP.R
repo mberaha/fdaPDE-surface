@@ -17,23 +17,27 @@ CPP_smooth.manifold.FEM.basis<-function(locations, observations, mesh, lambda, c
   {
     BC$BC_indices<-vector(length=0)
   }else
-  {
+  { cat("here BC \n")
     BC$BC_indices<-as.vector(BC$BC_indices)
+    cat("here BC 2\n")
   }
   
   if(is.null(BC$BC_values))
   {
     BC$BC_values<-vector(length=0)
   }else
-  {
+  { cat("here BC 3\n")
     BC$BC_values<-as.vector(BC$BC_values)
+    cat("here BC 4\n")
   }
   
   ## Set propr type for correct C++ reading
   locations <- as.matrix(locations)
+  cat("here locations \n")
   storage.mode(locations) <- "double"
-  data <- as.vector(data)
-  storage.mode(data) <- "double"
+  data <- as.vector(observations)
+  cat("here data \n")
+  storage.mode(observations) <- "double"
   storage.mode(order) <- "integer"
   storage.mode(mesh$nnodes) <- "integer"
   storage.mode(mesh$ntriangles) <- "integer"
@@ -55,6 +59,41 @@ CPP_smooth.manifold.FEM.basis<-function(locations, observations, mesh, lambda, c
                   order, mydim, ndim, lambda, covariates,
                   BC$BC_indices, BC$BC_values, GCV,
                   package = "fdaPDE")
+  cat("smoothing CPP done \n")
   return(bigsol)
+}
+
+CPP_eval.manifold.FEM = function(FEM, locations, redundancy, ndim, mydim)
+{
+  FEMbasis = FEM$FEMbasis
+  FEMbasis$mesh$triangles = FEMbasis$mesh$triangles - 1
+  # Indexes in C++ starts from 0, in R from 1, opportune transformation
+
+  # Imposing types, this is necessary for correct reading from C++
+  ## Set propr type for correct C++ reading
+  locations <- as.matrix(locations)
+  storage.mode(locations) <- "double"
+  storage.mode(FEMbasis$mesh$points) <- "double"
+  storage.mode(FEMbasis$mesh$triangles) <- "integer"
+  storage.mode(FEMbasis$order) <- "integer"
+  coeff = as.matrix(FEM$coeff)
+  storage.mode(coeff) <- "double"
+  storage.mode(ndim)<- "integer"
+  storage.mode(mydim)<- "integer"
+  storage.mode(locations) <- "double"
+  storage.mode(redundancy) <- "integer"
+  
+  #Calling the C++ function "eval_FEM_fd" in RPDE_interface.cpp
+  evalmat = matrix(0,nrow(locations),ncol(coeff))
+  cat("entering for loop \n")
+    for (i in 1:ncol(coeff)){
+      cat(".Call \n")
+      evalmat[,i] <- .Call("eval_FEM_fd", FEMbasis$mesh, locations[,1], locations[,2], locations[,3], coeff[,i], FEMbasis$order, redundancy, mydim, ndim,
+                         package = "fdaPDE")
+    }
+  
+  
+  #Returning the evaluation matrix
+  evalmat
 }
 
