@@ -113,17 +113,14 @@ void Assembler::operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mesh,
 					s += oper(fe,i,j,l) * std::sqrt(fe.getDet()) * fe.getAreaReference()* Integrator::WEIGHTS[l];
 				}
 			  triplets.push_back(coeff(identifiers[i],identifiers[j],s));
-			  
+			}
 		}
 
 	}
 
   	UInt nnodes = mesh.num_nodes();
-  	std::cout<<"nnodes = "<<nnodes<<std::endl;
   	OpMat.resize(nnodes, nnodes);
-  	std::cout<<"setting from triplets = "<<nnodes<<std::endl;
 	OpMat.setFromTriplets(triplets.begin(),triplets.end());
-	std::cout<<"done setting from triplets"<<nnodes<<std::endl;
 	OpMat.prune(tolerance);
 }
 
