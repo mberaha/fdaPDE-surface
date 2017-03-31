@@ -40,17 +40,12 @@ void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::buildCoeffMa
 	coeffmatrix.resize(2*nnodes,2*nnodes);
 	coeffmatrix.setFromTriplets(tripletAll.begin(),tripletAll.end());
 	coeffmatrix.makeCompressed();
-	std::cout<<"Coefficients' Matrix Set Correctly"<<std::endl;
+
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
 void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::addDirichletBC(const vector<int>& bcindex, const vector<Real>& bcvalues, SpMat& coeffmatrix)
 {
-
-	std::cout<<"bcindex = "<<std::endl;
-	for(auto it= bcindex.begin();it< bcindex.end();++it){
-		std::cout<<*it<<" ";
-		}
 	UInt id1,id3;
 
 	UInt nnodes = mesh_.num_nodes();
@@ -77,7 +72,6 @@ void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::addDirichlet
 	 }
 
 	coeffmatrix.makeCompressed();
-	std::cout<<"BC added Correctly"<<std::endl;
 
 }
 
@@ -97,7 +91,6 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::getDataMatrix(
 		{
 			DMat = (SpMat(psi_.transpose())*Q_*psi_).sparseView();
 		}
-		std::cout<<"Got Data Matrix Correctly"<<std::endl;
 
 }
 
@@ -131,7 +124,6 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::getDataMatrixB
 				}
 			}
 		}
-		std::cout<<"Got Data Matrix by Indeces Correctly"<<std::endl;
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
@@ -181,7 +173,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::setPsi(){
 
 		psi_.prune(tolerance);
 		psi_.makeCompressed();
-		std::cout<<"Psi set Correctly"<<std::endl;
+
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
@@ -194,7 +186,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::setQ()
 	{
 		Q_(i,i) += 1;
 	}
-	std::cout<<"Q set Correctly"<<std::endl;
+
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
@@ -227,7 +219,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::setH()
 	MatrixXr WTW(W.transpose()*W);
 
 	H_=W*WTW.ldlt().solve(W.transpose()); // using cholesky LDLT decomposition for computing hat matrix
-	std::cout<<"H set Correctly"<<std::endl;
+
 }
 
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
@@ -269,7 +261,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::getRightHandDa
 			rightHandData=psi_.transpose()*Q_*regressionData_.getObservations();
 		}
 	}
-	std::cout<<"Got Right Hand Data Correctly"<<std::endl;
+
 }
 
 
@@ -371,20 +363,17 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
 
 	if(!regressionData_.isLocationsByNodes())
 	{
-		std::cout<<"About to set Psi"<<std::endl;
 		setPsi();
 	}
 
 	if(!regressionData_.getCovariates().rows() == 0)
 	{
-		std::cout<<"About to set H and Q"<<std::endl;
 		setH();
 		setQ();
 	}
 
     if(!regressionData_.isLocationsByNodes())
     {
-    	std::cout<<"About to get Data Matrix"<<std::endl;
     	getDataMatrix(DMat_);
     }
     else
@@ -394,21 +383,19 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
     }
     //std::cout<<"Block Data"<<DMat_<<std::endl;
 
-    std::cout<<"calling assembler stiff"<<std::endl;
+
     Assembler::operKernel(stiff, mesh_, fe, AMat_);
-    std::cout<<"calling assembler mass"<<std::endl;
     Assembler::operKernel(mass, mesh_, fe, MMat_);
 
     VectorXr rightHandData;
     getRightHandData(rightHandData);
     _b = VectorXr::Zero(2*nnodes);
     _b.topRows(nnodes)=rightHandData;
-    //std::cout<<"b vector"<<_b;
 
     _solution.resize(regressionData_.getLambda().size());
     _dof.resize(regressionData_.getLambda().size());
 
-#pragma omp parallel for 
+#pragma omp parallel for
     for(UInt i = 0; i<regressionData_.getLambda().size(); ++i)
 	{
 		std::cout<<" we are in thread: "<< omp_get_thread_num()<<" of threads "<<omp_get_num_threads()<<std::endl;
@@ -417,7 +404,7 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
     	Real lambda = regressionData_.getLambda()[i];
     	SpMat AMat_lambda = (-lambda)*AMat_;
     	SpMat MMat_lambda = (-lambda)*MMat_;
-    	std::cout<<"about to build CoeffMatrix"<<std::endl;
+
     	//this->buildCoeffMatrix(DMat_, AMat_lambda, MMat_lambda);
 
 	SpMat coeffmatrix_lambda;
@@ -426,9 +413,8 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
 
     	//Appling border conditions if necessary
     	if(regressionData_.getDirichletIndices().size() != 0){
-    	std::cout<<"Appling border conditions if necessary"<<std::endl;
     		addDirichletBC(regressionData_.getDirichletIndices(), regressionData_.getDirichletValues(), coeffmatrix_lambda);}
-    		
+
     	//prova.solveSystem<SpConjGrad>();
     	this-> template solve<SpLU>(i, coeffmatrix_lambda);
 	if(regressionData_.computeDOF()){
@@ -437,13 +423,12 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
     		_dof[i] = -1;
 
 	}
-	std::cout<<"Solved!";
 
 }
 
 //Implementation kept from Sangalli et al
 //Templatization in this method is only partial! For the moment it only works in
-//the case mydim=ndim=2 
+//the case mydim=ndim=2
 template<typename InputHandler, typename Integrator, UInt ORDER, UInt mydim, UInt ndim>
 void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothEllipticPDE()
 {
@@ -455,7 +440,7 @@ if(mydim!=2 || ndim !=2){
 	#else
 		std::cout << "ERROR: these dimensions are not yet implemented, for the moment smoothEllipticPDE is available for mydim=ndim=2\n";
 	#endif
-	
+
 }else{
 	//std::cout<<"Elliptic PDE Penalization - Order: "<<ORDER<<std::endl;
 
@@ -549,7 +534,7 @@ if(mydim!=2 || ndim !=2){
 
 //Implementation kept from Sangalli et al
 //Templatization in this method is only partial! For the moment it only works in
-//the case mydim=ndim=2 
+//the case mydim=ndim=2
 template<typename InputHandler, typename Integrator, UInt ORDER,UInt mydim, UInt ndim>
 void MixedFERegression<InputHandler,Integrator,ORDER, mydim, ndim>::smoothEllipticPDESpaceVarying()
 {
@@ -561,7 +546,7 @@ if(mydim!=2 || ndim !=2){
 	#else
 		std::cout << "ERROR: these dimensions are not yet implemented, for the moment SpaceVarying is available for mydim=ndim=2\n";
 	#endif
-	
+
 }else{
 	//std::cout<<"Space-varying Coefficient - Elliptic PDE Penalization - Order: "<<ORDER<<std::endl;
 		//UInt ndata=regressionData_.getObservations().size();
