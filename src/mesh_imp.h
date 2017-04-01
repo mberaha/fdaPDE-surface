@@ -14,11 +14,11 @@ MeshHandler<ORDER,2,2>::MeshHandler(SEXP mesh)
 	edges_ 		= INTEGER(VECTOR_ELT(mesh_, 6));
 	triangles_  = INTEGER(VECTOR_ELT(mesh_, 3));
 	neighbors_  = INTEGER(VECTOR_ELT(mesh_, 8));
-	
+
 	num_nodes_ = INTEGER(Rf_getAttrib(VECTOR_ELT(mesh_, 0), R_DimSymbol))[0];
 	num_edges_ = INTEGER(Rf_getAttrib(VECTOR_ELT(mesh_, 6), R_DimSymbol))[0];
 	num_triangles_ = INTEGER(Rf_getAttrib(VECTOR_ELT(mesh_, 3), R_DimSymbol))[0];
-	
+
 }
 #endif
 
@@ -34,7 +34,7 @@ Edge MeshHandler<ORDER,2,2>::getEdge(Id id)
 {
 	Id id_start_point = edges_[id];
 	Id id_end_point = edges_[num_edges_+id];
-	Edge edge(id, Identifier::NVAL, Point(id_start_point, Identifier::NVAL, points_[id_start_point], points_[num_nodes_+id_start_point]), 
+	Edge edge(id, Identifier::NVAL, Point(id_start_point, Identifier::NVAL, points_[id_start_point], points_[num_nodes_+id_start_point]),
 						Point(id_end_point, Identifier::NVAL, points_[id_end_point], points_[num_nodes_+id_end_point]));
 	return edge;
 }
@@ -59,19 +59,19 @@ Triangle<ORDER * 3,2,2>MeshHandler<ORDER,2,2>::getNeighbors(Id id_triangle, UInt
 	Id id_neighbour = neighbors_[number * num_triangles_ + id_triangle];
 	//std::cout<<"Neighbour id "<< id_neighbour;
 	if (id_neighbour == -1) return Triangle<ORDER * 3,2,2>(); //Triangle with NVAL ID
-	
+
 	return getTriangle(id_neighbour);
 }
 
 template <UInt ORDER>
 Triangle<ORDER * 3,2,2> MeshHandler<ORDER,2,2>::findLocationNaive(Point point) const
 {
-	Triangle<ORDER * 3,2,2> current_triangle; 
+	Triangle<ORDER * 3,2,2> current_triangle;
 	//std::cout<<"Start searching point naively \n";
 	for(Id id=0; id < num_triangles_; ++id)
 	{
 		current_triangle = getTriangle(id);
-		if(current_triangle.isPointInside(point)) 
+		if(current_triangle.isPointInside(point))
 			return current_triangle;
 	}
 	//std::cout<<"Point not found \n";
@@ -96,8 +96,8 @@ Triangle<ORDER * 3,2,2> MeshHandler<ORDER,2,2>::findLocationWalking(const Point&
 		//std::cout<<"Direction "<<direction<<";";
 		current_triangle = getNeighbors(current_triangle.getId(), direction);
   	    //std::cout<<" ID "<<current_triangle.getId();
-	}	
-	
+	}
+
 	return current_triangle;
 }
 
@@ -134,49 +134,49 @@ void MeshHandler<ORDER,2,2>::printPoints(std::ostream & out)
 	for(UInt i = 0; i < num_nodes_; ++i)
 	{
 		out<<"-"<< i <<"-"<<"("<<points_[i]<<","<<points_[num_nodes_+i]<<")"<<std::endl<<"------"<<std::endl;
-	}	
+	}
 }
 
 template <UInt ORDER>
 void MeshHandler<ORDER,2,2>::printEdges(std::ostream & out)
 {
-	
+
 	out << "Numero lati: "<< num_edges_ <<std::endl;
-	for (UInt i = 0; i < num_edges_; ++i ) 
+	for (UInt i = 0; i < num_edges_; ++i )
 	{
 		out<<"Lato ("<<edges_[i]<<","<<edges_[num_edges_+i]<<")"<<std::endl;
 	}
-	
+
 }
 
 template <UInt ORDER>
 void MeshHandler<ORDER,2,2>::printTriangles(std::ostream & out)
 {
-	
+
 	out << "# Triangles: "<< num_triangles_ <<std::endl;
-	for (UInt i = 0; i < num_triangles_; ++i ) 
+	for (UInt i = 0; i < num_triangles_; ++i )
 	{
 		out<<"-"<< i <<"- ";
 		for( UInt k = 0; k < ORDER * 3; ++k)
 			out<<triangles_[k*num_triangles_ + i]<<"   ";
-		out<<std::endl;	
+		out<<std::endl;
 	}
-	
+
 }
 
 template <UInt ORDER>
 void MeshHandler<ORDER,2,2>::printNeighbors(std::ostream & out)
 {
-	
+
 	out << "# Neighbors list: "<< num_triangles_ <<std::endl;
-	for (UInt i = 0; i < num_triangles_; ++i ) 
+	for (UInt i = 0; i < num_triangles_; ++i )
 	{
 		out<<"-"<< i <<"- ";
 		for( UInt k = 0; k < 3; ++k)
 			out<<neighbors_[k*num_triangles_ + i]<<"   ";
-		out<<std::endl;	
+		out<<std::endl;
 	}
-	
+
 }
 
 //////////////////////////////////////////////////////////
@@ -191,11 +191,11 @@ MeshHandler<ORDER,2,3>::MeshHandler(SEXP mesh)
 	char* file=CHAR(STRING_ELT(mesh,0));
 	std::string filename(file);
 	importfromCSV(filename);
-	
+
 }*/
 template <UInt ORDER>
 MeshHandler<ORDER,2,3>::MeshHandler(SEXP mesh)
-{	
+{
 	mesh_ = mesh;
 	num_nodes_ = INTEGER(VECTOR_ELT(mesh_,0))[0];
 	num_triangles_ = INTEGER(VECTOR_ELT(mesh_,1))[0];
@@ -208,41 +208,41 @@ MeshHandler<ORDER,2,3>::MeshHandler(SEXP mesh)
 
 template <UInt ORDER>
 void MeshHandler<ORDER,2,3>::importfromCSV(std::string &filename){
-	
+
 	UInt nnodes;
 	UInt ntriangles;
 	UInt point_index;
 	std::string line;
 	std::string dummy;
 	char comma;
-	
+
 	std::ifstream file;
 	file.open(filename);
-	
-	
+
+
 	// Read the number of points
 	getline(file,line);
 	std::istringstream ss(line);
-	
+
 	ss >> dummy; // throw away "num_points"
 	ss >> nnodes;
 
 	num_nodes_ = nnodes;
 	points_.resize(3*nnodes);
-	
+
 	// Read the number of points
 	getline(file,line);
 	std::istringstream ss2(line);
-	
+
 	ss2 >> dummy; // throw away "num_triangles"
 	ss2 >> ntriangles;
-	
+
 	num_triangles_ = ntriangles;
 	triangles_.resize(3*ORDER*ntriangles);
-	 
-	
+
+
 	getline(file,line); //skip a white line
-	
+
 	// READ THE VERTICES MATRIX
 	std::cout<<"reading the nodes"<<"\n";
 	for(UInt i=0; i<nnodes; ++i){
@@ -254,13 +254,13 @@ void MeshHandler<ORDER,2,3>::importfromCSV(std::string &filename){
 		ss>>comma;
 		ss>>points_[3*i+2];
 	};
-	
+
 	std::cout<<"finished reading the nodes"<<"\n";
-			
+
 	getline(file,line); //skip a white line
-	
+
 	// READ THE CONNECTIVIY MATRIX
-	
+
 
 	for(UInt i=0; i<ntriangles; ++i){
 		std::getline(file,line);
@@ -277,11 +277,11 @@ void MeshHandler<ORDER,2,3>::importfromCSV(std::string &filename){
 			ss>>point_index;
 			triangles_[i*3*ORDER + k] = --point_index;
 			ss>>comma;
-		
+
 		};*/
-		
-	};	
-		
+
+	};
+
 
 };
 
@@ -302,7 +302,7 @@ Triangle<ORDER * 3,2,3> MeshHandler<ORDER,2,3>::getTriangle(Id id) const
 	for (int i=0; i<ORDER * 3; ++i)
 	{
 		id_current_point = triangles_[3*ORDER * id + i];
-		triangle_points[i]= Point(id_current_point, Identifier::NVAL, points_[id_current_point],points_[id_current_point+1],points_[id_current_point+2]);
+		triangle_points[i]= Point(id_current_point, Identifier::NVAL, points_[3*id_current_point],points_[3*id_current_point+1],points_[3*id_current_point+2]);
 	}
 	return Triangle<ORDER * 3,2,3>(id, triangle_points);
 }
@@ -310,12 +310,12 @@ Triangle<ORDER * 3,2,3> MeshHandler<ORDER,2,3>::getTriangle(Id id) const
 template <UInt ORDER>
 Triangle<ORDER * 3,2,3> MeshHandler<ORDER,2,3>::findLocationNaive(Point point) const
 {
-	Triangle<ORDER * 3,2,3> current_triangle; 
+	Triangle<ORDER * 3,2,3> current_triangle;
 	//std::cout<<"Start searching point naively \n";
 	for(Id id=0; id < num_triangles_; ++id)
 	{
 		current_triangle = getTriangle(id);
-		if(current_triangle.isPointInside(point)) 
+		if(current_triangle.isPointInside(point))
 			return current_triangle;
 	}
 	//std::cout<<"Point not found \n";
@@ -329,22 +329,22 @@ std::cout<<"printing points"<<"\n";
 	for(UInt i = 0; i < num_nodes_; ++i)
 	{
 		out<<"-"<< i <<"-"<<"("<<points_[3*i]<<","<<points_[3*i+1]<<","<<points_[3*i+2]<<")"<<std::endl<<"------"<<std::endl;
-	}	
+	}
 }
 
 template <UInt ORDER>
 void MeshHandler<ORDER,2,3>::printTriangles(std::ostream & out)
 {
-	
+
 	out << "# Triangles: "<< num_triangles_ <<std::endl;
-	for (UInt i = 0; i < num_triangles_; ++i ) 
+	for (UInt i = 0; i < num_triangles_; ++i )
 	{
 		out<<"-"<< i <<"- ";
 		for( UInt k = 0; k < ORDER * 3; ++k)
 			out<<triangles_[i*3*ORDER + k]<<"   ";
-		out<<std::endl;	
+		out<<std::endl;
 	}
-	
+
 }
 
 

@@ -119,19 +119,21 @@ SEXP eval_FEM_fd(SEXP Rmesh, SEXP RX, SEXP RY, SEXP RZ, SEXP Rcoef, SEXP Rorder,
 	{
     	MeshHandler<2,2,2> mesh(Rmesh);
     	Evaluator<2,2,2> evaluator(mesh);
-		evaluator.eval(X, Y, n_X, coef, order, fast, REAL(result), isinside);
+		  evaluator.eval(X, Y, n_X, coef, order, fast, REAL(result), isinside);
 	}
     else if(order == 2 && ndim == 3)
 	{
     	MeshHandler<2,2,3> mesh(Rmesh);
     	Evaluator<2,2,3> evaluator(mesh);
-		evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
+		  evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
 	}
     else if(order == 1 && ndim == 3)
 	{  std::cout << "calling Mesh assembler :)" << '\n';
     	MeshHandler<1,2,3> mesh(Rmesh);
+      //mesh.printTriangles(std::cout);
+      //mesh.printPoints(std::cout);
     	Evaluator<1,2,3> evaluator(mesh);
-		evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
+		  evaluator.eval(X, Y, Z, n_X, coef, order, fast, REAL(result), isinside);
 	}
 
     for (int i=0; i<n_X;++i)

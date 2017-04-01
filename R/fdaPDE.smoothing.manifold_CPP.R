@@ -66,8 +66,6 @@ CPP_smooth.manifold.FEM.basis<-function(locations, observations, mesh, lambda, c
 CPP_eval.manifold.FEM = function(FEM, locations, redundancy, ndim, mydim)
 {
   FEMbasis = FEM$FEMbasis
-  FEMbasis$mesh$triangles = FEMbasis$mesh$triangles - 1
-  # Indexes in C++ starts from 0, in R from 1, opportune transformation
 
   # Imposing types, this is necessary for correct reading from C++
   ## Set propr type for correct C++ reading

@@ -148,11 +148,20 @@ void RegressionData::setCovariates(SEXP Rcovariates)
 void RegressionData::setLocations(SEXP Rlocations)
 {
 	n_ = INTEGER(Rf_getAttrib(Rlocations, R_DimSymbol))[0];
+	int ndim = INTEGER(Rf_getAttrib(Rlocations, R_DimSymbol))[1];
 
-	for(auto i=0; i<n_; ++i)
-	{
-		locations_.emplace_back(REAL(Rlocations)[i+ n_*0],REAL(Rlocations)[i+ n_*1]);
+  if (ndim == 2){
+		for(auto i=0; i<n_; ++i)
+		{
+			locations_.emplace_back(REAL(Rlocations)[i+ n_*0],REAL(Rlocations)[i+ n_*1]);
+		}
+	}else{
+		for(auto i=0; i<n_; ++i)
+		{
+			locations_.emplace_back(REAL(Rlocations)[i+ n_*0],REAL(Rlocations)[i+ n_*1],REAL(Rlocations)[i+ n_*2]);
+		}
 	}
+
 }
 
 #endif

@@ -61,8 +61,8 @@ void Evaluator<ORDER,2,3>::eval(Real* X, Real *Y,  Real *Z, UInt length, const R
 
 
 	Point current_point;
+
 	Eigen::Matrix<Real,3*ORDER,1> coefficients;
-	std::cout << "length = " << length << '\n';
 	starting_triangle = mesh_.getTriangle(0);
 	for (int i = 0; i<length; ++i)
 	{
