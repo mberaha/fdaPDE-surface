@@ -169,7 +169,7 @@ create.surface.mesh<- function(nodes, triangles, order = 1)
   if(dim(triangles)[2]!= 3*order){
   	stop("triangle matrix has wrong number of columns, they should be 3*order \n")
   	}
-  out = list(nnodes=nnodes, ntriangles=ntriangles, nodes=c(t(nodes)), triangles = c(t(triangles)), order=order)
+  out = list(nnodes=nnodes, ntriangles=ntriangles, nodes=c(t(nodes)), triangles = c(t(triangles)), order=as.integer(order))
   
   class(out)<-"SURFACE_MESH"
   

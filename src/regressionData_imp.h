@@ -32,15 +32,16 @@ RegressionData::RegressionData(SEXP Rlocations, SEXP Robservations, SEXP Rorder,
 			   SEXP RBCIndices, SEXP RBCValues, SEXP DOF)
 {
 	setLocations(Rlocations);
-	//std::cout<< "Locations set"<<std::endl;
+	std::cout<< "Locations set"<<std::endl;
 	setObservations(Robservations);
-	//std::cout<< "Observations set"<<std::endl;
+	std::cout<< "Observations set"<<std::endl;
 	setCovariates(Rcovariates);
-	//std::cout<< "Covariates set"<<std::endl;
+	std::cout<< "Covariates set"<<std::endl;
 
 	order_ =  INTEGER(Rorder)[0];
+	std::cout<<"order_ done "<<std::endl;
 	DOF_ = INTEGER(DOF)[0];
-
+  std::cout<<"DOF done "<<std::endl;
 	UInt length_indexes = Rf_length(RBCIndices);
     //for (UInt i = 0; i<length_indexes; ++i)  bc_indices_.push_back(INTEGER(RBCIndices)[i]);
     //for (UInt i = 0; i<length_indexes; ++i)  bc_values_.push_back(REAL(RBCValues)[i]);
@@ -146,22 +147,24 @@ void RegressionData::setCovariates(SEXP Rcovariates)
 }
 
 void RegressionData::setLocations(SEXP Rlocations)
-{
+{ std::cout<<"setting locations because fuck"<<std::endl;
 	n_ = INTEGER(Rf_getAttrib(Rlocations, R_DimSymbol))[0];
-	int ndim = INTEGER(Rf_getAttrib(Rlocations, R_DimSymbol))[1];
+	if(n_>0){
+		std::cout<<"setting locations because fuck_v2.0"<<std::endl;
+		int ndim = INTEGER(Rf_getAttrib(Rlocations, R_DimSymbol))[1];
 
-  if (ndim == 2){
-		for(auto i=0; i<n_; ++i)
-		{
-			locations_.emplace_back(REAL(Rlocations)[i+ n_*0],REAL(Rlocations)[i+ n_*1]);
-		}
-	}else{
-		for(auto i=0; i<n_; ++i)
-		{
-			locations_.emplace_back(REAL(Rlocations)[i+ n_*0],REAL(Rlocations)[i+ n_*1],REAL(Rlocations)[i+ n_*2]);
+	  if (ndim == 2){
+			for(auto i=0; i<n_; ++i)
+			{
+				locations_.emplace_back(REAL(Rlocations)[i+ n_*0],REAL(Rlocations)[i+ n_*1]);
+			}
+		}else{
+			for(auto i=0; i<n_; ++i)
+			{
+				locations_.emplace_back(REAL(Rlocations)[i+ n_*0],REAL(Rlocations)[i+ n_*1],REAL(Rlocations)[i+ n_*2]);
+			}
 		}
 	}
-
 }
 
 #endif
