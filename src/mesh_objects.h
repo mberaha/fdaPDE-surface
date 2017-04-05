@@ -331,7 +331,7 @@ inline Real evaluate_point<2,2,2>(const Triangle<6,2,2>& t, const Point& point, 
 template <>
 inline Real evaluate_point<1,2,3>(const Triangle<3,2,3>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients)
 {    
-	Eigen::Matrix<Real,3,1> coordinates;
+	/*Eigen::Matrix<Real,3,1> coordinates;
 	Eigen::Matrix<Real,3,3> A;
 	Eigen::Matrix<Real,3,1> b;
 	
@@ -352,14 +352,23 @@ inline Real evaluate_point<1,2,3>(const Triangle<3,2,3>& t, const Point& point, 
 	coordinates = A.fullPivHouseholderQr().solve(b);
 	
 	return(coefficients[0]+coordinates[0]*(coefficients[1]-coefficients[0])+
-		coordinates[1]*(coefficients[2]-coefficients[0]));
+		coordinates[1]*(coefficients[2]-coefficients[0]));*/
+
+	Eigen::Matrix<Real,3,1> bary_coeff=t.getBaryCoordinates(point);
+	return(coefficients.dot(bary_coeff));
+	
 }
 
 template <>
 inline Real evaluate_point<2,2,3>(const Triangle<6,2,3>& t, const Point& point, const Eigen::Matrix<Real,6,1>& coefficients)
 {
-	//da implementare
-	//std::cerr<<"ancora da implementare";
+	Eigen::Matrix<Real,3,1> bary_coeff = t.getBaryCoordinates(point);
+	return( coefficients[0]*(2*bary_coeff[0]*bary_coeff[0]- bary_coeff[0]) +
+            coefficients[1]*(2*bary_coeff[1]*bary_coeff[1] - bary_coeff[1]) +
+            coefficients[2]*(2*bary_coeff[2]*bary_coeff[2] - bary_coeff[2]) +
+            coefficients[3]*(4*bary_coeff[1]* bary_coeff[2])    +
+            coefficients[4]*(4*bary_coeff[2]* bary_coeff[0])    +
+            coefficients[5]*(4*bary_coeff[0]* bary_coeff[1]) );
 }
 
 template <UInt ORDER,UInt mydim, UInt ndim>
@@ -407,8 +416,7 @@ inline Eigen::Matrix<Real,2,1> evaluate_der_point<2,2,2>(const Triangle<6,2,2>& 
 template <>
 inline Eigen::Matrix<Real,3,1> evaluate_der_point<1,2,3>(const Triangle<3,2,3>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients)
 {
-	Eigen::Matrix<Real,3,1> coordinates;
-	Eigen::Matrix<Real,3,3> A;
+	/*Eigen::Matrix<Real,3,3> A;
 	Eigen::Matrix<Real,3,1> b;
 	
 	A(0,0) = t[1][0]-t[0][0];
@@ -426,17 +434,33 @@ inline Eigen::Matrix<Real,3,1> evaluate_der_point<1,2,3>(const Triangle<3,2,3>& 
 	b(1) = coefficients[2]-coefficients[0];
 	b(2) = 0;
 	
-	return(A.fullPivHouseholderQr().solve(b));
+	return(A.fullPivHouseholderQr().solve(b));*/
+
+	Eigen::Matrix<Real,3,3> B1;
+	B1 << t[1][1] - t[2][1], t[2][1] - t[0][1], t[0][1] - t[1][1],
+		t[2][0] - t[1][0], t[0][0] - t[2][0], t[1][0] - t[0][0],
+		t[2][0] - t[1][0], t[0][0] - t[2][0], t[1][0] - t[0][0];
+	B1 = B1 / (2 * t.getArea());
+
+	return(B1*coefficients);
+	
 }
-//ANCORA DA IMPLEMENTARE
-/*
+
 template <>
 inline Eigen::Matrix<Real,3,1> evaluate_der_point<2,2,3>(const Triangle<6,2,3>& t, const Point& point, const Eigen::Matrix<Real,6,1>& coefficients)
 {
-	//da implementare
-	std::cerr<<"ancora da implementare";
+	/*Eigen::Matrix<Real,3,1> L = t.getBaryCoordinates(point);
+	Eigen::Matrix<Real,2,3> B1;
+	B1 << t[1][1] - t[2][1], t[2][1] - t[0][1], t[0][1] - t[1][1],
+		t[2][0] - t[1][0], t[0][0] - t[2][0], t[1][0] - t[0][0];
+	B1 = B1 / (2 * t.getArea());
+	Eigen::Matrix<Real,3,6> B2;
+	B2 << 4*L[0]-1, 0       , 0       , 0        , 4*L[2], 4*L[1],
+		  0       , 4*L[1]-1, 0       , 4*L[2]   , 0     , 4*L[0],
+		  0       , 0       , 4*L[2]-1, 4*L[1]   , 4*L[0], 0     ;
+	return(B1*B2*coefficients);*/
 }
-*/
+
 
 #include "mesh_objects_imp.h"
 #endif
