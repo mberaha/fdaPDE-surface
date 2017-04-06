@@ -17,59 +17,45 @@ CPP_smooth.manifold.FEM.basis<-function(locations, observations, mesh, lambda, c
   {
     BC$BC_indices<-vector(length=0)
   }else
-  { cat("here BC \n")
+  { 
     BC$BC_indices<-as.vector(BC$BC_indices)
-    cat("here BC 2\n")
+  
   }
   
   if(is.null(BC$BC_values))
   {
     BC$BC_values<-vector(length=0)
   }else
-  { cat("here BC 3\n")
+  {
     BC$BC_values<-as.vector(BC$BC_values)
-    cat("here BC 4\n")
   }
   
   ## Set propr type for correct C++ reading
   locations <- as.matrix(locations)
-  cat("here locations \n")
   storage.mode(locations) <- "double"
   data <- as.vector(observations)
-  cat("here data \n")
   storage.mode(observations) <- "double"
-  cat("here order \n")
   storage.mode(mesh$order) <- "integer"
-  cat("here nnodes \n")
   storage.mode(mesh$nnodes) <- "integer"
-  cat("here ntriangles \n")
   storage.mode(mesh$ntriangles) <- "integer"
-  cat("here nodes \n")
   storage.mode(mesh$nodes) <- "double"
-  cat("here triangles \n")
   storage.mode(mesh$triangles) <- "integer"
   covariates = as.matrix(covariates)
   storage.mode(covariates) <- "double"
   storage.mode(lambda) <- "double"
-  cat("here ndim \n")
   storage.mode(ndim) <- "integer"
-  cat("here mydim \n")
   storage.mode(mydim) <- "integer"
-  cat("here bc_indices \n")
   storage.mode(BC$BC_indices) <- "integer"
   storage.mode(BC$BC_values)  <- "double"
-  cat("here GCV1 \n")
   GCV = as.integer(GCV)
-  cat("here GCV2 \n")
   storage.mode(GCV)<-"integer"
-  cat("here GCV3 \n")
   
   ## Call C++ function
   bigsol <- .Call("regression_Laplace", locations, data, mesh, 
                   mesh$order, mydim, ndim, lambda, covariates,
                   BC$BC_indices, BC$BC_values, GCV,
                   package = "fdaPDE")
-  cat("smoothing CPP done \n")
+
   return(bigsol)
 }
 

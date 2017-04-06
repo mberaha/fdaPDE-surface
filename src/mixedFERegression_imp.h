@@ -378,7 +378,6 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
     }
     else
     {
-    	std::cout<<"About to get Data Matrix by indices"<<std::endl;
     	getDataMatrixByIndices(DMat_);
     }
     //std::cout<<"Block Data"<<DMat_<<std::endl;
@@ -398,7 +397,6 @@ void MixedFERegression<InputHandler,Integrator,ORDER,mydim,ndim>::smoothLaplace(
 #pragma omp parallel for
     for(UInt i = 0; i<regressionData_.getLambda().size(); ++i)
 	{
-		std::cout<<" we are in thread: "<< omp_get_thread_num()<<" of threads "<<omp_get_num_threads()<<std::endl;
     	//build(tripletsData_,(-regressionData_.getLambda())*stiff, (-regressionData_.getLambda())*mass, righthand, forcing);
 
     	Real lambda = regressionData_.getLambda()[i];

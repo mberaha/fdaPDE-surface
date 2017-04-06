@@ -117,7 +117,7 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
 	  bigsol = NULL  
 	  
 	  print('C++ Code Execution')
-	  bigsol = CPP_smooth.manifold.FEM.basis(locations, observations, mesh, lambda, covariates, ndim, mydim, BC, GCV)
+	  bigsol = CPP_smooth.manifold.FEM.basis(locations, observations, FEMbasis$mesh, lambda, covariates, ndim, mydim, BC, GCV)
 	  
 	  numnodes = FEMbasis$mesh$nnodes
   }

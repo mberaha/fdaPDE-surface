@@ -159,7 +159,7 @@ void Assembler::forcingTerm(const MeshHandler<ORDER,2,3>& mesh,
 		}
 
 	}
-	std::cout<<"done!"<<std::endl;;
+
 }
 
 

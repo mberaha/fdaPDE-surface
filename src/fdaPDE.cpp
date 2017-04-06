@@ -108,23 +108,20 @@ SEXP regression_Laplace(SEXP Rlocations, SEXP Robservations, SEXP Rmesh, SEXP Ro
 SEXP regression_Laplace(SEXP Rlocations, SEXP Robservations, SEXP Rmesh, SEXP Rorder, SEXP Rmydim, SEXP Rndim, SEXP Rlambda, SEXP Rcovariates, SEXP RBCIndices, SEXP RBCValues, SEXP DOF)
 {
     //Set data
-	std::cout<< "Calling RegressionData"<<std::endl;
 	RegressionData regressionData(Rlocations, Robservations, Rorder, Rlambda, Rcovariates, RBCIndices, RBCValues, DOF);
 
-	std::cout<< "Data loaded"<<std::endl;
+
 	SEXP result = NILSXP;
 
 	int mydim=INTEGER(Rmydim)[0];
 	int ndim=INTEGER(Rndim)[0];
-	std::cout<<"ndim, mydim ok"<<std::endl;
+
 //the following code do not distinguish tha value of mydim (=2)
 
     if(regressionData.getOrder()==1 && ndim==3)
     {
 		MeshHandler<1,2,3> mesh(Rmesh);
-		std::cout<< "Mesh loaded"<<std::endl;
 		MixedFERegression<RegressionData, IntegratorTriangleP2,1,2,3> regression(mesh,regressionData);
-		std::cout<< "MixedFER ok"<<std::endl;
 
 		regression.smoothLaplace();
 

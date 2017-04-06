@@ -244,7 +244,6 @@ void MeshHandler<ORDER,2,3>::importfromCSV(std::string &filename){
 	getline(file,line); //skip a white line
 
 	// READ THE VERTICES MATRIX
-	std::cout<<"reading the nodes"<<"\n";
 	for(UInt i=0; i<nnodes; ++i){
 		std::getline(file,line);
 		std::istringstream ss(line);
@@ -254,8 +253,6 @@ void MeshHandler<ORDER,2,3>::importfromCSV(std::string &filename){
 		ss>>comma;
 		ss>>points_[3*i+2];
 	};
-
-	std::cout<<"finished reading the nodes"<<"\n";
 
 	getline(file,line); //skip a white line
 

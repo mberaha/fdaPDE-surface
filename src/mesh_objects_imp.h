@@ -223,21 +223,7 @@ bool Triangle<NNODES,2,3>::isPointInside(const Point& point) const
 
 	Real tolerance = (A(0,0)*A(0,0) + A(1,0)*A(1,0) + A(2,0)*A(2,0) + A(0,1)*A(0,1) + A(1,1)*A(1,1) + A(2,1)*A(2,1))/4;
 
-	/*if(this->id_==1007){
-		std::cout << "Found triangle 1007" << '\n';
-		this->print(std::cout);
-		std::cout << "Points = " << '\n';
-		for(int j=0; j<3; ++j)
-			points_[j].print(std::cout);
-    point.print(std::cout);
-
-		std::cout << '\n';
-		std::cout <<"A= "<<A<< '\n';
-		std::cout<<"b= "<<b<<'\n';
-		std::cout<<"sol= "<<sol<<'\n';
-	}*/
 	if((err(0)*err(0) + err(1)*err(1) + err(2)*err(2)) < tolerance ){
-		//std::cout<<"soluzione esatta! "<<std::endl;
 		return((sol(0)+sol(1)<=1) && (sol(0)>=0) && (sol(1)>=0));
 	}else{
 		return 0;}

@@ -71,7 +71,6 @@ void Evaluator<ORDER,2,3>::eval(Real* X, Real *Y,  Real *Z, UInt length, const R
 
 		if(current_triangle.getId() == Identifier::NVAL)
 		{
-			std::cout<<"Position Not Found Naively for point "<<i<<"\n";
 			isinside[i]=false;
 		}
 		else
