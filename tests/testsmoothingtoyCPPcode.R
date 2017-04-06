@@ -23,7 +23,7 @@ order = 1
 #FEMbasis = create.FEM.basis(mesh)
 
 lambda = c(0.001,0.0025,0.00375,0.005,0.0075)
-filename = 'hub.csv'
+filename = 'Caramella.csv'
 
 read.mesh<-function(filename){
   nnodes = read.table(filename, nrows = 2, header = FALSE, sep =' ', stringsAsFactors = FALSE)[1,2]
@@ -70,7 +70,7 @@ FEMbasis <- create.FEM.basis(mesh)
 output_CPP =smooth.FEM.basis(locations = locations,
                               observations = data, 
                               FEMbasis = FEMbasis, lambda = lambda,
-                              GCV = TRUE,
+                              GCV = FALSE,
                               CPP_CODE = TRUE) 
 
 
