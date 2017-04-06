@@ -55,7 +55,7 @@ locations=NULL
 #}
 #data=func_evaluation
 #rm(nnodes,nodes)
-data = read.csv('observation_hub_by_index_noise.csv',header=T)[,2]
+data = read.csv('observation_caramella_by_index.csv',header=T)[,2]
 #head(data) 
 covariates = NULL
 BC = read.csv("bc_caramella.csv",header=T)
