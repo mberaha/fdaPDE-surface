@@ -412,11 +412,11 @@ inline Eigen::Matrix<Real,2,1> evaluate_der_point<2,2,2>(const Triangle<6,2,2>& 
 //                                      | dx/dbeta,  dy/dbeta,  dz/dbeta  |
 //                                      | dx/dgamma, dy/dgamma, dz/dgamma |
 // 
-
+/*
 template <>
 inline Eigen::Matrix<Real,3,1> evaluate_der_point<1,2,3>(const Triangle<3,2,3>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients)
-{
-	/*Eigen::Matrix<Real,3,3> A;
+{	//primo metodo
+	Eigen::Matrix<Real,3,3> A;
 	Eigen::Matrix<Real,3,1> b;
 	
 	A(0,0) = t[1][0]-t[0][0];
@@ -434,8 +434,9 @@ inline Eigen::Matrix<Real,3,1> evaluate_der_point<1,2,3>(const Triangle<3,2,3>& 
 	b(1) = coefficients[2]-coefficients[0];
 	b(2) = 0;
 	
-	return(A.fullPivHouseholderQr().solve(b));*/
+	return(A.fullPivHouseholderQr().solve(b));
 
+	//secondo metodo
 	Eigen::Matrix<Real,3,3> B1;
 	B1 << t[1][1] - t[2][1], t[2][1] - t[0][1], t[0][1] - t[1][1],
 		t[2][0] - t[1][0], t[0][0] - t[2][0], t[1][0] - t[0][0],
@@ -458,8 +459,8 @@ inline Eigen::Matrix<Real,3,1> evaluate_der_point<2,2,3>(const Triangle<6,2,3>& 
 	B2 << 4*L[0]-1, 0       , 0       , 0        , 4*L[2], 4*L[1],
 		  0       , 4*L[1]-1, 0       , 4*L[2]   , 0     , 4*L[0],
 		  0       , 0       , 4*L[2]-1, 4*L[1]   , 4*L[0], 0     ;
-	return(B1*B2*coefficients);*/
-}
+	return(B1*B2*coefficients);
+}*/
 
 
 #include "mesh_objects_imp.h"

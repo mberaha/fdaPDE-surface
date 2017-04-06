@@ -170,7 +170,7 @@ void FiniteElement<Integrator, ORDER,2,3>::setPhiDerMaster()
 		coefficients(i) = 1;
 		for (auto iq=0; iq < Integrator::NNODES; iq++)
 		{
-			der = evaluate_der_point<ORDER>(reference_,Integrator::NODES[iq],coefficients);
+			der = evaluate_der_point<ORDER,2,2>(reference_,Integrator::NODES[iq],coefficients);
 			// we need J^(-1) nabla( phi)
 			//der_transf = t_.getM_invJ()*der;
 			phiDerMapMaster_(i,iq*2) = der[0];
