@@ -77,26 +77,7 @@ output_CPP =smooth.FEM.basis(locations = locations,
 
 
 print(output_CPP$fit.FEM$coeff)
-plot.surface.mesh(mesh,data)
-rgl.snapshot("result_hub.png")
-plot.surface.mesh(mesh,output_CPP$fit.FEM$coeff[,1])
+#plot.surface.mesh(mesh,data)
+#rgl.snapshot("result_hub.png")
+#plot.surface.mesh(mesh,output_CPP$fit.FEM$coeff[,1])
 
-##############
-
-triangles = mymesh$triangles
-nodes = mymesh$nodes
-punti_strani = read.csv(file="../src/punti_strani.csv",header=F,sep=",")
-for (i in 1:dim(punti_strani[1])){
-  points3d(punti_strani[i,1],punti_strani[i,2],punti_strani[i,3],col="red",pch=100)
-}
-
-triangles[1007,]
-tail(punti_strani)
-punto_1 = nodes[triangles[1008,1],]
-punto_2 = nodes[triangles[1008,2],]
-punto_3 = nodes[triangles[1008,3],]
-
-A=matrix(rep(0,6),nrow=3)
-A[,1]=t(punto_2-punto_1)
-A[,2]=t(punto_3-punto_1)
-b=t(locations[1,]-punto_1)
