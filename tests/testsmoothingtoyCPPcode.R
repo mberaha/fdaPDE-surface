@@ -12,7 +12,7 @@ source("../R/fdaPDE.smoothing_R.R")
 source("../R/fdaPDE.locator.R")
 source("../R/mesh.2D.R")
 source("../R/zzz.R")
-source("../R/fdaPDE.smoothing.manifold_CPP.R")
+#source("../R/fdaPDE.smoothing.manifold_CPP.R")
 source("../R/fdaPDE.plot.mesh_R.R")
 dyn.load("../src/fdaPDE.so") 
 
