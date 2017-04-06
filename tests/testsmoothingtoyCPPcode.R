@@ -2,7 +2,7 @@
 ## - isotropic smoothing 
 ## - 1st order FEs 
 ## - C++ code
-#setwd("/home/pacs_student/progetto_pacs/tests")
+#setwd("/home/mario/Scrivania/Progetto/progetto_pacs/tests")
 source('../R/datasets.R',chdir=T)
 source('../R/fdaPDE.objects.R')
 source("../R/fdaPDE.smoothing.R")
