@@ -149,5 +149,42 @@ for(j in 1:times){
 
 write.table(MSE_carotide,file="MSE_carotide.csv",sep=",")
 
+########### Carotide No Aneurism ##########
+
+filename = '108100_noAne_noHole.csv'
+
+mymesh=read.mesh(filename)
+
+times=25
+MSE_carotide=numeric(times)
+
+for(j in 1:times){  
+  a1 = rnorm(1,mean = 1, sd = 1)
+  a2 = rnorm(1,mean = 1, sd = 1)
+  a3 = rnorm(1,mean = 1, sd = 1)
+  
+  nnodes=mymesh$nnodes
+  func_evaluation = numeric(nnodes)
+  
+  for (i in 1:nnodes){
+    func_evaluation[i] = a1* sin(2*pi*mymesh$nodes[i,1]) +  a2* sin(2*pi*mymesh$nodes[i,2]) +  a3*sin(2*pi*mymesh$nodes[i,3]) +1
+  }
+  
+  data=func_evaluation+rnorm(nnodes,mean=0,sd=0.5)
+  
+  
+  mesh <- create.surface.mesh(mymesh$nodes, mymesh$triangles, order=1)
+  
+  FEMbasis <- create.FEM.basis(mesh)
+  
+  lambda=c(0.001,0.00375,0.005,0.01)
+  output_CPP =smooth.FEM.basis(observations = data, 
+                               FEMbasis = FEMbasis, lambda = lambda,
+                               CPP_CODE = TRUE,GCV=TRUE) 
+  
+  MSE_carotide[j] = sum((as.vector(output_CPP$fit.FEM$coeff)-func_evaluation)^2)/nnodes
+}
+
+write.table(MSE_carotide,file="MSE_carotide2.csv",sep=",")
 
 

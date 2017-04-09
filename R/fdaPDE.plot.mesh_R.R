@@ -4,8 +4,8 @@ plot.surface.mesh<-function(mesh,node_values=NULL){
     stop("The plot surface_mesh_function(...) requires the R package rgl, please install it and try again!")
   }
   
-  #p <- colorRampPalette(c("#0E1E44","#3E6DD8","#68D061","#ECAF53", "#EB5F5F","#E11F1C"))(128)
-  #palette(p)
+  p <- colorRampPalette(c("#0E1E44","#3E6DD8","#68D061","#ECAF53", "#EB5F5F","#E11F1C"))(128)
+  palette(p)
   
   order=mesh$order
   nnodes=mesh$nnodes

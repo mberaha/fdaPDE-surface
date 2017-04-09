@@ -56,7 +56,7 @@ covariates = NULL
 BC = NULL
 ndim = 3
 mydim = 2
-GCV=FALSE
+GCV=TRUE
 
 mesh=create.surface.mesh(mymesh$nodes,mymesh$triangles)
 
@@ -121,7 +121,8 @@ storage.mode(GCV)<-"integer"
 
 ## Call C++ function
 library(microbenchmark)
-res_cyl= microbenchmark(out = .Call("regression_Laplace", locations, data, mesh, 
+rm(mymesh)
+res_carotide= microbenchmark(out = .Call("regression_Laplace", locations, data, mesh, 
                 mesh$order, mydim, ndim, lambda, covariates,
                 BC$BC_indices, BC$BC_values, GCV,
                 package = "fdaPDE"),times=15)
