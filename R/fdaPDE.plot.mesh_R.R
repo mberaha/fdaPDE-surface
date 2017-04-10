@@ -1,3 +1,14 @@
+#' Plot a triangular mesh
+#' @param mesh A \code{SURFACE_MESH} object
+#' @param node_values (optional) A vector with nodal values of the function to be rapresented on the mesh, if it is \code{NULL} only the triangulation will be plotted, otherwhise a colormap will be produced
+#' @examples
+#' mesh = create.surface.mesh(nodes,triangles)
+#' plot.surface.mesh(mesh)
+#' @exaples
+#' output = smooth.FEM.basis( observations = data, FEMbasis = FEMbasis, lambda = 1,GCV = FALSE, CPP_CODE = TRUE) 
+#' plot.surface.mesh(FEMbasis$mesh, output_CPP$fit.FEM$coeff)
+
+
 plot.surface.mesh<-function(mesh,node_values=NULL){
   
   if(!require(rgl)){
@@ -15,9 +26,9 @@ plot.surface.mesh<-function(mesh,node_values=NULL){
     rgl.open()
     triangle = c(mesh$triangles[1]-1,mesh$triangles[2]-1,mesh$triangles[3]-1)
     vertices = as.numeric(c(
-      mesh$nodes[3*order*triangle[1]+1],mesh$nodes[3*order*triangle[1]+2],mesh$nodes[3*order*triangle[1]+3],1,
-      mesh$nodes[3*order*triangle[2]+1],mesh$nodes[3*order*triangle[2]+2],mesh$nodes[3*order*triangle[2]+3],1,
-      mesh$nodes[3*order*triangle[3]+1],mesh$nodes[3*order*triangle[3]+2],mesh$nodes[3*order*triangle[3]+3],1))
+      mesh$nodes[3*triangle[1]+1],mesh$nodes[3*triangle[1]+2],mesh$nodes[3*triangle[1]+3],1,
+      mesh$nodes[3*triangle[2]+1],mesh$nodes[3*triangle[2]+2],mesh$nodes[3*triangle[2]+3],1,
+      mesh$nodes[3*triangle[3]+1],mesh$nodes[3*triangle[3]+2],mesh$nodes[3*triangle[3]+3],1))
     
     bg3d(color = "white")
     indices=c(1,2,3)
@@ -26,9 +37,9 @@ plot.surface.mesh<-function(mesh,node_values=NULL){
     for(i in 2:ntriangles){
       triangle = c(mesh$triangles[3*order*(i-1)+1]-1,mesh$triangles[3*order*(i-1)+2]-1,mesh$triangles[3*order*(i-1)+3]-1)
       vertices = as.numeric(c(
-        mesh$nodes[3*order*triangle[1]+1],mesh$nodes[3*order*triangle[1]+2],mesh$nodes[3*order*triangle[1]+3],1,
-        mesh$nodes[3*order*triangle[2]+1],mesh$nodes[3*order*triangle[2]+2],mesh$nodes[3*order*triangle[2]+3],1,
-        mesh$nodes[3*order*triangle[3]+1],mesh$nodes[3*order*triangle[3]+2],mesh$nodes[3*order*triangle[3]+3],1))
+        mesh$nodes[3*triangle[1]+1],mesh$nodes[3*triangle[1]+2],mesh$nodes[3*triangle[1]+3],1,
+        mesh$nodes[3*triangle[2]+1],mesh$nodes[3*triangle[2]+2],mesh$nodes[3*triangle[2]+3],1,
+        mesh$nodes[3*triangle[3]+1],mesh$nodes[3*triangle[3]+2],mesh$nodes[3*triangle[3]+3],1))
       
       indices=c(1,2,3)
       wire3d(tmesh3d(vertices,indices) , col="black")
@@ -38,9 +49,9 @@ plot.surface.mesh<-function(mesh,node_values=NULL){
     rgl.open()
     triangle = c(mesh$triangles[1]-1,mesh$triangles[2]-1,mesh$triangles[3]-1)
     vertices = as.numeric(c(
-      mesh$nodes[3*order*triangle[1]+1],mesh$nodes[3*order*triangle[1]+2],mesh$nodes[3*order*triangle[1]+3],1,
-      mesh$nodes[3*order*triangle[2]+1],mesh$nodes[3*order*triangle[2]+2],mesh$nodes[3*order*triangle[2]+3],1,
-      mesh$nodes[3*order*triangle[3]+1],mesh$nodes[3*order*triangle[3]+2],mesh$nodes[3*order*triangle[3]+3],1))
+      mesh$nodes[3*triangle[1]+1],mesh$nodes[3*triangle[1]+2],mesh$nodes[3*triangle[1]+3],1,
+      mesh$nodes[3*triangle[2]+1],mesh$nodes[3*triangle[2]+2],mesh$nodes[3*triangle[2]+3],1,
+      mesh$nodes[3*triangle[3]+1],mesh$nodes[3*triangle[3]+2],mesh$nodes[3*triangle[3]+3],1))
     indices=c(1,2,3)
     col = mean(node_values[triangle[1]+1],node_values[triangle[2]+1],node_values[triangle[3]+1])
     col= (col - min(node_values))/diffrange*127+1
@@ -50,9 +61,9 @@ plot.surface.mesh<-function(mesh,node_values=NULL){
     for(i in 2:ntriangles){
       triangle = c(mesh$triangles[3*order*(i-1)+1]-1,mesh$triangles[3*order*(i-1)+2]-1,mesh$triangles[3*order*(i-1)+3]-1)
       vertices = as.numeric(c(
-        mesh$nodes[3*order*triangle[1]+1],mesh$nodes[3*order*triangle[1]+2],mesh$nodes[3*order*triangle[1]+3],1,
-        mesh$nodes[3*order*triangle[2]+1],mesh$nodes[3*order*triangle[2]+2],mesh$nodes[3*order*triangle[2]+3],1,
-        mesh$nodes[3*order*triangle[3]+1],mesh$nodes[3*order*triangle[3]+2],mesh$nodes[3*order*triangle[3]+3],1))
+        mesh$nodes[3*triangle[1]+1],mesh$nodes[3*triangle[1]+2],mesh$nodes[3*triangle[1]+3],1,
+        mesh$nodes[3*triangle[2]+1],mesh$nodes[3*triangle[2]+2],mesh$nodes[3*triangle[2]+3],1,
+        mesh$nodes[3*triangle[3]+1],mesh$nodes[3*triangle[3]+2],mesh$nodes[3*triangle[3]+3],1))
       
       indices=c(1,2,3)
       col = mean(node_values[triangle[1]+1],node_values[triangle[2]+1],node_values[triangle[3]+1])

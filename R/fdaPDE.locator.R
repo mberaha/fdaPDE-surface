@@ -1,7 +1,7 @@
 #' Evaluate a FEM object at a set of point locations
 #' 
 #' @param FEM A \code{FEM} object to be evaluated.
-#' @param locations A 2-colums matrix with the spatial locations where the FEM object should be evaluated.
+#' @param locations A #dimensions-colums matrix with the spatial locations where the FEM object should be evaluated. (#dimensions = 2 or 3)
 #' @param CPP_CODE Boolean. If \code{TRUE} the computation relies on the C++ implementation of a Visibility Walk Algorithm (Devillers et al. 2001). This usually ensures a fast computation.
 #' @return 
 #' A matrix of numeric evaluations of the \code{FEM} object. Each row indicates the location where the evaluation has been taken, the column indicates the 

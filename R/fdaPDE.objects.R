@@ -1,14 +1,18 @@
 #' Create a FEM basis
 #' 
-#' @param mesh A \code{MESH2D}  object representing the domain triangulation. See \link{create.MESH.2D}.
+#' @param mesh A \code{MESH2D} or \code{SURFACE_MESH}  object representing the domain triangulation. See \link{create.MESH.2D}, \code{\1ink{create.surface.mesh}}.
 #' @return A  \code{FEMbasis} object. This contains the \code{mesh}, along with some additional quantities:
-#' \item{\code{order}}{Either "1" or "2". Order of the Finite Element basis.} 
-#' \item{\code{nbasis}}{Scalar. The number of basis.} 
-#' \item{\code{detJ}}{The determinant of the transformation from the nodes of the reference triangle to the nodes of the i-th triangle; this coincides with the double of the area of the i-th triangle.} 
-#' \item{\code{transf}}{A three-dimensional array such that  \code{transf[i,,]} is the 2-by-2 matrix that transforms the nodes of the reference triangle to the nodes of the i-th triangle.}
-#' \item{\code{metric}}{A three-dimensional array such that \code{metric[i,,]} is the 2-by-2 matrix \cr 
-#' \code{transf[i,,]^{-1}*transf[i,,]^{-T}}. This matrix is used for the computation
+#' if \code{class(mesh) == MESH2D}
+#' 	\item{\code{order}}{Either "1" or "2". Order of the Finite Element basis.} 
+#' 	\item{\code{nbasis}}{Scalar. The number of basis.} 
+#' 	\item{\code{detJ}}{The determinant of the transformation from the nodes of the reference triangle to the nodes of the i-th triangle; this coincides with the double of the area of the i-th triangle.} 
+#' 	\item{\code{transf}}{A three-dimensional array such that  \code{transf[i,,]} is the 2-by-2 matrix that transforms the nodes of the reference triangle to the nodes of the i-th triangle.}
+#' 	\item{\code{metric}}{A three-dimensional array such that \code{metric[i,,]} is the 2-by-2 matrix \cr 
+#' 	\code{transf[i,,]^{-1}*transf[i,,]^{-T}}. This matrix is used for the computation
 #' of the integrals over the elements of the mesh.}
+#' if \code{class(mesh) == SURFACE_MESH}
+#' 	\item{\code{order}}{Either "1" or "2". Order of the Finite Element basis.} 
+#' 	\item{\code{nbasis}}{Scalar. The number of basis.} 
 #' @description Sets up a Finite Element basis. It requires a triangular mesh, a \code{MESH2D} object, as input. 
 #' The basis' functions are globally continuos surfaces, that are polynomials once restricted to a triangle in the mesh. 
 #' Linear if (\code{order = 1}) in the input \code{mesh} and quadratic if (\code{order = 2}) in the input \code{mesh}
@@ -152,13 +156,17 @@ image.FEM = function(x, num_refinements = NULL, ...)
   }
 }
 
-
-# this function takes as input
-# nodes: a nnodes x 3 matrix specifying the locations of each node
-# triangles: a ntriangles x 3*order matrix specifying the indices of the nodes
-#            composing each triangle
-# order: specifies the order of finite elements used, might be order=1 or order=2
-#	 default is order = 1
+#' Create a \code{SURFACE_MESH} object from the connectivty matrix and nodes locations
+#'
+#' @param nodes A nnodes x 3 matrix specifying the locations of each node
+#' @param triangles A ntriangles x 3*order matrix specifying the indices of the nodes in each triangle
+#' @param order{Either "1" or "2". Order of the Finite Element basis default is order = 1
+#' @return A \code{SURFACE_MESH} object
+#' @examples
+#' #read the matrix nodes and triangles from file
+#' nodes = read.table(file="mynodes.csv",header=F,sep=",")
+#' triangles = read.table(file="mytriangles.csv",header=F,sep=",")
+#' mesh = create.surface.mesh(nodes,triangles)
 
 create.surface.mesh<- function(nodes, triangles, order = 1)
 { 
@@ -177,6 +185,23 @@ create.surface.mesh<- function(nodes, triangles, order = 1)
   
   return(out)
 }
+
+#' Double the order of a fist order Finite Element mesh by adding middle points to each side of the triangles in the triangulation
+#' @param V A nnodes x 3 matrix specifying the locations of each node
+#' @param T A ntriangles x 3 matrix specifying the indices of the nodes in each triangle
+#' @param bc A vector specifying the indices of the nodes on which boundary conditions are applied
+#' @return A \code{list} with parameters:
+#' \item{\code{nodes}} An update of the nodes matrix with the additional nodes created
+#' \item{\code{triangles}} A ntriangles x 6 matrix specifying the indices of the 6 nodes in each triangle
+#' \item{\code{bc_index}} An update of the vector specifying the indices of the nodes on which boundary conditions are applied
+#' @examples
+#' #read the matrix nodes and triangles from file
+#' nodes = read.table(file="mynodes.csv",header=F,sep=",")
+#' triangles = read.table(file="mytriangles.csv",header=F,sep=",") # A ntriangles x 3 matrix
+#' bc_indicex = read.table(file="bc_mymesh.csv",header=F,sep=",")
+#' second_order = second.order.mesh(nodes,triangles,bc_index)
+#' mesh = create.surface.mesh(second_order$nodes,second_order$triangles)
+#' new.bc_indicex = second_order$bc_index
 
 second.order.mesh<-function(V,T,bc=NULL){
   toll=1e-5
@@ -236,6 +261,6 @@ second.order.mesh<-function(V,T,bc=NULL){
       }
     }
   } 
-  retlist <- list(nodes = as.matrix(V), triangles = as.matrix(T), BC = bc)
+  retlist <- list(nodes = as.matrix(V), triangles = as.matrix(T), bc_index = bc)
 }
 
