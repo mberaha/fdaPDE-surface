@@ -5,10 +5,6 @@
 #include "integration.h"
 #include "mesh_objects.h"
 
-template <class Integrator ,UInt ORDER, UInt mydim, UInt ndim>
-class FiniteElement{
-};
-
 //!  This class implements all properties of a Triangular Finite Element
 /*!
  * This class is the most important one of the entire code
@@ -17,6 +13,12 @@ class FiniteElement{
  * It takes as a template parameter a class that implements the mathod used
  * for determining the mass, stiff and grad matrices
 */
+
+template <class Integrator ,UInt ORDER, UInt mydim, UInt ndim>
+class FiniteElement{
+};
+
+
 template <class Integrator ,UInt ORDER>
 class FiniteElement<Integrator, ORDER, 2,2>{
 private:

@@ -23,6 +23,7 @@ extern "C" {
 	\param Rmesh an R-object containg the output mesh from Trilibrary
 	\param RX an R-vector containing the x coordinates of the points to be evaluated
 	\param RY an R-vector containing the y coordinates of the points to be evaluated
+	\param RZ an R-vector containing the z coordinates of the points to be evaluated
 	\param Rcoef an R-vector the coeficients of the solution
 	\param Rorder an R integer containg the order of the solution
 	\param Rfast an R integer 0 for Naive location algorithm, 1 for Walking Algorithm (can miss location for non convex meshes)

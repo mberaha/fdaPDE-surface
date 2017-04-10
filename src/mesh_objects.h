@@ -207,7 +207,19 @@ const int Triangle<NNODES,2,2>::myDim;
 
 
 
-//prova triangolo 3d
+//!  This class implements a Triangle as an objects composed by three or six nodes, embedded in a 3-dimensional space
+/*!
+ *  The first three nodes represent the vertices, the others the internal nodes,
+ *  following this enumeration: !IMPORTANT! different from Sangalli code!
+ * 
+ * 			3
+ * 			*
+ * 		     /	    \
+ * 		  5 *	     * 4 
+ * 		  /	      \
+ * 		 *______*______*		
+ * 		1	6	2
+*/
 
 
 template <UInt NNODES>
@@ -241,9 +253,7 @@ public:
 
 	Real getDetJ() const {return detJ_;}
 	Eigen::Matrix<Real,3,2> getM_J() const {return M_J_;}
-	//Eigen::Matrix<Real,3,2> getM_invJ() const {return M_invJ_;} //probabilmente per mettere il trasporto dovremmo usare la pseudoinversa
 	Eigen::Matrix<Real,2,2> getMetric() const {return metric_;} //inv(MJ^t*MJ)
-	
 	Real getArea() const {return (std::sqrt(detJ_)); //sqrt(det(MJ^t*MJ))   
 				};
 
@@ -271,11 +281,10 @@ public:
 	void print(std::ostream & out) const;
 
 private:
-	//std::array<Point, NNODES> points_;
+
 	std::vector<Point> points_;
 	Eigen::Matrix<Real,3,2> M_J_;	
 	Eigen::Matrix<Real,2,2> G_J_; //M_J^t*M_J
-	//Eigen::Matrix<Real,2,3> M_invJ_;
 	Eigen::Matrix<Real,2,2> metric_; //inv(GJ)
 	Real detJ_;
 	void init(const std::vector<Point> &points);

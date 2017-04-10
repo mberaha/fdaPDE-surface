@@ -11,7 +11,14 @@
 class Stiff{
   private:
   public:
-
+	//! A definition of operator () taking three arguments.
+    /*!
+     * Evaluates the stiffness operator (i,j) of the current planar finite element.
+     * \param currentfe_ is an object of class FiniteElement<Integrator, ORDER,2,2>, current planar finite element
+     * \param i is an unsigned int, current finite element local index
+     * \param j is an unsigned int, current finite element local index
+     * returns a double.
+     */
 	template<class Integrator, UInt ORDER>
 	inline Real operator() (FiniteElement<Integrator, ORDER,2,2>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
 	{
@@ -24,7 +31,14 @@ class Stiff{
 	   	return s;
 	}
 	
-	//! AGGIUNGERE PER MESH SUPERFICIALI
+	//! A definition of operator () taking three arguments.
+    /*!
+     * Evaluates the stiffness operator (i,j) of the current superficial finite element.
+     * \param currentfe_ is an object of class FiniteElement<Integrator, ORDER,2,3>, current finite element
+     * \param i is an unsigned int, current finite element local index
+     * \param j is an unsigned int, current finite element local index
+     * returns a double.
+     */
 	
 	template<class Integrator, UInt ORDER>
 	inline Real operator() (FiniteElement<Integrator, ORDER,2,3>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
@@ -158,9 +172,10 @@ class Mass{
 
 	public:
 	
-    //! A definition of operator () taking two arguments.
+    //! A definition of operator () taking three arguments.
     /*!
-     * Evaluates the mass operator (i,j) of the current finite elemente.
+     * Evaluates the mass operator (i,j) of the current finite element.
+     * \param currentfe_ is an object of class FiniteElement<Integrator, ORDER,2,2>, current planar finite element
      * \param i is an unsigned int, current finite element local index
      * \param j is an unsigned int, current finite element local index
      * returns a double.
@@ -170,6 +185,15 @@ class Mass{
     {
     	return currentfe_.phiMaster(i,iq)*  currentfe_.phiMaster(j,iq);
     };
+    
+    //! A definition of operator () taking three arguments.
+    /*!
+     * Evaluates the mass operator (i,j) of the current finite element.
+     * \param currentfe_ is an object of class FiniteElement<Integrator, ORDER,2,3>, current planar finite element
+     * \param i is an unsigned int, current finite element local index
+     * \param j is an unsigned int, current finite element local index
+     * returns a double.
+     */
 
 	template <class Integrator ,UInt ORDER>
     inline Real operator() (FiniteElement<Integrator, ORDER,2,3>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
@@ -200,7 +224,7 @@ class Grad{
      }
      
      
-     //! AGGIUNGERE NUOVI METODI PER MESH SUPERFICIALI:
+     // AGGIUNGERE NUOVI METODI PER MESH SUPERFICIALI:
      /*
      	 template<class Integrator, UInt ORDER>
      inline Real operator() (FiniteElement<Integrator, ORDER,2,3>& currentfe_, UInt i, UInt j, UInt iq, UInt ic = 0)
@@ -495,7 +519,7 @@ class Assembler{
 	  //! A template member taking three arguments: discretize differential operator
 	  /*!
 	   * \param oper is a template expression : the differential operator to be discretized.
-	   * \param mesh is const reference to a MeshHandler<ORDER>: the mesh where we want to discretize the operator.
+	   * \param mesh is const reference to a MeshHandler<ORDER,2,2>: the mesh where we want to discretize the operator.
 	   * \param fe is a const reference to a FiniteElement
 	   * stores the discretization in SPoper_mat_
 	   */
@@ -507,6 +531,14 @@ class Assembler{
 
 	  template<UInt ORDER, typename Integrator>
 	  static void forcingTerm(const MeshHandler<ORDER,2,2>& mesh, FiniteElement<Integrator, ORDER,2,2>& fe, const ForcingTerm& u, VectorXr& forcingTerm);
+	  
+	  //! A template member taking three arguments: discretize differential operator
+	  /*!
+	   * \param oper is a template expression : the differential operator to be discretized.
+	   * \param mesh is const reference to a MeshHandler<ORDER,2,3>: the mesh where we want to discretize the operator.
+	   * \param fe is a const reference to a FiniteElement
+	   * stores the discretization in SPoper_mat_
+	   */
 	  
 	  template<UInt ORDER, typename Integrator, typename A>
 	  static void operKernel(EOExpr<A> oper,const MeshHandler<ORDER,2,3>& mesh,

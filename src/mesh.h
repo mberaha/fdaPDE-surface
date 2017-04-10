@@ -15,7 +15,7 @@ class MeshHandler{
 //!  2D MESH:
 //!  This class gives an object-oriented reading interface to the output of the library Triangle (Jonathan Richard Shewchuk).
 /*!
- * The template parameters specify the order of its elemnts.
+ * The template parameters specify the order of its elements.
  * The aim of this class is to do not introduce any initialization overhead,
  * beacuse it will be called many time during the execution of a R script
 */
@@ -128,31 +128,43 @@ private:
 };
 
 
+//!  SURFACE MESH:
+//!  This class gives an object-oriented reading interface to the mesh object passed from R
+/*!
+ * The template parameters specify the order of its elements.
+*/
+
+
 template <UInt ORDER>
 class MeshHandler<ORDER,2,3> {
 public:
 	typedef int UInt;
 	//! A constructor.
-    /*!
-      * The constructor permits the initialization of the mesh from an R object
-      * constructed with the TriLibrary (our R wrapper for the Triangle library)
-    */
-
-    MeshHandler(Real* points, UInt* edges, UInt* triangles, UInt num_nodes, UInt num_triangles):
+    
+    MeshHandler(Real* points, UInt* triangles, UInt num_nodes, UInt num_triangles):
 			points_(points), triangles_(triangles), num_nodes_(num_nodes), num_triangles_(num_triangles) {};
-
+	
+	//! A constructor.
+    /*!
+      * The constructor permits the initialization of the mesh from a .csv file, useful for
+      * debugging purposes
+    */
+	
     MeshHandler(std::string &filename){
 
        if(filename.find(".csv") != std::string::npos){
        		importfromCSV(filename);
        }
-
     }
-
+	
 
     void importfromCSV(std::string &filename);
-
-     #ifdef R_VERSION_
+	
+	//! A constructor.
+    /*!
+      * The constructor permits the initialization of the mesh from an R object
+    */
+    #ifdef R_VERSION_
 	MeshHandler(SEXP Rmesh);
 	#endif
 
@@ -170,25 +182,12 @@ public:
     */
     UInt num_triangles() const {return num_triangles_;}
 
-    //! A normal member returning an unsigned integer value.
-    /*!
-      \return The number of edges in the mesh
-    */
-    // UInt num_edges() const {return num_edges_;}
-
     //! A normal member returning a Point
     /*!
      * \param id an Id argument
       \return The point with the specified id
     */
     Point getPoint(Id id);
-
-    //! A normal member returning an Edge
-    /*!
-     * \param id an Id argument
-      \return The edge with the specified id
-    */
-   // Edge getEdge(Id id);
 
     //! A normal member returning a Triangle
     /*!
@@ -197,20 +196,9 @@ public:
     */
     Triangle<ORDER * 3,2,3>  getTriangle(Id id) const;
 
-    //The "number" neighbor of triangle i is opposite the "number" corner of triangle i
-    //! A normal member returning the Neighbors of a triangle
-    /*!
-     * \param id the id of the triangle
-     * \param number the number of the vertex
-      \return The triangle that has as an edge the one opposite to the specified
-      vertex
-    */
-   // Triangle<ORDER * 3,2,3> getNeighbors(Id id_triangle, UInt number) const;
-
     void printPoints(std::ostream & out);
-   // void printEdges(std::ostream & out);
     void printTriangles(std::ostream & out);
-   // void printNeighbors(std::ostream & out);
+   
 
      //! A normal member returning the triangle on which a point is located
     /*!
@@ -230,7 +218,7 @@ private:
 	std::vector<UInt> triangles_;
 
 
-	UInt num_nodes_, num_edges_, num_triangles_;
+	UInt num_nodes_, num_triangles_;
 
 };
 
