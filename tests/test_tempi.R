@@ -23,7 +23,6 @@ read.mesh<-function(filename){
 }
 
 
-filename = '108100_noAne_noHole.csv'
 
 mymesh=read.mesh(filename)
 
@@ -32,6 +31,10 @@ V = read.table(file="V_curveCyl.csv",header=F,sep=",")
 T = read.table(file="T_curveCyl.csv",header=F,sep=",")
 mymesh=list(nodes=V,triangles=T,nnodes=nrow(V),ntriangles=nrow(T))
 
+
+V = read.table(file="ICA_V.csv",header=F,sep=",")
+T = read.table(file="ICA_T.csv",header=F,sep=",")
+mymesh=list(nodes=V,triangles=T,nnodes=nrow(V),ntriangles=nrow(T))
 
 
 ### GENERATING DATA #####
@@ -125,7 +128,7 @@ rm(mymesh)
 res_carotide= microbenchmark(out = .Call("regression_Laplace", locations, data, mesh, 
                 mesh$order, mydim, ndim, lambda, covariates,
                 BC$BC_indices, BC$BC_values, GCV,
-                package = "fdaPDE"),times=15)
+                package = "fdaPDE"),times=2)
 
 
 
