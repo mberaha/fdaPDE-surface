@@ -130,19 +130,15 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
   fit.FEM  = FEM(f, FEMbasis)
   PDEmisfit.FEM = FEM(g, FEMbasis)  
   
-  cat("reslist \n")
   reslist = NULL
   beta = getBetaCoefficients(locations, observations, fit.FEM, covariates, CPP_CODE, ndim, mydim)
-  cat("beta done \n")
   if(GCV == TRUE)
   {
     seq=getGCV(locations = locations, observations = observations, fit.FEM = fit.FEM, covariates = covariates, edf = bigsol[[2]], ndim, mydim)
     reslist=list(fit.FEM=fit.FEM,PDEmisfit.FEM=PDEmisfit.FEM, beta = beta, edf = bigsol[[2]], stderr = seq$stderr, GCV = seq$GCV)
   }else{
-    cat("else \n")
     reslist=list(fit.FEM=fit.FEM,PDEmisfit.FEM=PDEmisfit.FEM, beta = beta)
   }
-  cat("smoothing_R done\n")
   return(reslist)
 }
 
@@ -411,13 +407,13 @@ smooth.FEM.PDE.sv.basis<-function(locations = NULL, observations, FEMbasis, lamb
 
 
 getBetaCoefficients<-function(locations, observations, fit.FEM, covariates, CPP_CODE = FALSE, ndim, mydim)
-{ cat("inside beta \n")
+{ 
   loc_nodes = NULL
   fnhat = NULL
   betahat = NULL
   
   if(!is.null(covariates))
-  { cat("here beta!\n")
+  { 
     if(is.null(locations))
     {
       loc_nodes = (1:length(observations))[!is.na(observations)]
@@ -432,7 +428,6 @@ getBetaCoefficients<-function(locations, observations, fit.FEM, covariates, CPP_
       betahat[,i] = as.vector(lm.fit(covariates,as.vector(observations-fnhat[,i]))$coefficients)
   }
 
- cat("ciaoanna \n")
  return(betahat)
 }
 
@@ -450,9 +445,7 @@ getGCV<-function(locations, observations, fit.FEM, covariates = NULL, edf,ndim,m
     fnhat = as.matrix(fit.FEM$coeff[loc_nodes,])
   }else{
     loc_nodes = 1:length(observations)
-    cat("eval fem \n")
     fnhat = eval.FEM(FEM = fit.FEM, locations = locations, CPP_CODE = FALSE, ndim, mydim)
-    cat("ciaoanna2 \n")
   }
   
   zhat = NULL

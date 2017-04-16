@@ -79,9 +79,7 @@ CPP_eval.manifold.FEM = function(FEM, locations, redundancy, ndim, mydim)
   
   #Calling the C++ function "eval_FEM_fd" in RPDE_interface.cpp
   evalmat = matrix(0,nrow(locations),ncol(coeff))
-  cat("entering for loop \n")
     for (i in 1:ncol(coeff)){
-      cat(".Call \n")
       evalmat[,i] <- .Call("eval_FEM_fd", FEMbasis$mesh, locations[,1], locations[,2], locations[,3], coeff[,i], FEMbasis$order, redundancy, mydim, ndim,
                          package = "fdaPDE")
     }
