@@ -245,7 +245,7 @@ second.order.mesh<-function(V,T,bc=NULL){
       point<-c(midpoints[side,1],midpoints[side,2],midpoints[side,3])
       #isthere<-apply(V, 1, identical,point)
       #isthere<-apply(V[nnodes:nrow(V),], 1, function(x) isTRUE(all.equal(as.vector(x), point, tolerance=toll)))
-      isthere<-apply(V[nnodes:nrow(V),], 1, function(x) identical(as.vector(x), point))
+      isthere<-apply(V[nnodes+1:nrow(V),], 1, function(x) identical(as.vector(x), point))
       loc = which(isthere)
       if(length(loc)>0){
         loc = loc+nnodes

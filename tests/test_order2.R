@@ -16,43 +16,25 @@ set.seed(13042017)
 
 #### HUB ######
 
-filename = 'hub.csv'
-
-read.mesh<-function(filename){
-  nnodes = read.table(filename, nrows = 2, header = FALSE, sep =' ', stringsAsFactors = FALSE)[1,2]
-  ntriangles = read.table(filename, nrows = 2, header = FALSE, sep =' ', stringsAsFactors = FALSE)[2,2]
-  geometry = read.csv(filename, skip=2, header= FALSE)
-  nodes = geometry[1:nnodes,]
-  triangles = geometry[(nnodes+1):(nnodes+ntriangles),]
-  
-  retlist = list(nnodes = nnodes,ntriangles = ntriangles,nodes = nodes,triangles = triangles)
-  return(retlist)
-}
-print('ci sono')
 
 V = read.table(file="hubV.csv",header=F,sep=",")
 T = read.table(file="hubT.csv",header=F,sep=",")
-#mymesh=list(nodes=V,triangles=T,nnodes=nrow(V),ntriangles=nrow(T))
 mymesh2<-second.order.mesh(V,T)
-plot.surface.mesh(mymesh2)
-cat('size of T: ',dim(mymesh2$triangles))
-print('second order done\n')
+
+nnodes = nrow(mymesh2$nodes)
 hub_true = NULL
 hub_noise = NULL
-
-#mymesh=read.mesh(filename)
 
 times=50
 MSE_hub=numeric(times)
 
 for(j in 1:times){
   ########## Generating Test data ############
-print('ciclo for\n')  
+  print('ciclo for\n')  
   a1 = rnorm(1,mean = 1, sd = 1)
   a2 = rnorm(1,mean = 1, sd = 1)
   a3 = rnorm(1,mean = 1, sd = 1)
   
-  nnodes=mymesh2$nnodes
 	cat('numero nodi mesh ',nnodes)
   func_evaluation = numeric(nnodes)
   
