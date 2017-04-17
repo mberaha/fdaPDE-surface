@@ -31,12 +31,13 @@ read.mesh<-function(filename){
 
 V = read.table(file="hubV.csv",header=F,sep=",")
 T = read.table(file="hubT.csv",header=F,sep=",")
-mymesh=list(nodes=V,triangles=T,nnodes=nrow(V),ntriangles=nrow(T))
+#mymesh=list(nodes=V,triangles=T,nnodes=nrow(V),ntriangles=nrow(T))
+mymesh2<-second.order.mesh(V,T)
 
 hub_true = NULL
 hub_noise = NULL
 
-mymesh=read.mesh(filename)
+#mymesh=read.mesh(filename)
 
 times=50
 MSE_hub=numeric(times)
@@ -48,7 +49,7 @@ for(j in 1:times){
   a2 = rnorm(1,mean = 1, sd = 1)
   a3 = rnorm(1,mean = 1, sd = 1)
   
-  nnodes=mymesh$nnodes
+  nnodes=mymesh2$nnodes
   func_evaluation = numeric(nnodes)
   
   for (i in 1:nnodes){
@@ -62,7 +63,7 @@ for(j in 1:times){
   hub_noise = rbind(hub_noise,data)
   
   
-  mesh <- create.surface.mesh(mymesh$nodes, mymesh$triangles, order=1)
+  mesh <- create.surface.mesh(mymesh2$nodes, mymesh2$triangles, order=2)
   
   FEMbasis <- create.FEM.basis(mesh)
   
@@ -76,9 +77,9 @@ for(j in 1:times){
 
 boxplot(MSE_hub)
 
-write.table(hub_true,file="hub_true.csv",sep=",",row.names = F)
-write.table(hub_noise,file="hub_noise.csv",sep=",",row.names = F)
-write.table(MSE_hub, file = "MSE_hub_R.csv",sep=",",row.names=F)
+write.table(hub_true,file="hub_true_order2.csv",sep=",",row.names = F)
+write.table(hub_noise,file="hub_noise_order2.csv",sep=",",row.names = F)
+write.table(MSE_hub, file = "MSE_hub_R_order2.csv",sep=",",row.names=F)
 
 
 

@@ -1,7 +1,7 @@
 
 
 CPP_smooth.FEM.basis<-function(locations, observations, FEMbasis, lambda, covariates = NULL, ndim, mydim, BC = NULL, GCV)
-{
+{ 
   # Indexes in C++ starts from 0, in R from 1, opportune transformation
   ##TO BE CHANGED SOON: LOW PERFORMANCES, IMPLIES COPY OF PARAMETERS
   FEMbasis$mesh$triangles = FEMbasis$mesh$triangles - 1
