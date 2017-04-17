@@ -261,6 +261,6 @@ second.order.mesh<-function(V,T,bc=NULL){
       }
     }
   } 
-  retlist <- list(nodes = as.matrix(V), triangles = as.matrix(T), bc_index = bc)
+  retlist <- list(nodes = as.matrix(V), triangles = as.matrix(T),nnodes=nrow(V), bc_index = bc)
 }
 

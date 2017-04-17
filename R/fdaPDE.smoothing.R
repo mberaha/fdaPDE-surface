@@ -78,6 +78,7 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
 #MODIFICARE PER SURFACE_MESH
   checkSmoothingParameters(locations, observations, FEMbasis, lambda, covariates, BC, GCV, CPP_CODE, PDE_parameters_constant = NULL, PDE_parameters_func = NULL) 
   ## Coverting to format for internal usage
+print('in cpp smooth fem basis')
   if(!is.null(locations))
     locations = as.matrix(locations)
   observations = as.matrix(observations)
@@ -115,7 +116,6 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
   } else if(class(FEMbasis$mesh) == 'SURFACE_MESH'){
 
 	  bigsol = NULL  
-	  
 	  print('C++ Code Execution')
 	  bigsol = CPP_smooth.manifold.FEM.basis(locations, observations, FEMbasis$mesh, lambda, covariates, ndim, mydim, BC, GCV)
 	  
@@ -139,6 +139,7 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
   }else{
     reslist=list(fit.FEM=fit.FEM,PDEmisfit.FEM=PDEmisfit.FEM, beta = beta)
   }
+	print('smoothing finished')
   return(reslist)
 }
 
