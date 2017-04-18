@@ -270,11 +270,11 @@ second.order.mesh<-function(mesh,bc=NULL){
     } 
   }
   if(is.null(bc)){
-    out = list(nnodes=nrow(V), ntriangles=nrow(T), nodes=c(t(V)), triangles = c(t(V)), order=2)
+    out = list(nnodes=nrow(V), ntriangles=nrow(T), nodes=c(t(V)), triangles = c(t(T)), order=2)
     class(out)<-"SURFACE_MESH"
     return(out)
   }else{
-    out = list(nnodes=nrow(V), ntriangles=nrow(T), nodes=c(t(V)), triangles = c(t(V)), order=2)
+    out = list(nnodes=nrow(V), ntriangles=nrow(T), nodes=c(t(V)), triangles = c(t(T)), order=2)
     class(out)<-"SURFACE_MESH"
     retlist = list(mesh = out, bc_index=bc)
     return(retlist)
