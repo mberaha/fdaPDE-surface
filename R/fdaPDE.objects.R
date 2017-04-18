@@ -190,9 +190,9 @@ create.surface.mesh<- function(nodes, triangles, order = 1)
 #' @param V A nnodes x 3 matrix specifying the locations of each node
 #' @param T A ntriangles x 3 matrix specifying the indices of the nodes in each triangle
 #' @param bc A vector specifying the indices of the nodes on which boundary conditions are applied
-#' @return A \code{list} with parameters:
-#' \item{\code{nodes}} An update of the nodes matrix with the additional nodes created
-#' \item{\code{triangles}} A ntriangles x 6 matrix specifying the indices of the 6 nodes in each triangle
+#' @return if no boundaries conditions are passed
+#' \item{\code{mesh}} An object of class 'SURFACE_MESH' with the mesh of order 2. Otherwhise a \code{\list} with parameters:
+#' \item{\code{mesh}} An object of class 'SURFACE_MESH' with the mesh of order 2.
 #' \item{\code{bc_index}} An update of the vector specifying the indices of the nodes on which boundary conditions are applied
 #' @examples
 #' #read the matrix nodes and triangles from file
@@ -203,64 +203,81 @@ create.surface.mesh<- function(nodes, triangles, order = 1)
 #' mesh = create.surface.mesh(second_order$nodes,second_order$triangles)
 #' new.bc_indicex = second_order$bc_index
 
-second.order.mesh<-function(V,T,bc=NULL){
-  toll=1e-5
-  T <- cbind(T, matrix(0,nrow=nrow(T),ncol=3))
-  nnodes=nrow(V)
-  index=nrow(V)
-  point2<-c(V[T[1,2],1],V[T[1,2],2],V[T[1,2],3])
-  point3<-c(V[T[1,3],1],V[T[1,3],2],V[T[1,3],3])
-  point1<-c(V[T[1,1],1],V[T[1,1],2],V[T[1,1],3])	
-  midpoints<-rbind((point2+point3)/2,(point1+point3)/2, (point1+point2)/2);
-  if(!is.null(bc)){
-    isBC<-c( any(bc==T[1,2]) & any(bc==T[1,3]),
-             any(bc==T[1,1]) & any(bc==T[1,3]),
-             any(bc==T[1,2]) & any(bc==T[1,1]))
-  }
-  
-  for (side in 1:3){
-    point<-c(midpoints[side,1],midpoints[side,2],midpoints[side,3])
-    index<-index+1;
-    V<-rbind(V,point)
-    T[1,3+side]<-index;
-    
-    if(!is.null(bc)&&isBC[side]==1){
-      bc<-c(bc,index)
-    }
-    
-  } #mario
-  
-  for (i in 2:nrow(T)){
-    point2<-c(V[T[i,2],1],V[T[i,2],2],V[T[i,2],3])
-    point3<-c(V[T[i,3],1],V[T[i,3],2],V[T[i,3],3])
-    point1<-c(V[T[i,1],1],V[T[i,1],2],V[T[i,1],3])	
+second.order.mesh<-function(mesh,bc=NULL){
+  if(class(mesh) != 'SURFACE_MESH'){
+    stop('This method is implemented only for a mesh of class SURFACE_MESH')
+  }else if(mesh$order != 1){
+    stop('The object mesh must have order = 1')
+  }else{
+    toll=1e-5
+    T = matrix(mesh$triangles,nrow=mesh$ntriangles,ncol=3, byrow = TRUE)
+    V = matrix(mesh$nodes, nrow = mesh$nnodes, ncol= 3, byrow = TRUE)
+    T <- cbind(T, matrix(0,nrow=nrow(T),ncol=3))
+    nnodes=nrow(V)
+    index=nrow(V)
+    point2<-c(V[T[1,2],1],V[T[1,2],2],V[T[1,2],3])
+    point3<-c(V[T[1,3],1],V[T[1,3],2],V[T[1,3],3])
+    point1<-c(V[T[1,1],1],V[T[1,1],2],V[T[1,1],3])	
     midpoints<-rbind((point2+point3)/2,(point1+point3)/2, (point1+point2)/2);
     if(!is.null(bc)){
-      isBC<-c( any(bc==T[i,2]) & any(bc==T[i,3]),
-               any(bc==T[i,1]) & any(bc==T[i,3]),
-               any(bc==T[i,2]) & any(bc==T[i,1]))
+      isBC<-c( any(bc==T[1,2]) & any(bc==T[1,3]),
+               any(bc==T[1,1]) & any(bc==T[1,3]),
+               any(bc==T[1,2]) & any(bc==T[1,1]))
     }
     
     for (side in 1:3){
       point<-c(midpoints[side,1],midpoints[side,2],midpoints[side,3])
-      #isthere<-apply(V, 1, identical,point)
-      #isthere<-apply(V[nnodes:nrow(V),], 1, function(x) isTRUE(all.equal(as.vector(x), point, tolerance=toll)))
-      isthere<-apply(V[nnodes+1:nrow(V),], 1, function(x) identical(as.vector(x), point))
-      loc = which(isthere)
-      if(length(loc)>0){
-        loc = loc+nnodes
-        T[i,3+side]<-loc[1]
-      }else{
-        index<-index+1;
-        V<-rbind(V,point)
-        T[i,3+side]<-index;
-        
-        if(!is.null(bc)&&isBC[side]==1){
-          bc<-c(bc,index)
+      index<-index+1;
+      V<-rbind(V,point)
+      T[1,3+side]<-index;
+      
+      if(!is.null(bc)&&isBC[side]==1){
+        bc<-c(bc,index)
+      }
+      
+    } #mario
+    
+    for (i in 2:nrow(T)){
+      point2<-c(V[T[i,2],1],V[T[i,2],2],V[T[i,2],3])
+      point3<-c(V[T[i,3],1],V[T[i,3],2],V[T[i,3],3])
+      point1<-c(V[T[i,1],1],V[T[i,1],2],V[T[i,1],3])	
+      midpoints<-rbind((point2+point3)/2,(point1+point3)/2, (point1+point2)/2);
+      if(!is.null(bc)){
+        isBC<-c( any(bc==T[i,2]) & any(bc==T[i,3]),
+                 any(bc==T[i,1]) & any(bc==T[i,3]),
+                 any(bc==T[i,2]) & any(bc==T[i,1]))
+      }
+      
+      for (side in 1:3){
+        point<-c(midpoints[side,1],midpoints[side,2],midpoints[side,3])
+        #isthere<-apply(V, 1, identical,point)
+        #isthere<-apply(V[nnodes:nrow(V),], 1, function(x) isTRUE(all.equal(as.vector(x), point, tolerance=toll)))
+        isthere<-apply(V[(nnodes+1):nrow(V),], 1, function(x) identical(as.vector(x), point))
+        loc = which(isthere)
+        if(length(loc)>0){
+          loc = loc+nnodes
+          T[i,3+side]<-loc[1]
+        }else{
+          index<-index+1;
+          V<-rbind(V,point)
+          T[i,3+side]<-index;
+          
+          if(!is.null(bc)&&isBC[side]==1){
+            bc<-c(bc,index)
+          }
         }
       }
-    }
-  } 
-  retlist <- list(nodes = as.matrix(V), triangles = as.matrix(T),nnodes=nrow(V), bc_index = bc)
+    } 
+  }
+  if(is.null(bc)){
+    out = list(nnodes=nrow(V), ntriangles=nrow(T), nodes=c(t(V)), triangles = c(t(V)), order=2)
+    class(out)<-"SURFACE_MESH"
+    return(out)
+  }else{
+    out = list(nnodes=nrow(V), ntriangles=nrow(T), nodes=c(t(V)), triangles = c(t(V)), order=2)
+    class(out)<-"SURFACE_MESH"
+    retlist = list(mesh = out, bc_index=bc)
+    return(retlist)
+  }
 }
 
