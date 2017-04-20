@@ -75,7 +75,7 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
  
  	  
 ##################### Checking parameters, sizes and conversion ################################
-#MODIFICARE PER SURFACE_MESH
+
   checkSmoothingParameters(locations, observations, FEMbasis, lambda, covariates, BC, GCV, CPP_CODE, PDE_parameters_constant = NULL, PDE_parameters_func = NULL) 
   ## Coverting to format for internal usage
 print('in cpp smooth fem basis')
@@ -421,7 +421,7 @@ getBetaCoefficients<-function(locations, observations, fit.FEM, covariates, CPP_
       fnhat = as.matrix(fit.FEM$coeff[loc_nodes,])
     }else{
       loc_nodes = 1:length(observations)
-      fnhat = eval.FEM(FEM = fit.FEM, locations = locations, CPP_CODE, ndim, mydim)
+      fnhat = eval.FEM(FEM = fit.FEM, locations = locations, CPP_CODE)
     }
     ## #row number of covariates, #col number of functions
     betahat = matrix(0, nrow = ncol(covariates), ncol = ncol(fnhat))
@@ -446,7 +446,7 @@ getGCV<-function(locations, observations, fit.FEM, covariates = NULL, edf,ndim,m
     fnhat = as.matrix(fit.FEM$coeff[loc_nodes,])
   }else{
     loc_nodes = 1:length(observations)
-    fnhat = eval.FEM(FEM = fit.FEM, locations = locations, CPP_CODE = FALSE, ndim, mydim)
+    fnhat = eval.FEM(FEM = fit.FEM, locations = locations, CPP_CODE = FALSE)
   }
   
   zhat = NULL
