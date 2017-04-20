@@ -215,10 +215,8 @@ second.order.mesh<-function(mesh,bc=NULL){
     T <- cbind(T, matrix(0,nrow=nrow(T),ncol=3))
     nnodes=nrow(V)
     index=nrow(V)
-    point2<-c(V[T[1,2],1],V[T[1,2],2],V[T[1,2],3])
-    point3<-c(V[T[1,3],1],V[T[1,3],2],V[T[1,3],3])
-    point1<-c(V[T[1,1],1],V[T[1,1],2],V[T[1,1],3])	
-    midpoints<-rbind((point2+point3)/2,(point1+point3)/2, (point1+point2)/2);
+    points = V[T[1,],]
+    midpoints<-rbind((points[2,]+points[3,])/2,(points[1,]+points[3,])/2, (points[1,]+points[2,])/2);
     if(!is.null(bc)){
       isBC<-c( any(bc==T[1,2]) & any(bc==T[1,3]),
                any(bc==T[1,1]) & any(bc==T[1,3]),
@@ -226,7 +224,7 @@ second.order.mesh<-function(mesh,bc=NULL){
     }
     
     for (side in 1:3){
-      point<-c(midpoints[side,1],midpoints[side,2],midpoints[side,3])
+      point<-midpoints[side,]
       index<-index+1;
       V<-rbind(V,point)
       T[1,3+side]<-index;
@@ -235,13 +233,11 @@ second.order.mesh<-function(mesh,bc=NULL){
         bc<-c(bc,index)
       }
       
-    } #mario
+    }
     
     for (i in 2:nrow(T)){
-      point2<-c(V[T[i,2],1],V[T[i,2],2],V[T[i,2],3])
-      point3<-c(V[T[i,3],1],V[T[i,3],2],V[T[i,3],3])
-      point1<-c(V[T[i,1],1],V[T[i,1],2],V[T[i,1],3])	
-      midpoints<-rbind((point2+point3)/2,(point1+point3)/2, (point1+point2)/2);
+      points = V[T[i,],]
+      midpoints<-rbind((points[2,]+points[3,])/2,(points[1,]+points[3,])/2, (points[1,]+points[2,])/2);
       if(!is.null(bc)){
         isBC<-c( any(bc==T[i,2]) & any(bc==T[i,3]),
                  any(bc==T[i,1]) & any(bc==T[i,3]),
@@ -249,9 +245,7 @@ second.order.mesh<-function(mesh,bc=NULL){
       }
       
       for (side in 1:3){
-        point<-c(midpoints[side,1],midpoints[side,2],midpoints[side,3])
-        #isthere<-apply(V, 1, identical,point)
-        #isthere<-apply(V[nnodes:nrow(V),], 1, function(x) isTRUE(all.equal(as.vector(x), point, tolerance=toll)))
+        point<-midpoints[side,]
         isthere<-apply(V[(nnodes+1):nrow(V),], 1, function(x) identical(as.vector(x), point))
         loc = which(isthere)
         if(length(loc)>0){
