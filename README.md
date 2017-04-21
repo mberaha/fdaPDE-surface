@@ -4,6 +4,7 @@ Linear Regresion with PDE regularization for data distributed on 2D Manifolds
 The output is an extension of the `R` Package [fdaPDE](https://cran.r-project.org/web/packages/fdaPDE/index.html)
 
 The source code is written in `C++` and linked to `R` throught the API `RcppEigen` and `.Call`
+
 Subfolder structure
 --------------------------
 - `src` contains all `C++` code and a special file named `Makevars` necessary to build and install the `R` package
