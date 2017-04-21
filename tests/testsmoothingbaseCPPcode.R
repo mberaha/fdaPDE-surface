@@ -1,19 +1,8 @@
-## This script tests 
-## - isotropic smoothing 
-## - 1st order FEs 
+## This script tests
+## - isotropic smoothing
+## - 1st order FEs
 ## - C++ code
-#setwd("/home/pacs_student/progetto_pacs/tests")
-#source('/home/pacs_student/progetto_pacs/R/datasets.R',chdir=T)
-source('../R/fdaPDE.objects.R')
-source("../R/fdaPDE.smoothing.R")
-source("../R/fdaPDE.checkParameters.R")
-source("../R/fdaPDE.smoothing_CPP.R")
-source("../R/fdaPDE.smoothing_R.R")
-source("../R/fdaPDE.locator.R")
-source("../R/mesh.2D.R")
-source("../R/zzz.R")
-source("../R/fdaPDE.smoothing.manifold_CPP.R")
-dyn.load("../src/fdaPDE.so") 
+library(fdaPDE)
 
 
 
@@ -35,10 +24,10 @@ BC = NULL
 ndim=2
 mydim=2
 
-output_CPP = smooth.FEM.basis(locations  = as.matrix(locations), 
-                              observations = data, 
-                              FEMbasis = FEMbasis, lambda = lambda, 
-                              covariates = covariates, 
+output_CPP = smooth.FEM.basis(locations  = as.matrix(locations),
+                              observations = data,
+                              FEMbasis = FEMbasis, lambda = lambda,
+                              covariates = covariates,
                               GCV = TRUE,
                               CPP_CODE = TRUE)
 
