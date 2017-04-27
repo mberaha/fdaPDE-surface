@@ -185,14 +185,6 @@ void MeshHandler<ORDER,2,2>::printNeighbors(std::ostream & out)
 
 
 #ifdef R_VERSION_
-/*template <UInt ORDER>
-MeshHandler<ORDER,2,3>::MeshHandler(SEXP mesh)
-{
-	char* file=CHAR(STRING_ELT(mesh,0));
-	std::string filename(file);
-	importfromCSV(filename);
-
-}*/
 template <UInt ORDER>
 MeshHandler<ORDER,2,3>::MeshHandler(SEXP mesh)
 {

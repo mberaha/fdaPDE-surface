@@ -13,22 +13,22 @@ typedef UInt BcId;
 //!  This class gives some common methods to all mesh objects.
 class Identifier{
 public:
-	
+
 	//! An static const Unisgned Integer.
     /*! Needed to identify the Not Valid Id. */
 	static const UInt NVAL;
 	//Identifier():id_(NVAL),bcId_(NVAL){}
 	Identifier(UInt id):id_(id),bcId_(NVAL){}
 	Identifier(UInt id, UInt bcId):id_(id),bcId_(bcId){}
-	
+
 	bool unassignedId()const {return id_==NVAL;}
 	bool unassignedBc()const {return bcId_==NVAL;}
-	
+
 	Id id() const {return id_;}
 	BcId bcId() const {return bcId_;}
 	Id getId() const {return id_;}
-	
-	
+
+
 	protected:
 	Id id_;
 	BcId bcId_;
@@ -38,7 +38,7 @@ public:
 //!  This class implements a 3D point, the default is z=0 => 2D point
 class Point: public Identifier{
 public:
-	
+
 	UInt ndim;
 
 	Point(): Identifier(NVAL, NVAL){coord_.resize(3);};
@@ -68,18 +68,18 @@ class Edge: public Identifier{
     static const UInt NNODES=2;
     static const UInt numSides=1;
     static const UInt myDim=1;
-    
+
     Edge():Identifier(NVAL, NVAL){points_.resize(2);};
     Edge(Id id, BcId bcId, const Point& start,const Point& end):Identifier(id, bcId)
     {points_.resize(2); points_[0] = start; points_[1] = end;}
-    
+
     void print(std::ostream & out) const;
     Point getFirst() const {return points_[0];}
     Point getEnd() const {return points_[1];}
-    
-    
+
+
     Point operator[](UInt i) const {return points_[i];}
-   
+
  private:
 	// I don't store directly a eigen matrix because of the limitations
 	// of the current problems of alignement (see eigen 3.0 documentation)
@@ -88,7 +88,7 @@ class Edge: public Identifier{
     std::vector<Point> points_;
     //std::array<std::reference_wrapper<Point>, NNODES> M_points;
   };
-  
+
 //! This is an abstract template class called Triangle
 /*!
  * mydim is the dimension of the object: e.g. a triangle has mydim=2, a tethraedron
@@ -100,23 +100,23 @@ class Edge: public Identifier{
 
 template <UInt NNODES,UInt mydim, UInt ndim>
 class Triangle : public Identifier {
-} ; 
-  
-  
-  
-  
+} ;
+
+
+
+
 //!  This class implements a Triangle as an objects composed by three or six nodes.
 /*!
  *  The first three nodes represent the vertices, the others the internal nodes,
  *  following this enumeration: !IMPORTANT! different from Sangalli code!
- * 
- * 			3
- * 			*
- * 		     /	    \
- * 		  5 *	     * 4 
- * 		  /	      \
- * 		 *______*______*		
- * 		1	6	2
+ *
+ * 		        	3
+ * 			       *
+ * 		     /	     \
+ * 		  5 *	        * 4
+ * 		  /	           \
+ * 		 *______*______ *
+ * 		1	      6	      2
 */
 template <UInt NNODES>
 class Triangle<NNODES,2,2> : public Identifier {
@@ -125,22 +125,22 @@ public:
     static const UInt numVertices=3;
     static const UInt numSides=3;
 	static const UInt myDim=2;
-    
+
     //! This constructor creates an "empty" Triangle, with an Id Not Valid
 	Triangle():Identifier(NVAL){points_.resize(NNODES);}
-	
+
 	//! This constructor creates a Triangle, given its Id and an std array with the three object Point the will define the Triangle
     Triangle(Id id, const std::vector<Point> points) : Identifier(id)
 	{ this->init(points); }
-	
+
 	//! Overloading of the operator [],  taking the Node number and returning a node as Point object.
     /*!
-     * For node numbering convention see: 
+     * For node numbering convention see:
       \param i an integer argument.
       \return the Point object
     */
 	Point operator[](UInt i) const {return points_[i];}
-	
+
 	//! A member that computes the barycentric coordinates.
     /*!
       \param point a Point object
@@ -159,14 +159,14 @@ public:
 	Real getArea() const {return (0.5 * detJ_);}
 
 	Eigen::Matrix<Real,3,1> getBaryCoordinates(const Point& point) const;
-	
+
 	//! A member that tests if a Point is located inside a Triangle.
     /*!
       \param point a Point object.
       \return True if the point is inside the triangle
     */
 	bool isPointInside(const Point& point) const;
-	
+
 	//! A memeber that verifies which edge separates the Triangle from a Point.
     /*!
       \param point a Point object.
@@ -174,7 +174,7 @@ public:
       from the triangle and -1 if the point is inside the triangle.
     */
 	int getPointDirection(const Point& point) const;
-	
+
 	//! A member that prints the main properties of the triangle
     /*!
       \param out a std::outstream.
@@ -211,14 +211,14 @@ const int Triangle<NNODES,2,2>::myDim;
 /*!
  *  The first three nodes represent the vertices, the others the internal nodes,
  *  following this enumeration: !IMPORTANT! different from Sangalli code!
- * 
- * 			3
- * 			*
+ *
+ * 			       3
+ * 			       *
  * 		     /	    \
- * 		  5 *	     * 4 
- * 		  /	      \
- * 		 *______*______*		
- * 		1	6	2
+ * 		  5 *	       * 4
+ * 		  /	          \
+ * 		 *______*______*
+ * 		1	      6	      2
 */
 
 
@@ -229,22 +229,22 @@ public:
     static const UInt numVertices=3;
     static const UInt numSides=3;
 	static const UInt myDim=2;
-    
+
     //! This constructor creates an "empty" Triangle, with an Id Not Valid
 	Triangle():Identifier(NVAL){points_.resize(NNODES);}
-	
+
 	//! This constructor creates a Triangle, given its Id and an std array with the three object Point the will define the Triangle
     Triangle(Id id, const std::vector<Point> points) : Identifier(id)
 	{ this->init(points); }
-	
+
 	//! Overloading of the operator [],  taking the Node number and returning a node as Point object.
     /*!
-     * For node numbering convention see: 
+     * For node numbering convention see:
       \param i an integer argument.
       \return the Point object
     */
 	Point operator[](UInt i) const {return points_[i];}
-	
+
 	//! A member that computes the barycentric coordinates.
     /*!
       \param point a Point object
@@ -254,18 +254,18 @@ public:
 	Real getDetJ() const {return detJ_;}
 	Eigen::Matrix<Real,3,2> getM_J() const {return M_J_;}
 	Eigen::Matrix<Real,2,2> getMetric() const {return metric_;} //inv(MJ^t*MJ)
-	Real getArea() const {return (std::sqrt(detJ_)); //sqrt(det(MJ^t*MJ))   
+	Real getArea() const {return (std::sqrt(detJ_)); //sqrt(det(MJ^t*MJ))
 				};
 
 	Eigen::Matrix<Real,3,1> getBaryCoordinates(const Point& point) const; //! DA VEDERE
-	
+
 	//! A member that tests if a Point is located inside a Triangle.
     /*!
       \param point a Point object.
       \return True if the point is inside the triangle
     */
 	bool isPointInside(const Point& point) const;
-	
+
 	//! A memeber that verifies which edge separates the Triangle from a Point.
     /*!
       \param point a Point object.
@@ -273,7 +273,7 @@ public:
       from the triangle and -1 if the point is inside the triangle.
     */
 	int getPointDirection(const Point& point) const;
-	
+
 	//! A member that prints the main properties of the triangle
     /*!
       \param out a std::outstream.
@@ -283,7 +283,7 @@ public:
 private:
 
 	std::vector<Point> points_;
-	Eigen::Matrix<Real,3,2> M_J_;	
+	Eigen::Matrix<Real,3,2> M_J_;
 	Eigen::Matrix<Real,2,2> G_J_; //M_J^t*M_J
 	Eigen::Matrix<Real,2,2> metric_; //inv(GJ)
 	Real detJ_;
@@ -336,36 +336,13 @@ inline Real evaluate_point<2,2,2>(const Triangle<6,2,2>& t, const Point& point, 
 // first solve the linear sistem (p-p0)=(p1-p0)*alpha + (p2-p0)*beta + N*gamma
 // where p0,p1,p2 are the vertices of the triangle, p is the point
 // (observe that, if the point is inside the triangle, gamma=0)
-// then the solution u(p)=u(p0)+alpa*(u(p1)-u(p0)+beta*(u(p2)-u(p0)) 
+// then the solution u(p)=u(p0)+alpa*(u(p1)-u(p0)+beta*(u(p2)-u(p0))
 template <>
 inline Real evaluate_point<1,2,3>(const Triangle<3,2,3>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients)
-{    
-	/*Eigen::Matrix<Real,3,1> coordinates;
-	Eigen::Matrix<Real,3,3> A;
-	Eigen::Matrix<Real,3,1> b;
-	
-	A(0,0) = t[1][0]-t[0][0];
-	A(0,1) = t[2][0]-t[0][0];
-	A(0,2) = (t[1][1]-t[0][1])*(t[2][2]-t[0][2]) - (t[1][2]-t[0][2])*(t[2][1]-t[0][1]);
-	A(1,0) = t[1][1]-t[0][1];
-	A(1,1) = t[2][1]-t[0][1];
-	A(1,2) = (t[2][2]-t[0][2])*(t[2][0]-t[0][0]) - (t[1][0]-t[0][0])*(t[2][2]-t[0][2]);
-	A(2,0) = t[1][2]-t[0][2];
-	A(2,1) = t[2][2]-t[0][2];
-	A(2,2) = (t[1][0]-t[0][0])*(t[2][1]-t[0][1]) - (t[1][1]-t[0][1])*(t[2][0]-t[0][0]);
-
-	b(0) = point[0]-t[0][0];
-	b(1) = point[1]-t[0][1];
-	b(2) = point[2]-t[0][2];
-
-	coordinates = A.fullPivHouseholderQr().solve(b);
-	
-	return(coefficients[0]+coordinates[0]*(coefficients[1]-coefficients[0])+
-		coordinates[1]*(coefficients[2]-coefficients[0]));*/
-
+{
 	Eigen::Matrix<Real,3,1> bary_coeff=t.getBaryCoordinates(point);
 	return(coefficients.dot(bary_coeff));
-	
+
 }
 
 template <>
@@ -416,18 +393,18 @@ inline Eigen::Matrix<Real,2,1> evaluate_der_point<2,2,2>(const Triangle<6,2,2>& 
 }
 
 
-//! First we change coordinates from (x,y,z) to (alpha,beta,gamma)
+// First we change coordinates from (x,y,z) to (alpha,beta,gamma)
 // [du/dalpha, du/dbeta, du/dgamma] =   | dx/dalpha, dy/dalpha, dz/dalpha |*[du/dx,du/dy,du/dz]
 //                                      | dx/dbeta,  dy/dbeta,  dz/dbeta  |
 //                                      | dx/dgamma, dy/dgamma, dz/dgamma |
-// 
+//
 /*
 template <>
 inline Eigen::Matrix<Real,3,1> evaluate_der_point<1,2,3>(const Triangle<3,2,3>& t, const Point& point, const Eigen::Matrix<Real,3,1>& coefficients)
 {	//primo metodo
 	Eigen::Matrix<Real,3,3> A;
 	Eigen::Matrix<Real,3,1> b;
-	
+
 	A(0,0) = t[1][0]-t[0][0];
 	A(1,0) = t[2][0]-t[0][0];
 	A(2,0) = (t[1][1]-t[0][1])*(t[2][2]-t[0][2]) - (t[1][2]-t[0][2])*(t[2][1]-t[0][1]);
@@ -437,12 +414,12 @@ inline Eigen::Matrix<Real,3,1> evaluate_der_point<1,2,3>(const Triangle<3,2,3>& 
 	A(0,2) = t[1][2]-t[0][2];
 	A(1,2) = t[2][2]-t[0][2];
 	A(2,2) = (t[1][0]-t[0][0])*(t[2][1]-t[0][1]) - (t[1][1]-t[0][1])*(t[2][0]-t[0][0]);
-	
+
 
 	b(0) = coefficients[1]-coefficients[0];
 	b(1) = coefficients[2]-coefficients[0];
 	b(2) = 0;
-	
+
 	return(A.fullPivHouseholderQr().solve(b));
 
 	//secondo metodo
@@ -453,7 +430,7 @@ inline Eigen::Matrix<Real,3,1> evaluate_der_point<1,2,3>(const Triangle<3,2,3>& 
 	B1 = B1 / (2 * t.getArea());
 
 	return(B1*coefficients);
-	
+
 }
 
 template <>
