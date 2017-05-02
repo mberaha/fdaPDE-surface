@@ -1,5 +1,5 @@
 CPP_smooth.manifold.FEM.basis<-function(locations, observations, mesh, lambda, covariates = NULL, ndim, mydim, BC = NULL, GCV)
-{print('in smoothing manifold')
+{
   # Indexes in C++ starts from 0, in R from 1, opportune transformation
   # This is done in C++ now to optimize speed
     
@@ -50,13 +50,12 @@ CPP_smooth.manifold.FEM.basis<-function(locations, observations, mesh, lambda, c
   GCV = as.integer(GCV)
   storage.mode(GCV)<-"integer"
   
-print('calling cpp library')
   ## Call C++ function
   bigsol <- .Call("regression_Laplace", locations, data, mesh, 
                   mesh$order, mydim, ndim, lambda, covariates,
                   BC$BC_indices, BC$BC_values, GCV,
                   package = "fdaPDE")
-print('fine di regression laplace')
+
   return(bigsol)
 }
 

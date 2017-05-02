@@ -436,7 +436,7 @@ inline Eigen::Matrix<Real,3,1> evaluate_der_point<1,2,3>(const Triangle<3,2,3>& 
 template <>
 inline Eigen::Matrix<Real,3,1> evaluate_der_point<2,2,3>(const Triangle<6,2,3>& t, const Point& point, const Eigen::Matrix<Real,6,1>& coefficients)
 {
-	/*Eigen::Matrix<Real,3,1> L = t.getBaryCoordinates(point);
+	Eigen::Matrix<Real,3,1> L = t.getBaryCoordinates(point);
 	Eigen::Matrix<Real,2,3> B1;
 	B1 << t[1][1] - t[2][1], t[2][1] - t[0][1], t[0][1] - t[1][1],
 		t[2][0] - t[1][0], t[0][0] - t[2][0], t[1][0] - t[0][0];

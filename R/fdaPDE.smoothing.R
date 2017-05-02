@@ -78,7 +78,6 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
 
   checkSmoothingParameters(locations, observations, FEMbasis, lambda, covariates, BC, GCV, CPP_CODE, PDE_parameters_constant = NULL, PDE_parameters_func = NULL) 
   ## Coverting to format for internal usage
-print('in cpp smooth fem basis')
   if(!is.null(locations))
     locations = as.matrix(locations)
   observations = as.matrix(observations)
@@ -139,7 +138,6 @@ print('in cpp smooth fem basis')
   }else{
     reslist=list(fit.FEM=fit.FEM,PDEmisfit.FEM=PDEmisfit.FEM, beta = beta)
   }
-	print('smoothing finished')
   return(reslist)
 }
 
