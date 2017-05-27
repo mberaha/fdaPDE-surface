@@ -166,7 +166,7 @@ image.FEM = function(x, num_refinements = NULL, ...)
 #' #read the matrix nodes and triangles from file
 #' nodes = read.table(file="mynodes.csv",header=F,sep=",")
 #' triangles = read.table(file="mytriangles.csv",header=F,sep=",")
-#' mesh = create.surface.mesh(nodes,triangles)
+#' mesh = create.MESH.2.5D(nodes,triangles)
 
 create.MESH.2.5D<- function(nodes, triangles, order = 1)
 {
@@ -181,7 +181,7 @@ create.MESH.2.5D<- function(nodes, triangles, order = 1)
   	}
   out = list(nnodes=nnodes, ntriangles=ntriangles, nodes=c(t(nodes)), triangles = c(t(triangles)), order=as.integer(order))
 
-  class(out)<-"SURFACE_MESH"
+  class(out)<-"MESH.2.5D"
 
   return(out)
 }
@@ -194,7 +194,7 @@ create.MESH.2.5D<- function(nodes, triangles, order = 1)
 #' \item{\code{mesh}} An object of class 'SURFACE_MESH' with the mesh of order 2.
 #' \item{\code{bc_index}} An update of the vector specifying the indices of the nodes on which boundary conditions are applied
 #' @examples
-#' load(hub) #loading mesh hub, order=1
+#' data(hub) #loading mesh hub, order=1
 #' hub_order2 = second.order.MESH2.5D(hub)
 
 second.order.MESH2.5D<-function(mesh,bc=NULL){
@@ -259,11 +259,11 @@ second.order.MESH2.5D<-function(mesh,bc=NULL){
   }
   if(is.null(bc)){
     out = list(nnodes=nrow(V), ntriangles=nrow(T), nodes=c(t(V)), triangles = c(t(T)), order=2)
-    class(out)<-"SURFACE_MESH"
+    class(out)<-"MESH.2.5D"
     return(out)
   }else{
     out = list(nnodes=nrow(V), ntriangles=nrow(T), nodes=c(t(V)), triangles = c(t(T)), order=2)
-    class(out)<-"SURFACE_MESH"
+    class(out)<-"MESH.2.5D"
     retlist = list(mesh = out, bc_index=bc)
     return(retlist)
   }
