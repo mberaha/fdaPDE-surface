@@ -4,16 +4,16 @@
 #' @examples
 #' library(fdaPDE)
 #' data(caramella)
-#' plot.surface.mesh(caramella)
+#' plot.MESH2.5D(caramella)
 #' @examples
 #' library(fdaPDE)
 #' data(caramella)
 #' ### GENERATE SOME RANDOM DATA, SEE FOR EXAMPLE test_manifold1.R IN THE TEST DIRECTORY ###
 #' output = smooth.FEM.basis( observations = data, FEMbasis = FEMbasis, lambda = 1,GCV = FALSE, CPP_CODE = TRUE)
-#' plot.surface.mesh(FEMbasis$mesh, output_CPP$fit.FEM$coeff)
+#' plot.MESH2.5D(FEMbasis$mesh, output_CPP$fit.FEM$coeff)
 
 
-plot.surface.mesh<-function(mesh,node_values=NULL){
+plot.MESH2.5D<-function(mesh,node_values=NULL){
 
   if(!require(rgl)){
     stop("The plot surface_mesh_function(...) requires the R package rgl, please install it and try again!")

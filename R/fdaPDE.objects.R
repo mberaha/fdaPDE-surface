@@ -156,7 +156,7 @@ image.FEM = function(x, num_refinements = NULL, ...)
   }
 }
 
-#' Create a \code{SURFACE_MESH} object from the connectivty matrix and nodes locations
+#' Create a \code{MESH2.5D} object from the connectivty matrix and nodes locations
 #'
 #' @param nodes A nnodes x 3 matrix specifying the locations of each node
 #' @param triangles A ntriangles x 3*order matrix specifying the indices of the nodes in each triangle
@@ -168,7 +168,7 @@ image.FEM = function(x, num_refinements = NULL, ...)
 #' triangles = read.table(file="mytriangles.csv",header=F,sep=",")
 #' mesh = create.surface.mesh(nodes,triangles)
 
-create.surface.mesh<- function(nodes, triangles, order = 1)
+create.MESH.2.5D<- function(nodes, triangles, order = 1)
 {
   nnodes = dim(nodes)[1]
 
@@ -195,10 +195,10 @@ create.surface.mesh<- function(nodes, triangles, order = 1)
 #' \item{\code{bc_index}} An update of the vector specifying the indices of the nodes on which boundary conditions are applied
 #' @examples
 #' load(hub) #loading mesh hub, order=1
-#' hub_order2=second.order.mesh(hub)
+#' hub_order2 = second.order.MESH2.5D(hub)
 
-second.order.mesh<-function(mesh,bc=NULL){
-  if(class(mesh) != 'SURFACE_MESH'){
+second.order.MESH2.5D<-function(mesh,bc=NULL){
+  if(class(mesh) != 'MESH.2.5D'){
     stop('This method is implemented only for a mesh of class SURFACE_MESH')
   }else if(mesh$order != 1){
     stop('The object mesh must have order = 1')
