@@ -75,7 +75,7 @@ checkSmoothingParametersSize<-function(locations = NULL, observations, FEMbasis,
     if(class(FEMbasis$mesh) == "MESH2D"){
     	if(nrow(observations) > nrow(FEMbasis$mesh$nodes))
      	 stop("Size of 'observations' is larger then the size of 'nodes' in the mesh")
-    }else if(class(FEMbasis$mesh) == "SURFACE_MESH"){
+    }else if(class(FEMbasis$mesh) == "MESH2.5D"){
     	if(nrow(observations) > FEMbasis$mesh$nnodes)
      	 stop("Size of 'observations' is larger then the size of 'nodes' in the mesh")
     }

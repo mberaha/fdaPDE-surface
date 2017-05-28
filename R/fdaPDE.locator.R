@@ -37,7 +37,7 @@ eval.FEM <- function(FEM, locations, CPP_CODE = TRUE)
 	  }else{ 
 	    res = CPP_eval.FEM(FEM, locations, TRUE, ndim, mydim)
 	  }
-  }else if(class(FEM$FEMbasis$mesh)=='SURFACE_MESH'){
+  }else if(class(FEM$FEMbasis$mesh)=='MESH2.5D'){
       ndim = 3
       mydim = 2
   	    res = CPP_eval.manifold.FEM(FEM, locations, TRUE, ndim, mydim)

@@ -66,7 +66,7 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
  if(class(FEMbasis$mesh) == "MESH2D"){
  	ndim = 2
  	mydim = 2
- }else if(class(FEMbasis$mesh) == 'SURFACE_MESH'){
+ }else if(class(FEMbasis$mesh) == 'MESH2.5D'){
  	ndim = 3
  	mydim = 2
  }else{
@@ -112,7 +112,7 @@ smooth.FEM.basis<-function(locations = NULL, observations, FEMbasis, lambda, cov
 	  
 	  numnodes = nrow(FEMbasis$mesh$nodes)
 	  
-  } else if(class(FEMbasis$mesh) == 'SURFACE_MESH'){
+  } else if(class(FEMbasis$mesh) == 'MESH2.5D'){
 
 	  bigsol = NULL  
 	  print('C++ Code Execution')

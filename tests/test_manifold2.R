@@ -3,7 +3,7 @@ library(fdaPDE)
 data(caramella)
 
 cat('Plotting the mesh \n')
-plot.surface.mesh(caramella)
+plot.MESH2.5D(caramella)
 
 ## Generate some random data ##
 
@@ -27,10 +27,10 @@ output_CPP =smooth.FEM.basis(observations = data,
                              CPP_CODE = TRUE, GCV=TRUE)
 
 cat("Showing result for different values of lambda")
-plot.surface.mesh(caramella,output_CPP$fit.FEM$coeff[,1])
-plot.surface.mesh(caramella,output_CPP$fit.FEM$coeff[,2])
-plot.surface.mesh(caramella,output_CPP$fit.FEM$coeff[,3])
-plot.surface.mesh(caramella,output_CPP$fit.FEM$coeff[,4])
+plot.MESH2.5D(caramella,output_CPP$fit.FEM$coeff[,1])
+plot.MESH2.5D(caramella,output_CPP$fit.FEM$coeff[,2])
+plot.MESH2.5D(caramella,output_CPP$fit.FEM$coeff[,3])
+plot.MESH2.5D(caramella,output_CPP$fit.FEM$coeff[,4])
 
 lambda_opt = lambda[which(output_CPP$GCV == min(output_CPP$GCV))]
 cat("From the GCV analysis, the best lambda is ", lambda_opt, "\n")

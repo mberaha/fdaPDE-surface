@@ -156,7 +156,7 @@ image.FEM = function(x, num_refinements = NULL, ...)
   }
 }
 
-#' Create a \code{SURFACE_MESH} object from the connectivty matrix and nodes locations
+#' Create a \code{MESH2.5D} object from the connectivty matrix and nodes locations
 #'
 #' @param nodes A nnodes x 3 matrix specifying the locations of each node
 #' @param triangles A ntriangles x 3*order matrix specifying the indices of the nodes in each triangle
@@ -166,9 +166,9 @@ image.FEM = function(x, num_refinements = NULL, ...)
 #' #read the matrix nodes and triangles from file
 #' nodes = read.table(file="mynodes.csv",header=F,sep=",")
 #' triangles = read.table(file="mytriangles.csv",header=F,sep=",")
-#' mesh = create.surface.mesh(nodes,triangles)
+#' mesh = create.MESH.2.5D(nodes,triangles)
 
-create.surface.mesh<- function(nodes, triangles, order = 1)
+create.MESH.2.5D<- function(nodes, triangles, order = 1)
 {
   nnodes = dim(nodes)[1]
 
@@ -181,7 +181,7 @@ create.surface.mesh<- function(nodes, triangles, order = 1)
   	}
   out = list(nnodes=nnodes, ntriangles=ntriangles, nodes=c(t(nodes)), triangles = c(t(triangles)), order=as.integer(order))
 
-  class(out)<-"SURFACE_MESH"
+  class(out)<-"MESH.2.5D"
 
   return(out)
 }
@@ -194,11 +194,11 @@ create.surface.mesh<- function(nodes, triangles, order = 1)
 #' \item{\code{mesh}} An object of class 'SURFACE_MESH' with the mesh of order 2.
 #' \item{\code{bc_index}} An update of the vector specifying the indices of the nodes on which boundary conditions are applied
 #' @examples
-#' load(hub) #loading mesh hub, order=1
-#' hub_order2=second.order.mesh(hub)
+#' data(hub) #loading mesh hub, order=1
+#' hub_order2 = second.order.MESH2.5D(hub)
 
-second.order.mesh<-function(mesh,bc=NULL){
-  if(class(mesh) != 'SURFACE_MESH'){
+second.order.MESH2.5D<-function(mesh,bc=NULL){
+  if(class(mesh) != 'MESH.2.5D'){
     stop('This method is implemented only for a mesh of class SURFACE_MESH')
   }else if(mesh$order != 1){
     stop('The object mesh must have order = 1')
@@ -259,11 +259,11 @@ second.order.mesh<-function(mesh,bc=NULL){
   }
   if(is.null(bc)){
     out = list(nnodes=nrow(V), ntriangles=nrow(T), nodes=c(t(V)), triangles = c(t(T)), order=2)
-    class(out)<-"SURFACE_MESH"
+    class(out)<-"MESH.2.5D"
     return(out)
   }else{
     out = list(nnodes=nrow(V), ntriangles=nrow(T), nodes=c(t(V)), triangles = c(t(T)), order=2)
-    class(out)<-"SURFACE_MESH"
+    class(out)<-"MESH.2.5D"
     retlist = list(mesh = out, bc_index=bc)
     return(retlist)
   }
